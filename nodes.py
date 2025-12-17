@@ -1,12 +1,22 @@
 import json
+import time
+from io import BytesIO
 from pathlib import Path
 from typing import Any, Tuple
 
 import requests
+import torch
+from PIL import Image
 
 
 KIE_KEY_PATH = Path(__file__).resolve().parent / "config" / "kie_key.txt"
 API_URL = "https://api.kie.ai/api/v1/chat/credit"
+CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
+RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
+MODEL_NAME = "nano-banana-pro"
+ASPECT_RATIO_OPTIONS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9", "auto"]
+RESOLUTION_OPTIONS = ["1K", "2K", "4K"]
+OUTPUT_FORMAT_OPTIONS = ["png", "jpg"]
 
 
 def _load_api_key() -> str:
@@ -55,6 +65,132 @@ def _log(enabled: bool, msg: str) -> None:
         print(f"[KIE] {msg}")
 
 
+def _validate_prompt(prompt: str) -> None:
+    if not prompt:
+        raise RuntimeError("Prompt is required.")
+    if len(prompt) > 10000:
+        raise RuntimeError("Prompt exceeds the maximum length of 10000 characters.")
+
+
+def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:
+    try:
+        response = requests.post(
+            CREATE_TASK_URL,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json=payload,
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to call createTask endpoint: {exc}") from exc
+
+    try:
+        payload_json: Any = response.json()
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("createTask endpoint did not return valid JSON.") from exc
+
+    if payload_json.get("code") != 200:
+        message = payload_json.get("message") or payload_json.get("msg")
+        raise RuntimeError(f"createTask endpoint returned error code {payload_json.get('code')}: {message}")
+
+    task_id = (payload_json.get("data") or {}).get("taskId")
+    if not task_id:
+        raise RuntimeError("createTask endpoint did not return a taskId.")
+
+    return task_id, response.text
+
+
+def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str]:
+    try:
+        response = requests.get(
+            RECORD_INFO_URL,
+            headers={"Authorization": f"Bearer {api_key}"},
+            params={"taskId": task_id},
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to call recordInfo endpoint: {exc}") from exc
+
+    raw_text = response.text
+    try:
+        payload_json: Any = response.json()
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("recordInfo endpoint did not return valid JSON.") from exc
+
+    if payload_json.get("code") != 200:
+        message = payload_json.get("message") or payload_json.get("msg")
+        raise RuntimeError(f"recordInfo endpoint returned error code {payload_json.get('code')}: {message}")
+
+    data = payload_json.get("data")
+    if data is None:
+        raise RuntimeError("recordInfo endpoint returned no data field.")
+
+    return data, raw_text
+
+
+def _poll_task_until_complete(
+    api_key: str, task_id: str, poll_interval_s: float, timeout_s: int, log: bool
+) -> tuple[dict[str, Any], str]:
+    start_time = time.monotonic()
+    interval = poll_interval_s if poll_interval_s > 0 else 1.0
+
+    while True:
+        if time.monotonic() - start_time > timeout_s:
+            raise RuntimeError(f"Timed out after {timeout_s} seconds while waiting for task {task_id}.")
+
+        data, raw_json = _fetch_task_record(api_key, task_id)
+        _log(log, f"recordInfo response: {raw_json}")
+        state = data.get("state")
+        _log(log, f"Task {task_id} state: {state or 'unknown'}.")
+        if state == "success":
+            return data, raw_json
+        if state == "fail":
+            fail_msg = data.get("failMsg") or data.get("msg") or "Task failed."
+            raise RuntimeError(f"Task {task_id} failed: {fail_msg}")
+
+        _log(log, f"Polling again in {interval} seconds...")
+        time.sleep(interval)
+
+
+def _extract_result_urls(record_data: dict[str, Any]) -> list[str]:
+    result_json = record_data.get("resultJson")
+    if not result_json:
+        raise RuntimeError("Task completed without resultJson.")
+
+    try:
+        parsed = json.loads(result_json)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("resultJson is not valid JSON.") from exc
+
+    result_urls = parsed.get("resultUrls")
+    if not result_urls or not isinstance(result_urls, list):
+        raise RuntimeError("resultJson does not contain resultUrls.")
+
+    return result_urls
+
+
+def _download_image(url: str) -> bytes:
+    try:
+        response = requests.get(url, timeout=120)
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to download result image: {exc}") from exc
+
+    if response.status_code != 200:
+        raise RuntimeError(f"Failed to download result image (status code {response.status_code}).")
+
+    return response.content
+
+
+def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
+    try:
+        with Image.open(BytesIO(image_bytes)) as img:
+            rgb_image = img.convert("RGB")
+            tensor = torch.frombuffer(rgb_image.tobytes(), dtype=torch.uint8)
+            tensor = tensor.view(rgb_image.height, rgb_image.width, 3).float() / 255.0
+            return tensor.unsqueeze(0)
+    except Exception as exc:
+        raise RuntimeError("Failed to decode result image.") from exc
+
+
 class KIE_GetRemainingCredits:
     @classmethod
     def INPUT_TYPES(cls):
@@ -73,5 +209,78 @@ class KIE_GetRemainingCredits:
         return (raw_json, credits_remaining)
 
 
-NODE_CLASS_MAPPINGS = {"KIE_GetRemainingCredits": KIE_GetRemainingCredits}
-NODE_DISPLAY_NAME_MAPPINGS = {"KIE_GetRemainingCredits": "KIE Get Remaining Credits"}
+class KIE_NanoBananaPro_Image:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {"prompt": ("STRING", {"multiline": True})},
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": ASPECT_RATIO_OPTIONS, "default": "auto"}),
+                "resolution": ("COMBO", {"options": RESOLUTION_OPTIONS, "default": "1K"}),
+                "output_format": ("COMBO", {"options": OUTPUT_FORMAT_OPTIONS, "default": "png"}),
+                "log": ("BOOLEAN", {"default": True}),
+                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 60.0, "step": 0.1}),
+                "timeout_s": ("INT", {"default": 300, "min": 1, "max": 3600, "step": 1}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "auto",
+        resolution: str = "1K",
+        output_format: str = "png",
+        log: bool = True,
+        poll_interval_s: float = 1.0,
+        timeout_s: int = 300,
+    ):
+        _validate_prompt(prompt)
+
+        if aspect_ratio not in ASPECT_RATIO_OPTIONS:
+            raise RuntimeError("Invalid aspect_ratio. Use the pinned enum options.")
+        if resolution not in RESOLUTION_OPTIONS:
+            raise RuntimeError("Invalid resolution. Use the pinned enum options.")
+        if output_format not in OUTPUT_FORMAT_OPTIONS:
+            raise RuntimeError("Invalid output_format. Use the pinned enum options.")
+
+        payload = {
+            "model": MODEL_NAME,
+            "input": {
+                "prompt": prompt,
+                "aspect_ratio": aspect_ratio,
+                "resolution": resolution,
+                "output_format": output_format,
+            },
+        }
+
+        _log(log, "Creating Nano Banana Pro task...")
+        api_key = _load_api_key()
+        task_id, create_response_text = _create_nano_banana_task(api_key, payload)
+        _log(log, f"createTask response: {create_response_text}")
+        _log(log, f"Task created with ID {task_id}. Polling for completion...")
+
+        record_data, _raw_json = _poll_task_until_complete(api_key, task_id, poll_interval_s, timeout_s, log)
+        result_urls = _extract_result_urls(record_data)
+        _log(log, f"Result URLs: {result_urls}")
+
+        _log(log, f"Downloading result image from {result_urls[0]}...")
+        image_bytes = _download_image(result_urls[0])
+        image_tensor = _image_bytes_to_tensor(image_bytes)
+        _log(log, "Image downloaded and decoded.")
+
+        return (image_tensor,)
+
+
+NODE_CLASS_MAPPINGS = {
+    "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
+    "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
+}
+NODE_DISPLAY_NAME_MAPPINGS = {
+    "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
+    "KIE_NanoBananaPro_Image": "KIE Nano Banana Pro (Image)",
+}
