@@ -65,6 +65,12 @@ def _log(enabled: bool, msg: str) -> None:
         print(f"[KIE] {msg}")
 
 
+class TransientKieError(RuntimeError):
+    def __init__(self, message: str, status_code: int | None = None):
+        super().__init__(message)
+        self.status_code = status_code
+
+
 def _validate_prompt(prompt: str) -> None:
     if not prompt:
         raise RuntimeError("Prompt is required.")
@@ -83,6 +89,11 @@ def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str
     except requests.RequestException as exc:
         raise RuntimeError(f"Failed to call createTask endpoint: {exc}") from exc
 
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"createTask returned HTTP {response.status_code}: {response.text}", status_code=response.status_code
+        )
+
     try:
         payload_json: Any = response.json()
     except json.JSONDecodeError as exc:
@@ -99,7 +110,7 @@ def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str
     return task_id, response.text
 
 
-def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str]:
+def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str, Any]:
     try:
         response = requests.get(
             RECORD_INFO_URL,
@@ -109,6 +120,11 @@ def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str]
         )
     except requests.RequestException as exc:
         raise RuntimeError(f"Failed to call recordInfo endpoint: {exc}") from exc
+
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"recordInfo returned HTTP {response.status_code}: {response.text}", status_code=response.status_code
+        )
 
     raw_text = response.text
     try:
@@ -124,30 +140,62 @@ def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str]
     if data is None:
         raise RuntimeError("recordInfo endpoint returned no data field.")
 
-    return data, raw_text
+    return data, raw_text, payload_json.get("message") or payload_json.get("msg")
 
 
 def _poll_task_until_complete(
-    api_key: str, task_id: str, poll_interval_s: float, timeout_s: int, log: bool
-) -> tuple[dict[str, Any], str]:
-    start_time = time.monotonic()
+    api_key: str,
+    task_id: str,
+    poll_interval_s: float,
+    timeout_s: int,
+    log: bool,
+    start_time: float,
+) -> tuple[dict[str, Any], str, Any, str | None]:
     interval = poll_interval_s if poll_interval_s > 0 else 1.0
+    last_state = None
+    last_log_time = start_time
 
     while True:
-        if time.monotonic() - start_time > timeout_s:
-            raise RuntimeError(f"Timed out after {timeout_s} seconds while waiting for task {task_id}.")
+        now = time.time()
+        elapsed = now - start_time
+        if elapsed > timeout_s:
+            last_state_text = last_state if last_state is not None else "unknown"
+            raise RuntimeError(
+                f"Task {task_id} timed out after {timeout_s}s (last state={last_state_text}, elapsed={elapsed:.1f}s). "
+                "Try increasing timeout or retry."
+            )
 
-        data, raw_json = _fetch_task_record(api_key, task_id)
-        _log(log, f"recordInfo response: {raw_json}")
+        data, raw_json, message_field = _fetch_task_record(api_key, task_id)
         state = data.get("state")
-        _log(log, f"Task {task_id} state: {state or 'unknown'}.")
-        if state == "success":
-            return data, raw_json
-        if state == "fail":
-            fail_msg = data.get("failMsg") or data.get("msg") or "Task failed."
-            raise RuntimeError(f"Task {task_id} failed: {fail_msg}")
+        should_log = log and (state != last_state or (now - last_log_time) >= 30.0)
+        if should_log:
+            _log(log, f"recordInfo response: {raw_json}")
+            _log(log, f"Task {task_id} state: {state or 'unknown'} (elapsed={elapsed:.1f}s)")
+            last_log_time = now
 
-        _log(log, f"Polling again in {interval} seconds...")
+        last_state = state
+
+        if state == "success":
+            return data, raw_json, message_field, f"{elapsed:.1f}s"
+        if state == "fail":
+            fail_code = data.get("failCode")
+            fail_msg = data.get("failMsg") or data.get("msg")
+            parts = [f"Task {task_id} failed"]
+            if fail_code is not None:
+                parts.append(f"failCode={fail_code}")
+            if fail_msg:
+                parts.append(f"failMsg={fail_msg}")
+            if message_field:
+                parts.append(f"message={message_field}")
+            error_message = "; ".join(parts)
+
+            if _should_retry_fail(fail_code, fail_msg, message_field):
+                raise TransientKieError(error_message)
+
+            raise RuntimeError(error_message)
+
+        if should_log:
+            _log(log, f"Polling again in {interval} seconds...")
         time.sleep(interval)
 
 
@@ -191,6 +239,27 @@ def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
         raise RuntimeError("Failed to decode result image.") from exc
 
 
+def _should_retry_fail(fail_code: Any, fail_msg: Any, message: Any) -> bool:
+    try:
+        code_int = int(fail_code)
+    except (TypeError, ValueError):
+        code_int = None
+
+    if code_int is not None and 500 <= code_int <= 599:
+        return True
+
+    combined_text = " ".join(
+        str(part).lower()
+        for part in (fail_msg, message)
+        if isinstance(part, str) and part
+    )
+
+    if "internal error" in combined_text or "try again later" in combined_text:
+        return True
+
+    return False
+
+
 class KIE_GetRemainingCredits:
     @classmethod
     def INPUT_TYPES(cls):
@@ -221,6 +290,9 @@ class KIE_NanoBananaPro_Image:
                 "log": ("BOOLEAN", {"default": True}),
                 "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 60.0, "step": 0.1}),
                 "timeout_s": ("INT", {"default": 300, "min": 1, "max": 3600, "step": 1}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 300.0, "step": 0.5}),
             },
         }
 
@@ -238,6 +310,9 @@ class KIE_NanoBananaPro_Image:
         log: bool = True,
         poll_interval_s: float = 1.0,
         timeout_s: int = 300,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
     ):
         _validate_prompt(prompt)
 
@@ -248,32 +323,52 @@ class KIE_NanoBananaPro_Image:
         if output_format not in OUTPUT_FORMAT_OPTIONS:
             raise RuntimeError("Invalid output_format. Use the pinned enum options.")
 
-        payload = {
-            "model": MODEL_NAME,
-            "input": {
-                "prompt": prompt,
-                "aspect_ratio": aspect_ratio,
-                "resolution": resolution,
-                "output_format": output_format,
-            },
-        }
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
 
-        _log(log, "Creating Nano Banana Pro task...")
-        api_key = _load_api_key()
-        task_id, create_response_text = _create_nano_banana_task(api_key, payload)
-        _log(log, f"createTask response: {create_response_text}")
-        _log(log, f"Task created with ID {task_id}. Polling for completion...")
+        for attempt in range(1, attempts + 1):
+            start_time = time.time()
+            try:
+                payload = {
+                    "model": MODEL_NAME,
+                    "input": {
+                        "prompt": prompt,
+                        "aspect_ratio": aspect_ratio,
+                        "resolution": resolution,
+                        "output_format": output_format,
+                    },
+                }
 
-        record_data, _raw_json = _poll_task_until_complete(api_key, task_id, poll_interval_s, timeout_s, log)
-        result_urls = _extract_result_urls(record_data)
-        _log(log, f"Result URLs: {result_urls}")
+                _log(log, "Creating Nano Banana Pro task...")
+                api_key = _load_api_key()
+                task_id, create_response_text = _create_nano_banana_task(api_key, payload)
+                _log(log, f"createTask response (elapsed={time.time() - start_time:.1f}s): {create_response_text}")
+                _log(log, f"Task created with ID {task_id}. Polling for completion...")
 
-        _log(log, f"Downloading result image from {result_urls[0]}...")
-        image_bytes = _download_image(result_urls[0])
-        image_tensor = _image_bytes_to_tensor(image_bytes)
-        _log(log, "Image downloaded and decoded.")
+                record_data, _raw_json, _message_field, elapsed_text = _poll_task_until_complete(
+                    api_key,
+                    task_id,
+                    poll_interval_s,
+                    timeout_s,
+                    log,
+                    start_time,
+                )
+                result_urls = _extract_result_urls(record_data)
+                _log(log, f"Result URLs: {result_urls}")
 
-        return (image_tensor,)
+                _log(log, f"Downloading result image from {result_urls[0]} (elapsed={elapsed_text})...")
+                image_bytes = _download_image(result_urls[0])
+                image_tensor = _image_bytes_to_tensor(image_bytes)
+                _log(log, "Image downloaded and decoded.")
+
+                return (image_tensor,)
+            except TransientKieError as exc:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+                continue
 
 
 NODE_CLASS_MAPPINGS = {
