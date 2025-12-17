@@ -1,0 +1,23 @@
+{
+  "model": "nano-banana-pro",
+  "endpoints": {
+    "createTask": {
+      "method": "POST",
+      "url": "https://api.kie.ai/api/v1/jobs/createTask"
+    },
+    "recordInfo": {
+      "method": "GET",
+      "url": "https://api.kie.ai/api/v1/jobs/recordInfo"
+    }
+  },
+  "input_enums": {
+    "aspect_ratio": ["1:1","2:3","3:2","3:4","4:3","4:5","5:4","9:16","16:9","21:9","auto"],
+    "resolution": ["1K","2K","4K"],
+    "output_format": ["png","jpg"]
+  },
+  "constraints": {
+    "image_input_max": 8,
+    "prompt_max_len": 10000
+  }
+}
+
