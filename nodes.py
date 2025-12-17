@@ -67,6 +67,22 @@ def _log(enabled: bool, msg: str) -> None:
         print(f"[KIE] {msg}")
 
 
+def _log_remaining_credits(log: bool, record_data: dict[str, Any], api_key: str) -> None:
+    if not log:
+        return
+
+    remaining = record_data.get("remainedCredits")
+    if remaining is not None:
+        _log(True, f"Remaining credits: {remaining}")
+        return
+
+    try:
+        _raw, credits_remaining = _fetch_remaining_credits(api_key)
+        _log(True, f"Remaining credits: {credits_remaining}")
+    except Exception as exc:
+        _log(True, f"Failed to fetch remaining credits: {exc}")
+
+
 def _truncate_url(url: str, max_length: int = 80) -> str:
     if len(url) <= max_length:
         return url
@@ -461,6 +477,8 @@ class KIE_NanoBananaPro_Image:
                 image_bytes = _download_image(result_urls[0])
                 image_tensor = _image_bytes_to_tensor(image_bytes)
                 _log(log, "Image downloaded and decoded.")
+
+                _log_remaining_credits(log, record_data, api_key)
 
                 return (image_tensor,)
             except TransientKieError as exc:
