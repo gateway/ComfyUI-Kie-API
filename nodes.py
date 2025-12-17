@@ -2,10 +2,10 @@ import time
 
 import torch
 
-from kie_api.auth import _load_api_key
-from kie_api.credits import _fetch_remaining_credits, _log_remaining_credits
-from kie_api.http import TransientKieError
-from kie_api.nanobanana import (
+from .kie_api.auth import _load_api_key
+from .kie_api.credits import _fetch_remaining_credits, _log_remaining_credits
+from .kie_api.http import TransientKieError
+from .kie_api.nanobanana import (
     ASPECT_RATIO_OPTIONS,
     MODEL_NAME,
     OUTPUT_FORMAT_OPTIONS,
@@ -18,7 +18,7 @@ from kie_api.nanobanana import (
     _poll_task_until_complete,
     _validate_prompt,
 )
-from kie_api.upload import (
+from .kie_api.upload import (
     _image_tensor_to_png_bytes,
     _truncate_url,
     _upload_image,
