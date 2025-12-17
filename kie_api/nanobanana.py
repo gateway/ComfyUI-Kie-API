@@ -191,7 +191,7 @@ def _poll_task_until_complete(
             _log(
                 log,
                 f"Task {task_id} state: {state or 'unknown'} "
-                f"(elapsed={elapsed:.1f}s, credits_used={consume_credits or 'n/a'})"
+                f"(elapsed={elapsed:.1f}s)"
             )
             last_log_time = now
 
