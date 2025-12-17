@@ -18,11 +18,25 @@ OUTPUT_FORMAT_OPTIONS = ["png", "jpg"]
 
 
 def _log(enabled: bool, msg: str) -> None:
+    """Log a message to stdout when verbose logging is enabled.
+
+    Returns:
+        None.
+    Raises:
+        None.
+    """
     if enabled:
         print(f"[KIE] {msg}")
 
 
 def _validate_prompt(prompt: str) -> None:
+    """Validate presence and length of the generation prompt.
+
+    Returns:
+        None.
+    Raises:
+        RuntimeError: If the prompt is empty or exceeds 10000 characters.
+    """
     if not prompt:
         raise RuntimeError("Prompt is required.")
     if len(prompt) > 10000:
@@ -30,6 +44,14 @@ def _validate_prompt(prompt: str) -> None:
 
 
 def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:
+    """Create a nano-banana job and return the task id with raw response text.
+
+    Returns:
+        A tuple of (task_id, raw_response_text).
+    Raises:
+        RuntimeError: If the request fails or the API responds with an error code.
+        TransientKieError: If the API responds with retryable errors (429 or >=500).
+    """
     try:
         response = requests.post(
             CREATE_TASK_URL,
@@ -62,6 +84,14 @@ def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str
 
 
 def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str, Any]:
+    """Fetch the current record for a task.
+
+    Returns:
+        A tuple of (data_dict, raw_response_text, message_field).
+    Raises:
+        RuntimeError: If the request fails, returns non-JSON, or returns an error code.
+        TransientKieError: If the API responds with retryable errors (429 or >=500).
+    """
     try:
         response = requests.get(
             RECORD_INFO_URL,
@@ -95,6 +125,13 @@ def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str,
 
 
 def _should_retry_fail(fail_code: Any, fail_msg: Any, message: Any) -> bool:
+    """Determine whether a failed task should be retried.
+
+    Returns:
+        True if the failure looks transient and worth retrying, otherwise False.
+    Raises:
+        None.
+    """
     try:
         code_int = int(fail_code)
     except (TypeError, ValueError):
@@ -123,6 +160,15 @@ def _poll_task_until_complete(
     log: bool,
     start_time: float,
 ) -> tuple[dict[str, Any], str, Any, str | None]:
+    """Poll recordInfo until the task completes, fails, or times out.
+
+    Returns:
+        A tuple of (data_dict, raw_response_text, message_field, elapsed_text).
+    Raises:
+        RuntimeError: If the task times out or returns a non-retryable failure.
+        TransientKieError: If the task fails with a retryable condition.
+    """
+    # Ensure we never poll faster than once per second to reduce server load.
     interval = poll_interval_s if poll_interval_s > 0 else 1.0
     last_state = None
     last_log_time = start_time
@@ -139,10 +185,14 @@ def _poll_task_until_complete(
 
         data, raw_json, message_field = _fetch_task_record(api_key, task_id)
         state = data.get("state")
+        # Log only on state change or every 30s to give progress without noisy output.
         should_log = log and (state != last_state or (now - last_log_time) >= 30.0)
         if should_log:
-            _log(log, f"recordInfo response: {raw_json}")
-            _log(log, f"Task {task_id} state: {state or 'unknown'} (elapsed={elapsed:.1f}s)")
+            _log(
+                log,
+                f"Task {task_id} state: {state or 'unknown'} "
+                f"(elapsed={elapsed:.1f}s, credits_used={consume_credits or 'n/a'})"
+            )
             last_log_time = now
 
         last_state = state
@@ -189,6 +239,13 @@ def _extract_result_urls(record_data: dict[str, Any]) -> list[str]:
 
 
 def _download_image(url: str) -> bytes:
+    """Download a result image and return its raw bytes.
+
+    Returns:
+        The downloaded image content.
+    Raises:
+        RuntimeError: If the download fails or returns a non-200 status.
+    """
     try:
         response = requests.get(url, timeout=120)
     except requests.RequestException as exc:
@@ -201,10 +258,17 @@ def _download_image(url: str) -> bytes:
 
 
 def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
+    """Convert image bytes into a normalized torch tensor.
+
+    Returns:
+        A tensor of shape (1, H, W, 3) with float values in [0, 1].
+    Raises:
+        RuntimeError: If the image cannot be decoded.
+    """
     try:
         with Image.open(BytesIO(image_bytes)) as img:
             rgb_image = img.convert("RGB")
-            tensor = torch.frombuffer(rgb_image.tobytes(), dtype=torch.uint8)
+            tensor = torch.frombuffer(rgb_bytes, dtype=torch.uint8).clone()
             tensor = tensor.view(rgb_image.height, rgb_image.width, 3).float() / 255.0
             return tensor.unsqueeze(0)
     except Exception as exc:
