@@ -13,10 +13,12 @@ KIE_KEY_PATH = Path(__file__).resolve().parent / "config" / "kie_key.txt"
 API_URL = "https://api.kie.ai/api/v1/chat/credit"
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
+UPLOAD_URL = "https://kieai.redpandaai.co/api/file-stream-upload"
 MODEL_NAME = "nano-banana-pro"
 ASPECT_RATIO_OPTIONS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9", "auto"]
 RESOLUTION_OPTIONS = ["1K", "2K", "4K"]
 OUTPUT_FORMAT_OPTIONS = ["png", "jpg"]
+UPLOAD_PATH = "images/user-uploads"
 
 
 def _load_api_key() -> str:
@@ -63,6 +65,12 @@ def _fetch_remaining_credits(api_key: str) -> Tuple[str, int]:
 def _log(enabled: bool, msg: str) -> None:
     if enabled:
         print(f"[KIE] {msg}")
+
+
+def _truncate_url(url: str, max_length: int = 80) -> str:
+    if len(url) <= max_length:
+        return url
+    return url[:max_length] + "..."
 
 
 class TransientKieError(RuntimeError):
@@ -239,6 +247,32 @@ def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
         raise RuntimeError("Failed to decode result image.") from exc
 
 
+def _image_tensor_to_png_bytes(image: torch.Tensor) -> bytes:
+    if image.dim() != 3 or image.shape[2] != 3:
+        raise RuntimeError("Image tensor must have shape [H, W, 3].")
+    if image.numel() == 0:
+        raise RuntimeError("Image tensor is empty.")
+
+    if image.dtype != torch.uint8:
+        working = image.detach().cpu().clamp(0, 1) * 255.0
+        working = working.round().to(torch.uint8)
+    else:
+        working = image.detach().cpu()
+
+    working = working.contiguous()
+    height, width, _channels = working.shape
+    data_bytes = bytes(working.view(-1).tolist())
+
+    try:
+        pil_image = Image.frombytes("RGB", (width, height), data_bytes)
+    except Exception as exc:
+        raise RuntimeError("Failed to convert tensor to image.") from exc
+
+    with BytesIO() as output:
+        pil_image.save(output, format="PNG")
+        return output.getvalue()
+
+
 def _should_retry_fail(fail_code: Any, fail_msg: Any, message: Any) -> bool:
     try:
         code_int = int(fail_code)
@@ -258,6 +292,41 @@ def _should_retry_fail(fail_code: Any, fail_msg: Any, message: Any) -> bool:
         return True
 
     return False
+
+
+def _upload_image(api_key: str, png_bytes: bytes) -> str:
+    try:
+        response = requests.post(
+            UPLOAD_URL,
+            headers={"Authorization": f"Bearer {api_key}"},
+            files={"file": ("image.png", png_bytes, "image/png")},
+            data={"uploadPath": UPLOAD_PATH},
+            timeout=120,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to upload image: {exc}") from exc
+
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"upload returned HTTP {response.status_code}: {response.text}", status_code=response.status_code
+        )
+
+    try:
+        payload_json: Any = response.json()
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("Upload endpoint did not return valid JSON.") from exc
+
+    success = payload_json.get("success")
+    code = payload_json.get("code")
+    if not success or code != 200:
+        raise RuntimeError(f"Upload failed (code={code}): {payload_json.get('msg')}")
+
+    data = payload_json.get("data") or {}
+    url = data.get("downloadUrl")
+    if not url:
+        raise RuntimeError("Upload response missing downloadUrl.")
+
+    return url
 
 
 class KIE_GetRemainingCredits:
@@ -284,6 +353,7 @@ class KIE_NanoBananaPro_Image:
         return {
             "required": {"prompt": ("STRING", {"multiline": True})},
             "optional": {
+                "images": ("IMAGE",),
                 "aspect_ratio": ("COMBO", {"options": ASPECT_RATIO_OPTIONS, "default": "auto"}),
                 "resolution": ("COMBO", {"options": RESOLUTION_OPTIONS, "default": "1K"}),
                 "output_format": ("COMBO", {"options": OUTPUT_FORMAT_OPTIONS, "default": "png"}),
@@ -313,6 +383,7 @@ class KIE_NanoBananaPro_Image:
         retry_on_fail: bool = True,
         max_retries: int = 2,
         retry_backoff_s: float = 3.0,
+        images: torch.Tensor | None = None,
     ):
         _validate_prompt(prompt)
 
@@ -330,6 +401,33 @@ class KIE_NanoBananaPro_Image:
         for attempt in range(1, attempts + 1):
             start_time = time.time()
             try:
+                api_key = _load_api_key()
+
+                image_urls: list[str] = []
+                if images is not None:
+                    if not isinstance(images, torch.Tensor):
+                        raise RuntimeError("images input must be a tensor batch.")
+                    if images.dim() != 4 or images.shape[-1] != 3:
+                        raise RuntimeError("images input must have shape [B, H, W, 3].")
+
+                    total_images = images.shape[0]
+                    if total_images > 8 and log:
+                        _log(log, f"More than 8 images provided ({total_images}); only first 8 will be used.")
+
+                    upload_count = min(total_images, 8)
+                    if upload_count > 0:
+                        _log(log, f"Uploading {upload_count} images...")
+
+                    for idx in range(upload_count):
+                        try:
+                            png_bytes = _image_tensor_to_png_bytes(images[idx])
+                            url = _upload_image(api_key, png_bytes)
+                            image_urls.append(url)
+                            _log(log, f"Image {idx + 1} upload success: {_truncate_url(url)}")
+                        except Exception as exc:
+                            _log(log, f"Image {idx + 1} upload failed: {exc}")
+                            raise
+
                 payload = {
                     "model": MODEL_NAME,
                     "input": {
@@ -337,11 +435,13 @@ class KIE_NanoBananaPro_Image:
                         "aspect_ratio": aspect_ratio,
                         "resolution": resolution,
                         "output_format": output_format,
+                        "image_input": image_urls,
                     },
                 }
 
+                _log(log, f"Sending {len(image_urls)} image URLs to createTask")
+
                 _log(log, "Creating Nano Banana Pro task...")
-                api_key = _load_api_key()
                 task_id, create_response_text = _create_nano_banana_task(api_key, payload)
                 _log(log, f"createTask response (elapsed={time.time() - start_time:.1f}s): {create_response_text}")
                 _log(log, f"Task created with ID {task_id}. Polling for completion...")
