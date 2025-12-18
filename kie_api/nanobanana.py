@@ -222,6 +222,7 @@ def _poll_task_until_complete(
 
 
 def _extract_result_urls(record_data: dict[str, Any]) -> list[str]:
+    """Parse the resultJson payload and return the result URL list."""
     result_json = record_data.get("resultJson")
     if not result_json:
         raise RuntimeError("Task completed without resultJson.")
@@ -278,4 +279,3 @@ def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
             return tensor.unsqueeze(0)
     except Exception as exc:
         raise RuntimeError("Failed to decode result image.") from exc
-
