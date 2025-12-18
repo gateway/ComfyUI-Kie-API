@@ -1,27 +1,14 @@
-import time
-
 import torch
 
 from .kie_api.auth import _load_api_key
 from .kie_api.credits import _fetch_remaining_credits, _log_remaining_credits
-from .kie_api.http import TransientKieError
 from .kie_api.nanobanana import (
     ASPECT_RATIO_OPTIONS,
     MODEL_NAME,
     OUTPUT_FORMAT_OPTIONS,
     RESOLUTION_OPTIONS,
-    _create_nano_banana_task,
-    _download_image,
-    _extract_result_urls,
-    _image_bytes_to_tensor,
     _log,
-    _poll_task_until_complete,
-    _validate_prompt,
-)
-from .kie_api.upload import (
-    _image_tensor_to_png_bytes,
-    _truncate_url,
-    _upload_image,
+    run_nanobanana_image_job,
 )
 
 
@@ -81,92 +68,20 @@ class KIE_NanoBananaPro_Image:
         retry_backoff_s: float = 3.0,
         images: torch.Tensor | None = None,
     ):
-        _validate_prompt(prompt)
-
-        if aspect_ratio not in ASPECT_RATIO_OPTIONS:
-            raise RuntimeError("Invalid aspect_ratio. Use the pinned enum options.")
-        if resolution not in RESOLUTION_OPTIONS:
-            raise RuntimeError("Invalid resolution. Use the pinned enum options.")
-        if output_format not in OUTPUT_FORMAT_OPTIONS:
-            raise RuntimeError("Invalid output_format. Use the pinned enum options.")
-
-        attempts = max_retries + 1 if retry_on_fail else 1
-        attempts = max(attempts, 1)
-        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
-
-        for attempt in range(1, attempts + 1):
-            start_time = time.time()
-            try:
-                api_key = _load_api_key()
-
-                image_urls: list[str] = []
-                if images is not None:
-                    if not isinstance(images, torch.Tensor):
-                        raise RuntimeError("images input must be a tensor batch.")
-                    if images.dim() != 4 or images.shape[-1] != 3:
-                        raise RuntimeError("images input must have shape [B, H, W, 3].")
-
-                    total_images = images.shape[0]
-                    if total_images > 8 and log:
-                        _log(log, f"More than 8 images provided ({total_images}); only first 8 will be used.")
-
-                    upload_count = min(total_images, 8)
-                    if upload_count > 0:
-                        _log(log, f"Uploading {upload_count} images...")
-
-                    for idx in range(upload_count):
-                        try:
-                            png_bytes = _image_tensor_to_png_bytes(images[idx])
-                            url = _upload_image(api_key, png_bytes)
-                            image_urls.append(url)
-                            _log(log, f"Image {idx + 1} upload success: {_truncate_url(url)}")
-                        except Exception as exc:
-                            _log(log, f"Image {idx + 1} upload failed: {exc}")
-                            raise
-
-                payload = {
-                    "model": MODEL_NAME,
-                    "input": {
-                        "prompt": prompt,
-                        "aspect_ratio": aspect_ratio,
-                        "resolution": resolution,
-                        "output_format": output_format,
-                        "image_input": image_urls,
-                    },
-                }
-
-                _log(log, f"Sending {len(image_urls)} image URLs to createTask")
-
-                _log(log, "Creating Nano Banana Pro task...")
-                task_id, create_response_text = _create_nano_banana_task(api_key, payload)
-                _log(log, f"createTask response (elapsed={time.time() - start_time:.1f}s): {create_response_text}")
-                _log(log, f"Task created with ID {task_id}. Polling for completion...")
-
-                record_data, _raw_json, _message_field, elapsed_text = _poll_task_until_complete(
-                    api_key,
-                    task_id,
-                    poll_interval_s,
-                    timeout_s,
-                    log,
-                    start_time,
-                )
-                result_urls = _extract_result_urls(record_data)
-                _log(log, f"Result URLs: {result_urls}")
-
-                _log(log, f"Downloading result image from {result_urls[0]} (elapsed={elapsed_text})...")
-                image_bytes = _download_image(result_urls[0])
-                image_tensor = _image_bytes_to_tensor(image_bytes)
-                _log(log, "Image downloaded and decoded.")
-
-                _log_remaining_credits(log, record_data, api_key, _log)
-
-                return (image_tensor,)
-            except TransientKieError as exc:
-                if not retry_on_fail or attempt >= attempts:
-                    raise
-                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
-                time.sleep(backoff)
-                continue
+        image_tensor = run_nanobanana_image_job(
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            resolution=resolution,
+            output_format=output_format,
+            log=log,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            retry_on_fail=retry_on_fail,
+            max_retries=max_retries,
+            retry_backoff_s=retry_backoff_s,
+            images=images,
+        )
+        return (image_tensor,)
 
 
 NODE_CLASS_MAPPINGS = {
