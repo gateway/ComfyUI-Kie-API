@@ -25,6 +25,7 @@ from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
 from .images import _image_bytes_to_tensor
 
 
+
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
 MODEL_NAME = "nano-banana-pro"
