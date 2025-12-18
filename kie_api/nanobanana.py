@@ -22,6 +22,7 @@ from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .http import TransientKieError, requests
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
+from .images import _image_bytes_to_tensor
 
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
@@ -326,29 +327,6 @@ def _download_image(url: str) -> bytes:
 def _download_nanobanana_image(url: str) -> bytes:
     """Backward-compatible alias for node usage."""
     return _download_image(url)
-
-
-def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
-    """Convert image bytes into a normalized torch tensor.
-
-    Returns:
-        A tensor of shape (1, H, W, 3) with float values in [0, 1].
-    Raises:
-        RuntimeError: If the image cannot be decoded.
-    """
-    try:
-        with Image.open(BytesIO(image_bytes)) as img:
-            rgb_image = img.convert("RGB")
-            rgb_bytes = rgb_image.tobytes()
-
-            tensor = torch.frombuffer(rgb_bytes, dtype=torch.uint8).clone()
-            tensor = tensor.view(
-                rgb_image.height, rgb_image.width, 3
-            ).float() / 255.0
-
-            return tensor.unsqueeze(0)
-    except Exception as exc:
-        raise RuntimeError("Failed to decode result image.") from exc
 
 
 def run_nanobanana_image_job(

@@ -9,10 +9,10 @@ import torch
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .http import TransientKieError, requests
+from .images import _image_bytes_to_tensor
 from .nanobanana import (
     _download_image,
     _extract_result_urls,
-    _image_bytes_to_tensor,
     _log,
     _poll_task_until_complete,
 )
