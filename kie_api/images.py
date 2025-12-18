@@ -1,6 +1,7 @@
 from io import BytesIO
 
 import torch
+import numpy as np
 from PIL import Image
 
 
@@ -15,10 +16,12 @@ def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
     try:
         with Image.open(BytesIO(image_bytes)) as img:
             rgb_image = img.convert("RGB")
-            rgb_bytes = rgb_image.tobytes()
-
-            tensor = torch.frombuffer(rgb_bytes, dtype=torch.uint8).clone()
-            tensor = tensor.view(rgb_image.height, rgb_image.width, 3).float() / 255.0
+            
+            # FIX: Use numpy to create the array. This creates a writable buffer
+            # automatically, resolving the PyTorch warning.
+            tensor = torch.from_numpy(np.array(rgb_image))
+            
+            tensor = tensor.float() / 255.0
             return tensor.unsqueeze(0)
     except Exception as exc:
         raise RuntimeError("Failed to decode result image.") from exc
