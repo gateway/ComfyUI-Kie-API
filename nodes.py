@@ -4,11 +4,15 @@ from .kie_api.auth import _load_api_key
 from .kie_api.credits import _fetch_remaining_credits, _log_remaining_credits
 from .kie_api.nanobanana import (
     ASPECT_RATIO_OPTIONS,
-    MODEL_NAME,
     OUTPUT_FORMAT_OPTIONS,
     RESOLUTION_OPTIONS,
     _log,
     run_nanobanana_image_job,
+)
+from .kie_api.seedream45_t2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM_ASPECT_RATIO_OPTIONS,
+    QUALITY_OPTIONS as SEEDREAM_QUALITY_OPTIONS,
+    run_seedream45_text_to_image,
 )
 
 
@@ -84,11 +88,54 @@ class KIE_NanoBananaPro_Image:
         return (image_tensor,)
 
 
+class KIE_Seedream45_TextToImage:
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": SEEDREAM_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "quality": ("COMBO", {"options": SEEDREAM_QUALITY_OPTIONS, "default": "basic"}),
+                "log": ("BOOLEAN", {"default": True}),
+                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 60.0, "step": 0.1}),
+                "timeout_s": ("INT", {"default": 300, "min": 1, "max": 3600, "step": 1}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "1:1",
+        quality: str = "basic",
+        log: bool = True,
+        poll_interval_s: float = 1.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream45_text_to_image(
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            quality=quality,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
 NODE_CLASS_MAPPINGS = {
     "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
+    "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
     "KIE_NanoBananaPro_Image": "KIE Nano Banana Pro (Image)",
+    "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
 }
