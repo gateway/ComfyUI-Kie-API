@@ -143,3 +143,46 @@ Each model file SHOULD include a header comment:
 # API version: 2025-xx
 # KIE Docs: <url>
 
+
+## Video Models
+
+Video-producing models MUST:
+- return a local file path (string)
+- use kie_api.video helpers
+- NOT decode frames
+- NOT return tensors
+
+Public runner signature example:
+
+```python
+def run_<model>_video(...) -> str:
+    """Returns a path to a local video file."""
+yaml
+
+
+This teaches Codex the rule **once**, forever.
+
+---
+
+### 🔹 Step 3 — Create your first KIE video model runner
+Now you’re ready for Codex.
+
+📍 **Use VS Code + Codex**
+
+**Prompt (copy exactly):**
+```text
+Add a KIE video model runner following docs/MODEL_IMPLEMENTATION_TEMPLATE.md.
+
+Tasks:
+1. Create kie_api/<model>_video.py
+2. Use shared helpers:
+   - _poll_task_until_complete
+   - _extract_result_urls
+   - _download_video
+   - _write_video_to_temp_file
+3. Return a VIDEO file path (string).
+4. Do NOT decode video frames.
+5. Show diff before applying.
+
+Always when done add the proper model to nodes.py and adjust the mappings to add this new model
+

@@ -19,6 +19,7 @@ from .kie_api.seedream45_edit import (
     QUALITY_OPTIONS as SEEDREAM_EDIT_QUALITY_OPTIONS,
     run_seedream45_edit,
 )
+from .kie_api.seedancev1pro_fast_i2v import KIE_SeedanceV1Pro_Fast_I2V
 
 
 class KIE_GetRemainingCredits:
@@ -243,10 +244,12 @@ NODE_CLASS_MAPPINGS = {
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
+    "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
     "KIE_NanoBananaPro_Image": "KIE Nano Banana Pro (Image)",
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
+    "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
 }
