@@ -4,6 +4,8 @@ import torch
 import numpy as np
 from PIL import Image
 
+from .http import requests
+
 
 def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
     """Convert image bytes into a normalized torch tensor.
@@ -25,3 +27,16 @@ def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
             return tensor.unsqueeze(0)
     except Exception as exc:
         raise RuntimeError("Failed to decode result image.") from exc
+
+
+def _download_image(url: str) -> bytes:
+    """Download a result image and return its raw bytes."""
+    try:
+        response = requests.get(url, timeout=120)
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to download result image: {exc}") from exc
+
+    if response.status_code != 200:
+        raise RuntimeError(f"Failed to download result image (status code {response.status_code}).")
+
+    return response.content

@@ -20,10 +20,12 @@ import torch
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .http import TransientKieError, requests
-from .images import _image_bytes_to_tensor
+from .images import _download_image, _image_bytes_to_tensor
 from .jobs import _poll_task_until_complete
-from .nanobanana import _download_image, _extract_result_urls, _log
+from .log import _log
+from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
+from .validation import _validate_prompt
 
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
@@ -31,13 +33,6 @@ MODEL_NAME = "seedream/4.5-edit"
 ASPECT_RATIO_OPTIONS = ["1:1", "4:3", "3:4", "16:9", "9:16", "2:3", "3:2", "21:9"]
 QUALITY_OPTIONS = ["basic", "high"]
 PROMPT_MAX_LENGTH = 3000
-
-
-def _validate_prompt(prompt: str) -> None:
-    if not prompt:
-        raise RuntimeError("Prompt is required.")
-    if len(prompt) > PROMPT_MAX_LENGTH:
-        raise RuntimeError("Prompt exceeds the maximum length of 3000 characters.")
 
 
 def _validate_options(aspect_ratio: str, quality: str) -> None:
@@ -118,7 +113,7 @@ def run_seedream45_edit(
         RuntimeError: For validation errors or non-retryable API/task failures.
         TransientKieError: For retryable API/task failures.
     """
-    _validate_prompt(prompt)
+    _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(aspect_ratio, quality)
     images = _validate_image_input(images)
 
@@ -167,4 +162,3 @@ def run_seedream45_edit(
 
     _log_remaining_credits(log, record_data, api_key, _log)
     return image_tensor
-

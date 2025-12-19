@@ -15,14 +15,10 @@ import time
 from typing import Any
 
 from .http import TransientKieError, requests
+from .log import _log
 
 
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
-
-
-def _log(enabled: bool, msg: str) -> None:
-    if enabled:
-        print(f"[KIE] {msg}")
 
 
 def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str, Any]:
@@ -163,4 +159,3 @@ def _poll_task_until_complete(
         if should_log:
             _log(log, f"Polling again in {interval} seconds...")
         time.sleep(interval)
-

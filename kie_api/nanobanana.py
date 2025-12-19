@@ -12,20 +12,19 @@ This file is intentionally model-specific and not generic.
 
 import json
 import time
-from io import BytesIO
 from typing import Any
 
 import torch
-from PIL import Image
 
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .http import TransientKieError, requests
 from .jobs import _fetch_task_record, _poll_task_until_complete, _should_retry_fail
+from .log import _log
+from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
-from .images import _image_bytes_to_tensor
-
-
+from .images import _download_image, _image_bytes_to_tensor
+from .validation import _validate_prompt
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
@@ -33,52 +32,7 @@ MODEL_NAME = "nano-banana-pro"
 ASPECT_RATIO_OPTIONS = ["1:1", "2:3", "3:2", "3:4", "4:3", "4:5", "5:4", "9:16", "16:9", "21:9", "auto"]
 RESOLUTION_OPTIONS = ["1K", "2K", "4K"]
 OUTPUT_FORMAT_OPTIONS = ["png", "jpg"]
-
-# -----------------------------
-# Constants / enums
-# -----------------------------
-
-# -----------------------------
-# Validation
-# -----------------------------
-
-# -----------------------------
-# Request building (Nano Banana specific)
-# -----------------------------
-
-# -----------------------------
-# Task lifecycle (submit + poll)
-# -----------------------------
-
-# -----------------------------
-# Result handling (parse + download + decode)
-# -----------------------------
-
-
-def _log(enabled: bool, msg: str) -> None:
-    """Log a message to stdout when verbose logging is enabled.
-
-    Returns:
-        None.
-    Raises:
-        None.
-    """
-    if enabled:
-        print(f"[KIE] {msg}")
-
-
-def _validate_prompt(prompt: str) -> None:
-    """Validate presence and length of the generation prompt.
-
-    Returns:
-        None.
-    Raises:
-        RuntimeError: If the prompt is empty or exceeds 10000 characters.
-    """
-    if not prompt:
-        raise RuntimeError("Prompt is required.")
-    if len(prompt) > 10000:
-        raise RuntimeError("Prompt exceeds the maximum length of 10000 characters.")
+PROMPT_MAX_LENGTH = 10000
 
 
 def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:
@@ -121,8 +75,6 @@ def _create_nano_banana_task(api_key: str, payload: dict[str, Any]) -> tuple[str
     return task_id, response.text
 
 
-
-
 def _create_nanobanana_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:
     """Backward-compatible alias for node usage."""
     return _create_nano_banana_task(api_key, payload)
@@ -147,45 +99,9 @@ def _poll_nanobanana_until_complete(
     return _poll_task_until_complete(api_key, task_id, poll_interval_s, timeout_s, log, start_time)
 
 
-def _extract_result_urls(record_data: dict[str, Any]) -> list[str]:
-    result_json = record_data.get("resultJson")
-    if not result_json:
-        raise RuntimeError("Task completed without resultJson.")
-
-    try:
-        parsed = json.loads(result_json)
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("resultJson is not valid JSON.") from exc
-
-    result_urls = parsed.get("resultUrls")
-    if not result_urls or not isinstance(result_urls, list):
-        raise RuntimeError("resultJson does not contain resultUrls.")
-
-    return result_urls
-
-
 def _extract_nanobanana_result_urls(record_data: dict[str, Any]) -> list[str]:
     """Backward-compatible alias for node usage."""
     return _extract_result_urls(record_data)
-
-
-def _download_image(url: str) -> bytes:
-    """Download a result image and return its raw bytes.
-
-    Returns:
-        The downloaded image content.
-    Raises:
-        RuntimeError: If the download fails or returns a non-200 status.
-    """
-    try:
-        response = requests.get(url, timeout=120)
-    except requests.RequestException as exc:
-        raise RuntimeError(f"Failed to download result image: {exc}") from exc
-
-    if response.status_code != 200:
-        raise RuntimeError(f"Failed to download result image (status code {response.status_code}).")
-
-    return response.content
 
 
 def _download_nanobanana_image(url: str) -> bytes:
@@ -217,7 +133,7 @@ def run_nanobanana_image_job(
         RuntimeError: For validation errors, non-retryable API failures, timeouts, or decoding failures.
         TransientKieError: For retryable API/task failures (used to trigger retries when enabled).
     """
-    _validate_prompt(prompt)
+    _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
 
     if aspect_ratio not in ASPECT_RATIO_OPTIONS:
         raise RuntimeError("Invalid aspect_ratio. Use the pinned enum options.")
