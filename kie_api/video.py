@@ -19,12 +19,12 @@ def _download_video(url: str) -> bytes:
     return response.content
 
 
-def _write_video_to_temp_mp4(video_bytes: bytes) -> Path:
+def _write_video_to_temp_file(video_bytes: bytes, suffix: str = ".mp4") -> str:
     """Persist video bytes to a temporary .mp4 file and return its path."""
     try:
-        temp_file = NamedTemporaryFile(delete=False, suffix=".mp4")
+        temp_file = NamedTemporaryFile(delete=False, suffix=suffix)
         with temp_file:
             temp_file.write(video_bytes)
-        return Path(temp_file.name)
+        return str(Path(temp_file.name))
     except OSError as exc:
         raise RuntimeError("Failed to write temporary video file.") from exc

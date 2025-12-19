@@ -20,6 +20,7 @@ from .kie_api.seedream45_edit import (
     run_seedream45_edit,
 )
 from .kie_api.seedancev1pro_fast_i2v import KIE_SeedanceV1Pro_Fast_I2V
+from .kie_api.grid import slice_grid_tensor
 
 
 class KIE_GetRemainingCredits:
@@ -239,12 +240,75 @@ Outputs:
         return (image_tensor,)
 
 
+class KIE_GridSlice:
+    HELP = """
+KIE Grid Slice
+
+Slice a single grid image into equal tiles, optionally cropping borders and removing gutters.
+
+Inputs:
+- IMAGE: Grid image batch (BHWC float32 0–1)
+- grid: 2x2 or 3x3 layout
+- outer_crop_px: Pixels to trim from each side before slicing
+- gutter_px: Pixels to remove between tiles inside the grid
+- order: Tile ordering (row-major or column-major)
+- process_batch: Process only the first image or all images in the batch
+- log: Console logging on/off
+
+Outputs:
+- IMAGE: Tile batch (4 or 9 per processed image)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+            },
+            "optional": {
+                "grid": ("COMBO", {"options": ["2x2", "3x3"], "default": "2x2"}),
+                "outer_crop_px": ("INT", {"default": 0, "min": 0, "max": 8192, "step": 1}),
+                "gutter_px": ("INT", {"default": 0, "min": 0, "max": 8192, "step": 1}),
+                "order": ("COMBO", {"options": ["row-major", "column-major"], "default": "row-major"}),
+                "process_batch": ("COMBO", {"options": ["first", "all"], "default": "first"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("tiles",)
+    FUNCTION = "slice"
+    CATEGORY = "kie/helpers"
+
+    def slice(
+        self,
+        image: torch.Tensor,
+        grid: str = "2x2",
+        outer_crop_px: int = 0,
+        gutter_px: int = 0,
+        order: str = "row-major",
+        process_batch: str = "first",
+        log: bool = True,
+    ):
+        tile_batch = slice_grid_tensor(
+            image=image,
+            grid=grid,
+            outer_crop_px=outer_crop_px,
+            gutter_px=gutter_px,
+            order=order,
+            process_batch=process_batch,
+            log=log,
+        )
+        return (tile_batch,)
+
+
 NODE_CLASS_MAPPINGS = {
     "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
+    "KIE_GridSlice": KIE_GridSlice,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
@@ -252,4 +316,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
+    "KIE_GridSlice": "KIE Grid Slice",
 }
