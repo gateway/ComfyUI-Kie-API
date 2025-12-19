@@ -15,7 +15,7 @@ from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
 from .validation import _validate_prompt
-from .video import _download_video, _write_video_to_temp_mp4
+from .video import _download_video, _write_video_to_temp_file
 
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
