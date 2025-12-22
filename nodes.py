@@ -1,3 +1,5 @@
+import time
+
 import torch
 
 from .kie_api.auth import _load_api_key
@@ -20,7 +22,9 @@ from .kie_api.seedream45_edit import (
     run_seedream45_edit,
 )
 from .kie_api.seedancev1pro_fast_i2v import KIE_SeedanceV1Pro_Fast_I2V
+from .kie_api.kling26_i2v import DURATION_OPTIONS as KLING26_DURATION_OPTIONS, run_kling26_i2v
 from .kie_api.grid import slice_grid_tensor
+from .kie_api.http import TransientKieError
 
 
 class KIE_GetRemainingCredits:
@@ -240,6 +244,84 @@ Outputs:
         return (image_tensor,)
 
 
+class KIE_Kling26_I2V:
+    HELP = """
+KIE Kling 2.6 (Video)
+
+Generate a short video clip from a prompt and a single input image using Kling 2.6.
+
+Inputs:
+- prompt: Text prompt (required)
+- images: Source image batch (first image used)
+- duration: 5s or 10s
+- sound: Include audio in the output video
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- STRING: Path to a temporary video file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "images": ("IMAGE",),
+            },
+            "optional": {
+                "duration": ("COMBO", {"options": KLING26_DURATION_OPTIONS, "default": "5"}),
+                "sound": ("BOOLEAN", {"default": False}),
+                "log": ("BOOLEAN", {"default": True}),
+                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.5, "max": 60.0, "step": 0.5}),
+                "timeout_s": ("INT", {"default": 600, "min": 1, "max": 3600, "step": 1}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 300.0, "step": 0.5}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("video_path",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor,
+        duration: str = "5",
+        sound: bool = False,
+        log: bool = True,
+        poll_interval_s: float = 1.0,
+        timeout_s: int = 600,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_path = run_kling26_i2v(
+                    prompt=prompt,
+                    images=images,
+                    duration=duration,
+                    sound=sound,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_path,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
 class KIE_GridSlice:
     HELP = """
 KIE Grid Slice
@@ -308,6 +390,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
+    "KIE_Kling26_I2V": KIE_Kling26_I2V,
     "KIE_GridSlice": KIE_GridSlice,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -316,5 +399,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
+    "KIE_Kling26_I2V": "KIE Kling 2.6 (Video)",
     "KIE_GridSlice": "KIE Grid Slice",
 }
