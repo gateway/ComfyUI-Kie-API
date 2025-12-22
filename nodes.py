@@ -22,7 +22,10 @@ from .kie_api.seedream45_edit import (
     run_seedream45_edit,
 )
 from .kie_api.seedancev1pro_fast_i2v import KIE_SeedanceV1Pro_Fast_I2V
-from .kie_api.kling26_i2v import DURATION_OPTIONS as KLING26_DURATION_OPTIONS, run_kling26_i2v
+from .kie_api.kling26_i2v import (
+    DURATION_OPTIONS as KLING26_DURATION_OPTIONS,
+    run_kling26_i2v_video,
+)
 from .kie_api.grid import slice_grid_tensor
 from .kie_api.http import TransientKieError
 
@@ -259,7 +262,7 @@ Inputs:
 - retry_on_fail / max_retries / retry_backoff_s
 
 Outputs:
-- STRING: Path to a temporary video file
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
 """
 
     @classmethod
@@ -281,8 +284,8 @@ Outputs:
             },
         }
 
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("video_path",)
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -305,7 +308,7 @@ Outputs:
 
         for attempt in range(1, attempts + 1):
             try:
-                video_path = run_kling26_i2v(
+                video_output = run_kling26_i2v_video(
                     prompt=prompt,
                     images=images,
                     duration=duration,
@@ -314,7 +317,7 @@ Outputs:
                     timeout_s=timeout_s,
                     log=log,
                 )
-                return (video_path,)
+                return (video_output,)
             except TransientKieError:
                 if not retry_on_fail or attempt >= attempts:
                     raise

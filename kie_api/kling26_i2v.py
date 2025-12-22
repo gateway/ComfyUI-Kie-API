@@ -14,7 +14,7 @@ from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
 from .validation import _validate_prompt
-from .video import _download_video, _write_video_to_temp_file
+from .video import _download_video, _video_path_to_comfy_video_output, _write_video_to_temp_file
 
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
@@ -74,7 +74,7 @@ def _create_kling_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]
     return task_id, response.text
 
 
-def run_kling26_i2v(
+def run_kling26_i2v_video(
     prompt: str,
     images: torch.Tensor,
     duration: str = "5",
@@ -82,7 +82,7 @@ def run_kling26_i2v(
     poll_interval_s: float = 1.0,
     timeout_s: int = 600,
     log: bool = True,
-) -> str:
+) -> dict:
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(duration, sound)
     images = _validate_image_input(images)
@@ -124,6 +124,7 @@ def run_kling26_i2v(
 
     result_urls = _extract_result_urls(record_data)
     video_url = result_urls[0]
+    _log(True, f"Video result URL: {video_url}")
     _log(log, f"Downloading video result from {video_url}...")
 
     video_bytes = _download_video(video_url)
@@ -131,4 +132,25 @@ def run_kling26_i2v(
     _log(log, f"Video saved to {video_path}")
 
     _log_remaining_credits(log, record_data, api_key, _log)
-    return video_path
+    return _video_path_to_comfy_video_output(video_path)
+
+
+def run_kling26_i2v(
+    prompt: str,
+    images: torch.Tensor,
+    duration: str = "5",
+    sound: bool = False,
+    poll_interval_s: float = 1.0,
+    timeout_s: int = 600,
+    log: bool = True,
+) -> dict:
+    """Backward-compatible alias for existing imports."""
+    return run_kling26_i2v_video(
+        prompt=prompt,
+        images=images,
+        duration=duration,
+        sound=sound,
+        poll_interval_s=poll_interval_s,
+        timeout_s=timeout_s,
+        log=log,
+    )

@@ -28,3 +28,16 @@ def _write_video_to_temp_file(video_bytes: bytes, suffix: str = ".mp4") -> str:
         return str(Path(temp_file.name))
     except OSError as exc:
         raise RuntimeError("Failed to write temporary video file.") from exc
+
+
+def _video_path_to_comfy_video_output(video_path: str) -> dict:
+    """Wrap a local video path in a ComfyUI VIDEO-compatible dict."""
+    path = Path(video_path)
+    suffix = path.suffix.lstrip(".") or "mp4"
+    resolved = path.expanduser().resolve()
+    return {
+        "path": str(resolved),
+        "format": suffix,
+        "frame_rate": None,
+        "frame_count": None,
+    }
