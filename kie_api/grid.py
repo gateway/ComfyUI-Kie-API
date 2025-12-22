@@ -8,6 +8,13 @@ import torch
 from .nanobanana import _log
 
 
+VALID_GRIDS = {
+    "2x2": (2, 2),
+    "3x3": (3, 3),
+    "2x3": (2, 3),
+}
+
+
 def slice_grid_tensor(
     image: torch.Tensor,
     grid: str,
@@ -21,7 +28,7 @@ def slice_grid_tensor(
 
     Args:
         image: Input batch tensor with shape [B, H, W, 3].
-        grid: "2x2" or "3x3".
+        grid: "2x2", "3x3", or "2x3".
         outer_crop_px: Pixels trimmed from each side before slicing.
         gutter_px: Pixels removed between tiles inside the grid.
         order: "row-major" or "column-major".
@@ -31,7 +38,10 @@ def slice_grid_tensor(
     Returns:
         Tensor of tiles stacked on batch dimension.
     """
-    rows, cols = (2, 2) if grid == "2x2" else (3, 3)
+    try:
+        rows, cols = VALID_GRIDS[grid]
+    except KeyError as exc:
+        raise RuntimeError(f"Unsupported grid '{grid}'. Choose from {', '.join(VALID_GRIDS)}.") from exc
 
     if image.dim() != 4 or image.shape[-1] != 3:
         raise RuntimeError("IMAGE input must have shape [B, H, W, 3].")
@@ -103,4 +113,3 @@ def slice_grid_tensor(
             _log(log, f"Processed image {idx + 1}/{len(targets)}.")
 
     return torch.stack(all_tiles, dim=0)
-

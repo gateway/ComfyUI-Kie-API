@@ -330,7 +330,7 @@ Slice a single grid image into equal tiles, optionally cropping borders and remo
 
 Inputs:
 - IMAGE: Grid image batch (BHWC float32 0–1)
-- grid: 2x2 or 3x3 layout
+- grid: 2x2, 2x3, or 3x3 layout
 - outer_crop_px: Pixels to trim from each side before slicing
 - gutter_px: Pixels to remove between tiles inside the grid
 - order: Tile ordering (row-major or column-major)
@@ -338,7 +338,7 @@ Inputs:
 - log: Console logging on/off
 
 Outputs:
-- IMAGE: Tile batch (4 or 9 per processed image)
+- IMAGE: Tile batch (4, 6, or 9 per processed image)
 """
 
     @classmethod
@@ -348,7 +348,7 @@ Outputs:
                 "image": ("IMAGE",),
             },
             "optional": {
-                "grid": ("COMBO", {"options": ["2x2", "3x3"], "default": "2x2"}),
+                "grid": ("COMBO", {"options": ["2x2", "2x3", "3x3"], "default": "2x2"}),
                 "outer_crop_px": ("INT", {"default": 0, "min": 0, "max": 8192, "step": 1}),
                 "gutter_px": ("INT", {"default": 0, "min": 0, "max": 8192, "step": 1}),
                 "order": ("COMBO", {"options": ["row-major", "column-major"], "default": "row-major"}),
