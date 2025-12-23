@@ -129,7 +129,7 @@ def run_seedancev1pro_fast_i2v_video(
     _log(log, f"Downloading video result from {video_url}...")
 
     video_bytes = _download_video(video_url)
-    video_path = _write_video_to_temp_mp4(video_bytes)
+    video_path = _write_video_to_temp_file(video_bytes)
     _log(log, f"Video saved to {video_path}")
 
     _log_remaining_credits(log, record_data, api_key, _log)

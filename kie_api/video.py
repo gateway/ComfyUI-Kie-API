@@ -1,8 +1,7 @@
-"""Video helpers shared across KIE models."""
+# kie_api/video.py
 
 from io import BytesIO
-from pathlib import Path
-from tempfile import NamedTemporaryFile
+from typing import Any
 
 from .http import requests
 
@@ -15,32 +14,19 @@ def _download_video(url: str) -> bytes:
         raise RuntimeError(f"Failed to download result video: {exc}") from exc
 
     if response.status_code != 200:
-        raise RuntimeError(f"Failed to download result video (status code {response.status_code}).")
+        raise RuntimeError(
+            f"Failed to download result video (status code {response.status_code})."
+        )
 
     return response.content
 
 
-def _write_video_to_temp_file(video_bytes: bytes, suffix: str = ".mp4") -> str:
-    """Persist video bytes to a temporary file and return its path."""
-    try:
-        temp_file = NamedTemporaryFile(delete=False, suffix=suffix)
-        with temp_file:
-            temp_file.write(video_bytes)
-        return str(Path(temp_file.name))
-    except OSError as exc:
-        raise RuntimeError("Failed to write temporary video file.") from exc
-
-
 def _video_bytes_to_comfy_video(video_bytes: bytes):
-    """Convert raw video bytes into a ComfyUI VIDEO object."""
-    try:
-        from comfy_api.latest.input_impl.video_types import VideoFromFile
-    except ImportError as exc:
-        raise RuntimeError(
-            "comfy_api video helpers are unavailable. Update ComfyUI to a version that "
-            "ships comfy_api.latest.input_impl.video_types."
-        ) from exc
+    """
+    Convert raw MP4 bytes into a ComfyUI VIDEO object.
+    This is what SaveVideo expects.
+    """
+    # Import inside function to avoid Comfy startup import issues
+    from comfy_api.latest.input_impl.video_types import VideoFromFile
 
-    buffer = BytesIO(video_bytes)
-    buffer.name = "kie_temp_video.mp4"
-    return VideoFromFile(buffer)
+    return VideoFromFile(BytesIO(video_bytes))
