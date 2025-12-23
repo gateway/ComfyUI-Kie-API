@@ -1,7 +1,7 @@
 # kie_api/video.py
 
-import os
 import time
+from pathlib import Path
 
 import folder_paths
 
@@ -24,16 +24,15 @@ def _download_video(url: str) -> bytes:
 
 
 def _video_bytes_to_comfy_video(video_bytes: bytes):
-    """Convert raw MP4 bytes into a classic ComfyUI VIDEO dict."""
     output_dir = folder_paths.get_output_directory()
-    filename = f"kie_video_{time.time_ns()}.mp4"
-    video_path = os.path.join(output_dir, filename)
+    filename = f"kie_video_{int(time.time())}.mp4"
+    path = Path(output_dir) / filename
 
-    with open(video_path, "wb") as handle:
+    with open(path, "wb") as handle:
         handle.write(video_bytes)
 
-    return {
-        "filename": filename,
-        "subfolder": "",
-        "type": "output",
-    }
+    return folder_paths.VideoFile(
+        filename=filename,
+        subfolder="",
+        type="output",
+    )
