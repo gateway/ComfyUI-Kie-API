@@ -1,7 +1,9 @@
 # kie_api/video.py
 
-from io import BytesIO
-from typing import Any
+import os
+import time
+
+import folder_paths
 
 from .http import requests
 
@@ -22,11 +24,16 @@ def _download_video(url: str) -> bytes:
 
 
 def _video_bytes_to_comfy_video(video_bytes: bytes):
-    """
-    Convert raw MP4 bytes into a ComfyUI VIDEO object.
-    This is what SaveVideo expects.
-    """
-    # Import inside function to avoid Comfy startup import issues
-    from comfy_api.latest.input_impl.video_types import VideoFromFile
+    """Convert raw MP4 bytes into a classic ComfyUI VIDEO dict."""
+    output_dir = folder_paths.get_output_directory()
+    filename = f"kie_video_{time.time_ns()}.mp4"
+    video_path = os.path.join(output_dir, filename)
 
-    return VideoFromFile(BytesIO(video_bytes))
+    with open(video_path, "wb") as handle:
+        handle.write(video_bytes)
+
+    return {
+        "filename": filename,
+        "subfolder": "",
+        "type": "output",
+    }
