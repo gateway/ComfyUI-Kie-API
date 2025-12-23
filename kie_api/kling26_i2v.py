@@ -14,9 +14,7 @@ from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
 from .validation import _validate_prompt
-from .video import _download_video, _video_path_to_comfy_video_output, _write_video_to_temp_file
-
-
+from .video import _download_video, _video_bytes_to_comfy_video
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 MODEL_NAME = "kling-2.6/image-to-video"
 PROMPT_MAX_LENGTH = 1000
@@ -124,15 +122,13 @@ def run_kling26_i2v_video(
 
     result_urls = _extract_result_urls(record_data)
     video_url = result_urls[0]
-    _log(True, f"Video result URL: {video_url}")
-    _log(log, f"Downloading video result from {video_url}...")
+    _log(log, f"Final video URL: {video_url}")
 
     video_bytes = _download_video(video_url)
-    video_path = _write_video_to_temp_file(video_bytes)
-    _log(log, f"Video saved to {video_path}")
+    video_output = _video_bytes_to_comfy_video(video_bytes)
 
     _log_remaining_credits(log, record_data, api_key, _log)
-    return _video_path_to_comfy_video_output(video_path)
+    return video_output
 
 
 def run_kling26_i2v(

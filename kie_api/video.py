@@ -1,7 +1,8 @@
-"""Shared helpers for handling video results from KIE models."""
+"""Video helpers shared across KIE models."""
 
-from pathlib import Path
-from tempfile import NamedTemporaryFile
+from io import BytesIO
+
+from comfy_api.latest.input_impl.video_types import VideoFromFile
 
 from .http import requests
 
@@ -19,25 +20,8 @@ def _download_video(url: str) -> bytes:
     return response.content
 
 
-def _write_video_to_temp_file(video_bytes: bytes, suffix: str = ".mp4") -> str:
-    """Persist video bytes to a temporary .mp4 file and return its path."""
-    try:
-        temp_file = NamedTemporaryFile(delete=False, suffix=suffix)
-        with temp_file:
-            temp_file.write(video_bytes)
-        return str(Path(temp_file.name))
-    except OSError as exc:
-        raise RuntimeError("Failed to write temporary video file.") from exc
-
-
-def _video_path_to_comfy_video_output(video_path: str) -> dict:
-    """Wrap a local video path in a ComfyUI VIDEO-compatible dict."""
-    path = Path(video_path)
-    suffix = path.suffix.lstrip(".") or "mp4"
-    resolved = path.expanduser().resolve()
-    return {
-        "path": str(resolved),
-        "format": suffix,
-        "frame_rate": None,
-        "frame_count": None,
-    }
+def _video_bytes_to_comfy_video(video_bytes: bytes) -> VideoFromFile:
+    """Convert raw MP4 bytes into a ComfyUI VIDEO object."""
+    buffer = BytesIO(video_bytes)
+    buffer.name = "kie_temp_video.mp4"
+    return VideoFromFile(buffer)
