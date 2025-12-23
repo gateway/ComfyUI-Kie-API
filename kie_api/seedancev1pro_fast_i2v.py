@@ -15,7 +15,7 @@ from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
 from .validation import _validate_prompt
-from .video import _download_video, _write_video_to_temp_file
+from .video import _download_video, _video_bytes_to_comfy_video
 
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
@@ -84,7 +84,7 @@ def run_seedancev1pro_fast_i2v_video(
     poll_interval_s: float,
     timeout_s: int,
     log: bool,
-) -> Path:
+) -> Any:
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(resolution, duration)
     images = _validate_image_input(images)
@@ -129,11 +129,10 @@ def run_seedancev1pro_fast_i2v_video(
     _log(log, f"Downloading video result from {video_url}...")
 
     video_bytes = _download_video(video_url)
-    video_path = _write_video_to_temp_file(video_bytes)
-    _log(log, f"Video saved to {video_path}")
+    video_output = _video_bytes_to_comfy_video(video_bytes)
 
     _log_remaining_credits(log, record_data, api_key, _log)
-    return video_path
+    return video_output
 
 
 def run_seedancev1pro_fast_i2v(
@@ -144,7 +143,7 @@ def run_seedancev1pro_fast_i2v(
     poll_interval_s: float,
     timeout_s: int,
     log: bool,
-) -> Path:
+) -> Any:
     """Backward-compatible alias."""
     return run_seedancev1pro_fast_i2v_video(
         prompt,
@@ -205,7 +204,7 @@ Outputs:
         poll_interval_s: float = 1.0,
         timeout_s: int = 600,
     ):
-        video_path = run_seedancev1pro_fast_i2v_video(
+        video_output = run_seedancev1pro_fast_i2v_video(
             prompt=prompt,
             images=images,
             resolution=resolution,
@@ -214,4 +213,4 @@ Outputs:
             timeout_s=timeout_s,
             log=log,
         )
-        return (str(video_path),)
+        return (video_output,)
