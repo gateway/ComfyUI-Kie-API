@@ -184,8 +184,6 @@ Outputs:
                 "resolution": ("COMBO", {"options": RESOLUTION_OPTIONS, "default": "720p"}),
                 "duration": ("COMBO", {"options": DURATION_OPTIONS, "default": "5"}),
                 "log": ("BOOLEAN", {"default": True}),
-                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.5, "max": 60.0, "step": 0.5}),
-                "timeout_s": ("INT", {"default": 600, "min": 1, "max": 3600, "step": 1}),
             },
         }
 

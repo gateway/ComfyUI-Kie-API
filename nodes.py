@@ -22,6 +22,7 @@ from .kie_api.seedream45_edit import (
     run_seedream45_edit,
 )
 from .kie_api.seedancev1pro_fast_i2v import KIE_SeedanceV1Pro_Fast_I2V
+from .kie_api.seedance15pro_i2v import KIE_Seedance15Pro_I2V
 from .kie_api.kling26_i2v import (
     DURATION_OPTIONS as KLING26_DURATION_OPTIONS,
     run_kling26_i2v_video,
@@ -379,6 +380,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
+    "KIE_Seedance15Pro_I2V": KIE_Seedance15Pro_I2V,
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
     "KIE_GridSlice": KIE_GridSlice,
 }
@@ -388,6 +390,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
+    "KIE_Seedance15Pro_I2V": "KIE Seedance 1.5 Pro (I2V/T2V)",
     "KIE_Kling26_I2V": "KIE Kling 2.6 (Video)",
     "KIE_GridSlice": "KIE Grid Slice",
 }
