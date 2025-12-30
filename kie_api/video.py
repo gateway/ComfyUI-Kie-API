@@ -1,9 +1,11 @@
 # kie_api/video.py
 
 import time
+from io import BytesIO
 from pathlib import Path
 
 import folder_paths
+from comfy_api.latest import InputImpl
 
 from .http import requests
 
@@ -24,19 +26,9 @@ def _download_video(url: str) -> bytes:
 
 
 def _video_bytes_to_comfy_video(video_bytes: bytes):
-    output_dir = folder_paths.get_output_directory()
-    filename = f"kie_video_{int(time.time())}.mp4"
-    path = Path(output_dir) / filename
-
-    with open(path, "wb") as handle:
-        handle.write(video_bytes)
-
-    video_file = getattr(folder_paths, "VideoFile", None)
-    if video_file is not None:
-        return video_file(
-            filename=filename,
-            subfolder="",
-            type="output",
-        )
-    # Older ComfyUI builds treat VIDEO outputs as file path strings.
-    return str(path)
+    """
+    Convert MP4 bytes into a ComfyUI VIDEO object that the official SaveVideo node accepts.
+    """
+    buf = BytesIO(video_bytes)
+    buf.seek(0)
+    return InputImpl.VideoFromFile(buf)
