@@ -31,8 +31,12 @@ def _video_bytes_to_comfy_video(video_bytes: bytes):
     with open(path, "wb") as handle:
         handle.write(video_bytes)
 
-    return folder_paths.VideoFile(
-        filename=filename,
-        subfolder="",
-        type="output",
-    )
+    video_file = getattr(folder_paths, "VideoFile", None)
+    if video_file is not None:
+        return video_file(
+            filename=filename,
+            subfolder="",
+            type="output",
+        )
+    # Older ComfyUI builds treat VIDEO outputs as file path strings.
+    return str(path)

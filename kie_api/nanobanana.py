@@ -115,7 +115,7 @@ def run_nanobanana_image_job(
     resolution: str = "1K",
     output_format: str = "png",
     log: bool = True,
-    poll_interval_s: float = 1.0,
+    poll_interval_s: float = 10.0,
     timeout_s: int = 300,
     retry_on_fail: bool = True,
     max_retries: int = 2,

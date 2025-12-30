@@ -201,8 +201,8 @@ Outputs:
         resolution: str = "720p",
         duration: str = "5",
         log: bool = True,
-        poll_interval_s: float = 1.0,
-        timeout_s: int = 600,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 900,
     ):
         video_output = run_seedancev1pro_fast_i2v_video(
             prompt=prompt,

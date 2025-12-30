@@ -90,11 +90,6 @@ Outputs:
                 "resolution": ("COMBO", {"options": RESOLUTION_OPTIONS, "default": "1K"}),
                 "output_format": ("COMBO", {"options": OUTPUT_FORMAT_OPTIONS, "default": "png"}),
                 "log": ("BOOLEAN", {"default": True}),
-                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 60.0, "step": 0.1}),
-                "timeout_s": ("INT", {"default": 300, "min": 1, "max": 3600, "step": 1}),
-                "retry_on_fail": ("BOOLEAN", {"default": True}),
-                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
-                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 300.0, "step": 0.5}),
             },
         }
 
@@ -110,7 +105,7 @@ Outputs:
         resolution: str = "1K",
         output_format: str = "png",
         log: bool = True,
-        poll_interval_s: float = 1.0,
+        poll_interval_s: float = 10.0,
         timeout_s: int = 300,
         retry_on_fail: bool = True,
         max_retries: int = 2,
@@ -158,8 +153,6 @@ Outputs:
                 "aspect_ratio": ("COMBO", {"options": SEEDREAM_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
                 "quality": ("COMBO", {"options": SEEDREAM_QUALITY_OPTIONS, "default": "basic"}),
                 "log": ("BOOLEAN", {"default": True}),
-                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 60.0, "step": 0.1}),
-                "timeout_s": ("INT", {"default": 300, "min": 1, "max": 3600, "step": 1}),
             },
         }
 
@@ -174,7 +167,7 @@ Outputs:
         aspect_ratio: str = "1:1",
         quality: str = "basic",
         log: bool = True,
-        poll_interval_s: float = 1.0,
+        poll_interval_s: float = 10.0,
         timeout_s: int = 300,
     ):
         image_tensor = run_seedream45_text_to_image(
@@ -215,8 +208,6 @@ Outputs:
                 "aspect_ratio": ("COMBO", {"options": SEEDREAM_EDIT_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
                 "quality": ("COMBO", {"options": SEEDREAM_EDIT_QUALITY_OPTIONS, "default": "basic"}),
                 "log": ("BOOLEAN", {"default": True}),
-                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.1, "max": 60.0, "step": 0.1}),
-                "timeout_s": ("INT", {"default": 300, "min": 1, "max": 3600, "step": 1}),
             },
         }
 
@@ -232,7 +223,7 @@ Outputs:
         aspect_ratio: str = "1:1",
         quality: str = "basic",
         log: bool = True,
-        poll_interval_s: float = 1.0,
+        poll_interval_s: float = 10.0,
         timeout_s: int = 300,
     ):
         image_tensor = run_seedream45_edit(
@@ -276,11 +267,6 @@ Outputs:
                 "duration": ("COMBO", {"options": KLING26_DURATION_OPTIONS, "default": "5"}),
                 "sound": ("BOOLEAN", {"default": False}),
                 "log": ("BOOLEAN", {"default": True}),
-                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.5, "max": 60.0, "step": 0.5}),
-                "timeout_s": ("INT", {"default": 600, "min": 1, "max": 3600, "step": 1}),
-                "retry_on_fail": ("BOOLEAN", {"default": True}),
-                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
-                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 300.0, "step": 0.5}),
             },
         }
 
@@ -296,8 +282,8 @@ Outputs:
         duration: str = "5",
         sound: bool = False,
         log: bool = True,
-        poll_interval_s: float = 1.0,
-        timeout_s: int = 600,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 900,
         retry_on_fail: bool = True,
         max_retries: int = 2,
         retry_backoff_s: float = 3.0,
