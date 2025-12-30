@@ -220,8 +220,6 @@ Outputs:
                 "fixed_lens": ("BOOLEAN", {"default": False}),
                 "generate_audio": ("BOOLEAN", {"default": False}),
                 "log": ("BOOLEAN", {"default": True}),
-                "poll_interval_s": ("FLOAT", {"default": 1.0, "min": 0.5, "max": 60.0, "step": 0.5}),
-                "timeout_s": ("INT", {"default": 600, "min": 1, "max": 3600, "step": 1}),
             },
         }
 
@@ -240,8 +238,8 @@ Outputs:
         fixed_lens: bool = False,
         generate_audio: bool = False,
         log: bool = True,
-        poll_interval_s: float = 1.0,
-        timeout_s: int = 600,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 900,
     ):
         video_output = run_seedance15pro_i2v_video(
             prompt=prompt,
