@@ -27,6 +27,11 @@ from .kie_api.kling26_i2v import (
     DURATION_OPTIONS as KLING26_DURATION_OPTIONS,
     run_kling26_i2v_video,
 )
+from .kie_api.kling26motion_i2v import (
+    CHARACTER_ORIENTATION_OPTIONS as KLING26MOTION_CHARACTER_ORIENTATION_OPTIONS,
+    MODE_OPTIONS as KLING26MOTION_MODE_OPTIONS,
+    run_kling26motion_i2v_video,
+)
 from .kie_api.grid import slice_grid_tensor
 from .kie_api.http import TransientKieError
 
@@ -312,6 +317,86 @@ Outputs:
                 time.sleep(backoff)
 
 
+class KIE_Kling26Motion_I2V:
+    HELP = """
+KIE Kling 2.6 Motion-Control (I2V)
+
+Generate a short video clip from a prompt, a reference image, and a motion reference video.
+
+Inputs:
+- prompt: Text prompt (required)
+- images: Source image batch (first image used)
+- video: Motion reference video input (single clip)
+- character_orientation: Match character orientation to image or video
+- mode: 720p or 1080p output resolution
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "images": ("IMAGE",),
+                "video": ("VIDEO",),
+            },
+            "optional": {
+                "character_orientation": (
+                    "COMBO",
+                    {"options": KLING26MOTION_CHARACTER_ORIENTATION_OPTIONS, "default": "video"},
+                ),
+                "mode": ("COMBO", {"options": KLING26MOTION_MODE_OPTIONS, "default": "720p"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor,
+        video: object,
+        character_orientation: str = "video",
+        mode: str = "720p",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 900,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_kling26motion_i2v_video(
+                    prompt=prompt,
+                    images=images,
+                    video=video,
+                    character_orientation=character_orientation,
+                    mode=mode,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
 class KIE_GridSlice:
     HELP = """
 KIE Grid Slice
@@ -382,6 +467,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
     "KIE_Seedance15Pro_I2V": KIE_Seedance15Pro_I2V,
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
+    "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
     "KIE_GridSlice": KIE_GridSlice,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -392,5 +478,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
     "KIE_Seedance15Pro_I2V": "KIE Seedance 1.5 Pro (I2V/T2V)",
     "KIE_Kling26_I2V": "KIE Kling 2.6 (I2V/T2V)",
+    "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
     "KIE_GridSlice": "KIE Grid Slice",
 }
