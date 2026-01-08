@@ -23,12 +23,13 @@ MODEL_NAME = "kling-2.6/motion-control"
 PROMPT_MAX_LENGTH = 2500
 CHARACTER_ORIENTATION_OPTIONS = ["image", "video"]
 MODE_OPTIONS = ["720p", "1080p"]
+MODE_API_MAP = {"720p": "std", "1080p": "pro", "std": "std", "pro": "pro"}
 
 
 def _validate_options(character_orientation: str, mode: str) -> None:
     if character_orientation not in CHARACTER_ORIENTATION_OPTIONS:
         raise RuntimeError("Invalid character_orientation. Use the pinned enum options.")
-    if mode not in MODE_OPTIONS:
+    if mode not in MODE_API_MAP:
         raise RuntimeError("Invalid mode. Use the pinned enum options.")
 
 
@@ -135,6 +136,9 @@ def run_kling26motion_i2v_video(
     video_url = _upload_image(api_key, video_bytes)
     _log(log, f"Video upload success: {_truncate_url(video_url)}")
 
+    # Normalize the resolution mode to the API's expected values.
+    mode_value = MODE_API_MAP[mode]
+
     # Build the createTask payload exactly as required by the KIE API spec.
     payload = {
         "model": MODEL_NAME,
@@ -143,7 +147,7 @@ def run_kling26motion_i2v_video(
             "input_urls": [image_url],
             "video_urls": [video_url],
             "character_orientation": character_orientation,
-            "mode": mode,
+            "mode": mode_value,
         },
     }
 
@@ -169,10 +173,9 @@ def run_kling26motion_i2v_video(
     result_video_url = result_urls[0]
     _log(log, f"Final video URL: {result_video_url}")
 
-    # Download the video bytes, write to a temp file, and return a VIDEO-compatible object.
+    # Download the video bytes and return a VIDEO-compatible object.
     result_video_bytes = _download_video(result_video_url)
-    video_path = _write_video_to_temp_file(result_video_bytes)
-    video_output = _video_path_to_comfy_video_output(video_path)
+    video_output = _video_bytes_to_comfy_video(result_video_bytes)
 
     _log_remaining_credits(log, record_data, api_key, _log)
     return video_output
