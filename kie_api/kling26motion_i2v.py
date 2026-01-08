@@ -13,7 +13,7 @@ from .http import TransientKieError, requests
 from .jobs import _poll_task_until_complete
 from .log import _log
 from .results import _extract_result_urls
-from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
+from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image, _upload_video
 from .validation import _validate_prompt
 from .video import _download_video, _video_bytes_to_comfy_video
 
@@ -133,7 +133,7 @@ def run_kling26motion_i2v_video(
 
     # Upload the motion reference video using the shared upload helper.
     _log(log, "Uploading motion reference video for Kling 2.6 Motion I2V...")
-    video_url = _upload_image(api_key, video_bytes)
+    video_url = _upload_video(api_key, video_bytes)
     _log(log, f"Video upload success: {_truncate_url(video_url)}")
 
     # Normalize the resolution mode to the API's expected values.

@@ -77,3 +77,40 @@ def _upload_image(api_key: str, png_bytes: bytes) -> str:
         raise RuntimeError("Upload response missing downloadUrl.")
 
     return url
+
+
+def _upload_video(api_key: str, video_bytes: bytes, filename: str = "video.mp4") -> str:
+    if not filename:
+        raise RuntimeError("filename is required for video uploads.")
+    try:
+        response = requests.post(
+            UPLOAD_URL,
+            headers={"Authorization": f"Bearer {api_key}"},
+            files={"file": (filename, video_bytes, "video/mp4")},
+            data={"uploadPath": UPLOAD_PATH, "fileName": filename},
+            timeout=180,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to upload video: {exc}") from exc
+
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"upload returned HTTP {response.status_code}: {response.text}", status_code=response.status_code
+        )
+
+    try:
+        payload_json: Any = response.json()
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("Upload endpoint did not return valid JSON.") from exc
+
+    success = payload_json.get("success")
+    code = payload_json.get("code")
+    if not success or code != 200:
+        raise RuntimeError(f"Upload failed (code={code}): {payload_json.get('msg')}")
+
+    data = payload_json.get("data") or {}
+    url = data.get("downloadUrl")
+    if not url:
+        raise RuntimeError("Upload response missing downloadUrl.")
+
+    return url
