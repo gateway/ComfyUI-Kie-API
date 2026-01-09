@@ -38,21 +38,16 @@ def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debu
     if max_items < 1:
         raise ValueError("max_items must be at least 1.")
 
+    original_text = text
     flattened = False
     if isinstance(text, (list, tuple)):
         flattened = True
-        chosen = ""
-        for item in text:
-            if isinstance(item, str) and item.strip():
-                chosen = item
-                break
-        text = chosen
+        text = "\n".join("" if item is None else str(item) for item in text)
     elif isinstance(text, dict):
-        value = text.get("text")
-        if not isinstance(value, str):
-            value = text.get("value")
-        if isinstance(value, str):
-            text = value
+        if "text" in text:
+            text = text.get("text")
+        elif "value" in text:
+            text = text.get("value")
         else:
             text = str(text)
     elif not isinstance(text, str):
@@ -112,6 +107,24 @@ def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debu
     payload = None
     debug_lines: list[str] = []
     if debug:
+        inspector_lines: list[str] = []
+        inspector_lines.append(f"input_type={type(original_text).__name__}")
+        if isinstance(original_text, (list, tuple)):
+            list_len = len(original_text)
+            first_item = original_text[0] if list_len else None
+            inspector_lines.append(f"list_len={list_len}")
+            inspector_lines.append(f"first_item_type={type(first_item).__name__}")
+            inspector_lines.append(f"first_item_repr_prefix={repr(first_item)[:200]}")
+        elif isinstance(original_text, dict):
+            keys_preview = list(original_text.keys())[:20]
+            inspector_lines.append(f"dict_keys_preview={keys_preview}")
+        inspector_lines.append("normalized_type=str")
+        inspector_lines.append(f"normalized_len={len(raw)}")
+        inspector_lines.append(f"normalized_repr_prefix={repr(raw[:200])}")
+        inspector_lines.append(f"first_brace_index={raw.find('{')}")
+        inspector_lines.append(f"first_bracket_index={raw.find('[')}")
+        inspector_lines.append(f"ordinals_prefix={[ord(c) for c in raw[:30]]}")
+        print("[KIE Parse Prompt Grid JSON Input]", " ".join(inspector_lines))
         debug_lines.append(f"input_type={type(text).__name__}")
         debug_lines.append(f"normalized_length={len(raw)}")
         if flattened:
@@ -125,6 +138,11 @@ def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debu
         except json.JSONDecodeError:
             extracted = _extract_first_json(cleaned)
             if extracted is not None:
+                if debug:
+                    print(
+                        "[KIE Parse Prompt Grid JSON Extracted]",
+                        f"extracted_repr_prefix={repr(extracted[:200])}",
+                    )
                 try:
                     payload = json.loads(extracted)
                 except json.JSONDecodeError:
