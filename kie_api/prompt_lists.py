@@ -149,6 +149,22 @@ def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debu
                     payload = None
 
     if payload is None:
+        raw_no_struct = "{" not in raw and "[" not in raw
+        raw_looks_like_body = raw.lstrip().startswith("\"") and "\":" in raw
+        if raw_no_struct and raw_looks_like_body:
+            raw_trimmed = raw.rstrip()
+            if raw_trimmed.endswith(","):
+                raw_trimmed = raw_trimmed[:-1].rstrip()
+            raw_wrapped = "{" + raw_trimmed + "}"
+            if debug:
+                debug_lines.append("wrapped_body=true")
+                debug_lines.append(f"wrapped_len={len(raw_wrapped)}")
+            try:
+                payload = json.loads(raw_wrapped)
+            except json.JSONDecodeError:
+                payload = None
+
+    if payload is None:
         raise ValueError("Failed to parse JSON from json_text. Ensure the input contains a JSON object or array.")
 
     if isinstance(payload, str):
