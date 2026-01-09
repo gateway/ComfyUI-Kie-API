@@ -18,11 +18,11 @@ def _extract_prompt_index(key: Any) -> int | None:
     key_norm = str(key).strip().lower()
     if not key_norm:
         return None
-    prompt_match = re.match(r"^(?:p|prompt)[\\s_\\-]*([1-9]\\d*)$", key_norm)
+    prompt_match = re.match(r"^(?:p|prompt)[\s_\-]*([1-9]\d*)$", key_norm)
     if prompt_match:
         match = prompt_match
     else:
-        match = re.match(r"^([1-9]\\d*)$", key_norm)
+        match = re.match(r"^([1-9]\d*)$", key_norm)
     if not match:
         return None
     try:

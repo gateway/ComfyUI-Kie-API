@@ -58,6 +58,13 @@ Kie.ai uses a credit-based model for requests. There is no subscription requirem
 ## Debugging and job visibility
 You can review request history and results at https://kie.ai/logs. Some models can take longer to finish; the default timeout has been increased to reduce false failures.
 
+## Sponsorship / Development
+
+This project is developed and maintained with support from **Dreaming Computers**  
+https://dreamingcomputers.com
+
+Dreaming Computers is an independent studio exploring AI, creative tooling, and automation-driven workflows. The nodes in this pack are built from practical use cases and ongoing experimentation, and are shared with the community as they evolve.
+
 ## Disclaimer
 This software is provided as-is. You are responsible for managing your own API usage and credits.
 
