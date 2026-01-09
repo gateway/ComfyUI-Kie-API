@@ -1,9 +1,9 @@
 # ComfyUI KIE API Integration
 
-This repository sets up the groundwork for integrating the KIE Nano Banana Pro API into ComfyUI custom nodes.
+ComfyUI custom nodes for the KIE API (image and video generation).
 
 ## Installation
-- Place this repository inside your `ComfyUI/custom_nodes` directory (clone or copy).
+- Clone or copy this repository into `ComfyUI/custom_nodes/ComfyUI-Kie-API`.
 - Restart ComfyUI so it discovers the node package.
 
 ## API Key Setup
@@ -11,16 +11,23 @@ This repository sets up the groundwork for integrating the KIE Nano Banana Pro A
 - Paste your KIE API key into `config/kie_key.txt` (this file is gitignored).
 - Keep the key file alongside the repo so future nodes can read it.
 
-## Future Nodes
-- Placeholder for upcoming node descriptions and usage once implementation lands
+## Nodes
+- KIE Get Remaining Credits
+- KIE Nano Banana Pro (Image)
+- KIE Seedream 4.5 Text-To-Image
+- KIE Seedream 4.5 Edit
+- KIE Seedance V1 Pro Fast (I2V)
+- KIE Seedance 1.5 Pro (I2V/T2V)
+- KIE Kling 2.6 (I2V/T2V)
+- KIE Kling 2.6 (T2V)
+- KIE Kling 2.6 Motion-Control (I2V)
+- KIE Grid Slice
+- KIE Parse Prompt Grid JSON (1..9)
 
+## Usage
+- Drop a KIE node into your ComfyUI workflow and connect inputs.
+- For video outputs, connect the VIDEO output to the SaveVideo node.
+- Public node documentation lives in `web/docs`.
 
-## Working Notes
-
-- Custom ComfyUI nodes for KIE / Nano Banana Pro.
-- Repo is structured as a Python package (relative imports required).
-- All API endpoints and enums are pinned in docs/ — do not guess values.
-- Image uploads capped at 8 references per request.
-- Credit checks are advisory (fail only when credits <= 0).
-- Logging is console-based (toggle via node input).
-.
+## Documentation
+- See `web/docs` for per-node details and parameter lists.

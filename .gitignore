@@ -2,3 +2,4 @@ config/kie_key.txt
 __pycache__/
 *.pyc
 .DS_Store
+_internal/
