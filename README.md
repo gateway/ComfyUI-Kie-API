@@ -1,10 +1,10 @@
 # ComfyUI KIE API Nodes
 
 ## Project overview
-This repository provides a set of ComfyUI custom nodes that connect to the Kie.ai API for image and video generation workflows.
+A set of ComfyUI custom nodes that connect to the Kie.ai API for image and video generation workflows.
 
 ## Why this exists
-ComfyUI users often need reliable, reusable API-backed nodes that mirror model capabilities while staying easy to update and maintain. This pack focuses on clear inputs, consistent outputs, and practical workflow integration.
+ComfyUI users often need consistent, API-backed nodes that map directly to model capabilities and work reliably in production workflows. This pack focuses on clear inputs, predictable outputs, and practical integration.
 
 ## What’s included
 - Image generation nodes
@@ -17,16 +17,13 @@ Node-specific documentation is available in `web/docs`.
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at https://kie.ai/.
 
 ## Credits and usage
-Kie.ai uses a credit-based model for requests. There is no subscription requirement, and small funding amounts are supported for pay-as-you-go usage.
+Kie.ai uses a credit-based model for requests. There is no subscription requirement, and pay-as-you-go usage is supported.
 
 ## Debugging and job visibility
 You can review request history and results at https://kie.ai/logs.
 
-## Project status
-Early release. Interfaces may evolve as the Kie.ai API changes or additional nodes are added.
-
-## Feedback / contributions
-Issues and pull requests are welcome. Please include clear repro steps for bugs and keep changes focused.
+## Disclaimer
+This software is provided as-is. You are responsible for managing your own API usage and credits.
 
 ## License
-TBD. Add your preferred license file and update this section accordingly.
+MIT License is recommended. See `LICENSE` for details.
