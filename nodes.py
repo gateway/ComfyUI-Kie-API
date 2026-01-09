@@ -566,6 +566,7 @@ Outputs:
                 "default_prompt": ("STRING", {"default": ""}),
                 "max_items": ("INT", {"default": 9, "min": 1, "max": 9}),
                 "strict": ("BOOLEAN", {"default": False}),
+                "debug": ("BOOLEAN", {"default": False}),
             },
         }
 
@@ -604,11 +605,12 @@ Outputs:
         default_prompt: str = "",
         max_items: int = 9,
         strict: bool = False,
+        debug: bool = False,
     ):
         fallback = (default_prompt or "").strip()
 
         try:
-            prompts = parse_prompts_json(json_text, max_items=max_items, strict=strict)
+            prompts = parse_prompts_json(json_text, max_items=max_items, strict=strict, debug=debug)
         except ValueError:
             if strict or not fallback:
                 raise
@@ -618,6 +620,8 @@ Outputs:
             prompts = [fallback]
 
         if not prompts:
+            if debug:
+                parse_prompts_json(json_text, max_items=max_items, strict=True, debug=True)
             raise ValueError(
                 "No prompts found in json_text and no default_prompt provided. "
                 "Supported keys: prompts (array), prompt1/prompt_1/p1, numeric keys."

@@ -15,16 +15,14 @@ def _coerce_prompt_text(value: Any) -> str:
 
 
 def _extract_prompt_index(key: Any) -> int | None:
-    if not isinstance(key, str):
+    key_norm = str(key).strip().lower()
+    if not key_norm:
         return None
-    normalized = key.strip().lower()
-    if not normalized:
-        return None
-    prompt_match = re.match(r"^\\s*(?:p|prompt)\\s*[_\\-\\s]*([1-9]\\d*)\\s*$", normalized, re.IGNORECASE)
+    prompt_match = re.match(r"^(?:p|prompt)[\\s_\\-]*([1-9]\\d*)$", key_norm)
     if prompt_match:
         match = prompt_match
     else:
-        match = re.match(r"^\\s*([1-9]\\d*)\\s*$", normalized)
+        match = re.match(r"^([1-9]\\d*)$", key_norm)
     if not match:
         return None
     try:
@@ -36,7 +34,7 @@ def _extract_prompt_index(key: Any) -> int | None:
     return index
 
 
-def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False) -> list[str]:
+def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False, debug: bool = False) -> list[str]:
     if max_items < 1:
         raise ValueError("max_items must be at least 1.")
 
@@ -92,6 +90,7 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False) -> l
         return None
 
     payload = None
+    debug_lines: list[str] = []
     try:
         payload = json.loads(raw)
     except json.JSONDecodeError:
@@ -117,9 +116,14 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False) -> l
             prompts.append(text_value)
 
     if isinstance(payload, list):
+        if debug:
+            debug_lines.append("payload_type=list")
         for item in payload:
             add_prompt(item)
     elif isinstance(payload, dict):
+        if debug:
+            keys_preview = list(payload.keys())[:20]
+            debug_lines.append(f"payload_type=dict keys_preview={keys_preview}")
         if isinstance(payload.get("prompts"), list):
             for item in payload["prompts"]:
                 add_prompt(item)
@@ -127,18 +131,27 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False) -> l
             keyed_items: list[tuple[int, Any]] = []
             for key, value in payload.items():
                 index = _extract_prompt_index(key)
-                if index is None:
+                if index is None or index > max_items:
                     continue
                 keyed_items.append((index, value))
             keyed_items.sort(key=lambda item: item[0])
             for _index, value in keyed_items:
                 add_prompt(value)
+            if debug:
+                debug_lines.append(f"matched_indices={[idx for idx, _ in keyed_items]}")
     else:
         raise ValueError("JSON must be a list or object.")
 
     prompts = prompts[:max_items]
     if not prompts and strict:
+        debug_suffix = ""
+        if debug and debug_lines:
+            debug_suffix = " " + " ".join(debug_lines)
         raise ValueError(
             "No prompts found in json_text. Supported keys: prompts (array), prompt1/prompt_1/p1, numeric keys."
+            + debug_suffix
         )
+    if debug:
+        debug_lines.append(f"prompt_count={len(prompts)}")
+        print("[KIE Parse Prompt Grid JSON]", " ".join(debug_lines))
     return prompts

@@ -71,3 +71,4 @@ Feed each prompt into the corresponding downstream node inputs.
 - Empty strings are discarded.
 - Keyed objects are ordered by numeric suffix.
 - If parsing fails or yields zero prompts, the node raises an error unless strict is false and a default prompt is provided.
+- The debug toggle can be enabled to print parsing diagnostics (payload type, matched indices).
