@@ -2,6 +2,8 @@
 
 Parse LLM JSON containing up to 9 prompts and expose each prompt as a separate string output.
 
+This node requires a wired STRING input for `json_text`. It does not provide a manual JSON textbox.
+
 ---
 
 ## Example JSON inputs
@@ -46,7 +48,7 @@ Object format (underscore keys):
 
 ## Outputs
 
-- **p1..p9**
+- **prompt 1..prompt 9**
   Each prompt as a separate STRING output. Missing entries are empty strings.
 
 - **count**
@@ -59,8 +61,8 @@ Object format (underscore keys):
 
 ## Grid wiring tips
 
-- **2x2 grid**: Use p1..p4.
-- **3x3 grid**: Use p1..p9.
+- **2x2 grid**: Use prompt 1..prompt 4.
+- **3x3 grid**: Use prompt 1..prompt 9.
 
 Feed each prompt into the corresponding downstream node inputs.
 

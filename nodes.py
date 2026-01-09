@@ -545,7 +545,7 @@ KIE Parse Prompt Grid JSON (1..9)
 Parse LLM JSON containing up to 9 prompts and return each prompt as a separate string output.
 
 Inputs:
-- json_text: Raw JSON from an LLM (list or object)
+- json_text: Raw JSON from an LLM (list or object), wired STRING input
 - default_prompt: Fallback prompt if parsing yields no prompts
 - max_items: Cap the number of prompts (1..9)
 - strict: Raise errors when parsing fails or yields no prompts
@@ -560,7 +560,7 @@ Outputs:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "json_text": ("STRING", {"multiline": True, "default": ""}),
+                "json_text": ("STRING", {"forceInput": True}),
             },
             "optional": {
                 "default_prompt": ("STRING", {"default": ""}),
@@ -608,6 +608,8 @@ Outputs:
         debug: bool = False,
     ):
         fallback = (default_prompt or "").strip()
+        if not (json_text or "").strip() and fallback:
+            json_text = fallback
 
         try:
             prompts = parse_prompts_json(json_text, max_items=max_items, strict=strict, debug=debug)
