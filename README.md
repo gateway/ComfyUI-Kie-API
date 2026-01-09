@@ -19,7 +19,7 @@ This node pack currently includes the following nodes:
 
 ### Generation Nodes
 
-- **NanoBanana Image**
+- **Nano Banana Pro Image**
   - Image generation node using the Googles Nano Banana Pro model via the Kie.ai API.
 
 - **Seedream Text-to-Image / Edit**
@@ -56,7 +56,7 @@ Kie.ai is a unified API and model marketplace for image, video, and audio genera
 Kie.ai uses a credit-based model for requests. There is no subscription requirement, and pay-as-you-go usage is supported.
 
 ## Debugging and job visibility
-You can review request history and results at https://kie.ai/logs.
+You can review request history and results at https://kie.ai/logs. Some models can take longer to finish; the default timeout has been increased to reduce false failures.
 
 ## Disclaimer
 This software is provided as-is. You are responsible for managing your own API usage and credits.
@@ -83,4 +83,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-

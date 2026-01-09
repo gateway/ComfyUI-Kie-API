@@ -78,7 +78,7 @@ def run_kling26_i2v_video(
     duration: str = "5",
     sound: bool = False,
     poll_interval_s: float = 10.0,
-    timeout_s: int = 900,
+    timeout_s: int = 1000,
     log: bool = True,
 ) -> dict:
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
@@ -137,7 +137,7 @@ def run_kling26_i2v(
     duration: str = "5",
     sound: bool = False,
     poll_interval_s: float = 10.0,
-    timeout_s: int = 900,
+    timeout_s: int = 1000,
     log: bool = True,
 ) -> dict:
     """Backward-compatible alias for existing imports."""

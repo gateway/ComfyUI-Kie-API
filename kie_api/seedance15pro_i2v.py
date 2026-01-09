@@ -239,7 +239,7 @@ Outputs:
         generate_audio: bool = False,
         log: bool = True,
         poll_interval_s: float = 10.0,
-        timeout_s: int = 900,
+        timeout_s: int = 1000,
     ):
         video_output = run_seedance15pro_i2v_video(
             prompt=prompt,

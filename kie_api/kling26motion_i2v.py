@@ -88,7 +88,7 @@ def run_kling26motion_i2v_video(
     character_orientation: str = "video",
     mode: str = "720p",
     poll_interval_s: float = 10.0,
-    timeout_s: int = 900,
+    timeout_s: int = 1000,
     log: bool = True,
 ) -> Any:
     # Validate prompt length and required inputs.
@@ -167,7 +167,7 @@ def run_kling26motion_i2v(
     character_orientation: str = "video",
     mode: str = "720p",
     poll_interval_s: float = 10.0,
-    timeout_s: int = 900,
+    timeout_s: int = 1000,
     log: bool = True,
 ) -> Any:
     """Backward-compatible alias for existing imports."""

@@ -46,10 +46,68 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False) -> l
             raise ValueError("json_text is empty.")
         return []
 
+    def _strip_code_fences(value: str) -> str:
+        stripped = value.strip()
+        if stripped.startswith("```"):
+            lines = stripped.splitlines()
+            if len(lines) >= 2 and lines[0].startswith("```") and lines[-1].strip().startswith("```"):
+                return "\n".join(lines[1:-1]).strip()
+        return stripped
+
+    def _extract_first_json(value: str) -> str | None:
+        start = None
+        opening = None
+        for idx, ch in enumerate(value):
+            if ch == "{" or ch == "[":
+                start = idx
+                opening = ch
+                break
+        if start is None or opening is None:
+            return None
+
+        closing = "}" if opening == "{" else "]"
+        depth = 0
+        in_string = False
+        escape = False
+        for idx in range(start, len(value)):
+            ch = value[idx]
+            if in_string:
+                if escape:
+                    escape = False
+                elif ch == "\\":
+                    escape = True
+                elif ch == "\"":
+                    in_string = False
+                continue
+
+            if ch == "\"":
+                in_string = True
+                continue
+            if ch == opening:
+                depth += 1
+            elif ch == closing:
+                depth -= 1
+                if depth == 0:
+                    return value[start:idx + 1]
+        return None
+
+    payload = None
     try:
         payload = json.loads(raw)
-    except json.JSONDecodeError as exc:
-        raise ValueError("Failed to parse JSON from json_text.") from exc
+    except json.JSONDecodeError:
+        cleaned = _strip_code_fences(raw)
+        try:
+            payload = json.loads(cleaned)
+        except json.JSONDecodeError:
+            extracted = _extract_first_json(cleaned)
+            if extracted is not None:
+                try:
+                    payload = json.loads(extracted)
+                except json.JSONDecodeError:
+                    payload = None
+
+    if payload is None:
+        raise ValueError("Failed to parse JSON from json_text. Ensure the input contains a JSON object or array.")
 
     prompts: list[str] = []
 

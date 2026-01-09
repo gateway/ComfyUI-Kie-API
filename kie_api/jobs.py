@@ -19,6 +19,7 @@ from .log import _log
 
 
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
+DEFAULT_TIMEOUT_S = 1000
 
 
 def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str, Any]:
@@ -108,16 +109,18 @@ def _poll_task_until_complete(
     """
     # Ensure we never poll faster than once per second to reduce server load.
     interval = poll_interval_s if poll_interval_s > 0 else 1.0
+    effective_timeout_s = timeout_s if timeout_s >= DEFAULT_TIMEOUT_S else DEFAULT_TIMEOUT_S
     last_state = None
     last_log_time = start_time
 
     while True:
         now = time.time()
         elapsed = now - start_time
-        if elapsed > timeout_s:
+        if elapsed > effective_timeout_s:
             last_state_text = last_state if last_state is not None else "unknown"
             raise RuntimeError(
-                f"Task {task_id} timed out after {timeout_s}s (last state={last_state_text}, elapsed={elapsed:.1f}s). "
+                f"Task {task_id} timed out after {effective_timeout_s}s "
+                f"(last state={last_state_text}, elapsed={elapsed:.1f}s). "
                 "Try increasing timeout or retry."
             )
 
