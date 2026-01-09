@@ -2,7 +2,6 @@
 
 import json
 import time
-from pathlib import Path
 from typing import Any
 
 import torch
@@ -15,7 +14,7 @@ from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image, _upload_video
 from .validation import _validate_prompt
-from .video import _download_video, _video_bytes_to_comfy_video
+from .video import _coerce_video_to_mp4_bytes, _download_video, _video_bytes_to_comfy_video
 
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
@@ -111,29 +110,13 @@ def run_kling26motion_i2v_video(
     image_url = _upload_image(api_key, png_bytes)
     _log(log, f"Image upload success: {_truncate_url(image_url)}")
 
-    # Resolve the input video into bytes so it can be uploaded.
-    video_bytes: bytes
-    if isinstance(video, (bytes, bytearray)):
-        video_bytes = bytes(video)
-    elif isinstance(video, str):
-        try:
-            video_bytes = Path(video).read_bytes()
-        except OSError as exc:
-            raise RuntimeError(f"Failed to read video file: {exc}") from exc
-    elif isinstance(video, dict):
-        video_path = video.get("path") or video.get("filename")
-        if not video_path:
-            raise RuntimeError("video input dict must include a 'path' or 'filename'.")
-        try:
-            video_bytes = Path(video_path).read_bytes()
-        except OSError as exc:
-            raise RuntimeError(f"Failed to read video file: {exc}") from exc
-    else:
-        raise RuntimeError("video input must be bytes, a file path string, or a dict with a path.")
+    # Resolve the input video into MP4 bytes so it can be uploaded.
+    video_bytes, source_desc = _coerce_video_to_mp4_bytes(video)
+    _log(log, f"Motion video source: {source_desc}")
 
     # Upload the motion reference video using the shared upload helper.
     _log(log, "Uploading motion reference video for Kling 2.6 Motion I2V...")
-    video_url = _upload_video(api_key, video_bytes)
+    video_url = _upload_video(api_key, video_bytes, filename="motion.mp4")
     _log(log, f"Video upload success: {_truncate_url(video_url)}")
 
     # Normalize the resolution mode to the API's expected values.
