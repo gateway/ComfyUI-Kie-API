@@ -582,7 +582,19 @@ Outputs:
         "INT",
         "STRING",
     )
-    RETURN_NAMES = ("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "count", "prompts_list")
+    RETURN_NAMES = (
+        "prompt 1",
+        "prompt 2",
+        "prompt 3",
+        "prompt 4",
+        "prompt 5",
+        "prompt 6",
+        "prompt 7",
+        "prompt 8",
+        "prompt 9",
+        "count",
+        "prompts_list",
+    )
     FUNCTION = "parse"
     CATEGORY = "kie/helpers"
 
@@ -606,7 +618,10 @@ Outputs:
             prompts = [fallback]
 
         if not prompts:
-            raise ValueError("No prompts found in json_text and no default_prompt provided.")
+            raise ValueError(
+                "No prompts found in json_text and no default_prompt provided. "
+                "Supported keys: prompts (array), prompt1/prompt_1/p1, numeric keys."
+            )
 
         padded = prompts[:9] + [""] * (9 - len(prompts))
         count = len(prompts)

@@ -1,34 +1,32 @@
-# ComfyUI KIE API Integration
+# ComfyUI KIE API Nodes
 
-ComfyUI custom nodes for the KIE API (image and video generation).
+## Project overview
+This repository provides a set of ComfyUI custom nodes that connect to the Kie.ai API for image and video generation workflows.
 
-## Installation
-- Clone or copy this repository into `ComfyUI/custom_nodes/ComfyUI-Kie-API`.
-- Restart ComfyUI so it discovers the node package.
+## Why this exists
+ComfyUI users often need reliable, reusable API-backed nodes that mirror model capabilities while staying easy to update and maintain. This pack focuses on clear inputs, consistent outputs, and practical workflow integration.
 
-## API Key Setup
-- Copy `config/kie_key.example.txt` to `config/kie_key.txt`.
-- Paste your KIE API key into `config/kie_key.txt` (this file is gitignored).
-- Keep the key file alongside the repo so future nodes can read it.
+## What’s included
+- Image generation nodes
+- Image-to-video and text-to-video nodes
+- Utility helpers for grid slicing and prompt parsing
 
-## Nodes
-- KIE Get Remaining Credits
-- KIE Nano Banana Pro (Image)
-- KIE Seedream 4.5 Text-To-Image
-- KIE Seedream 4.5 Edit
-- KIE Seedance V1 Pro Fast (I2V)
-- KIE Seedance 1.5 Pro (I2V/T2V)
-- KIE Kling 2.6 (I2V/T2V)
-- KIE Kling 2.6 (T2V)
-- KIE Kling 2.6 Motion-Control (I2V)
-- KIE Grid Slice
-- KIE Parse Prompt Grid JSON (1..9)
+Node-specific documentation is available in `web/docs`.
 
-## Usage
-- Drop a KIE node into your ComfyUI workflow and connect inputs.
-- For video outputs, connect the VIDEO output to the SaveVideo node.
-- Public node documentation lives in `web/docs`.
+## About Kie.ai
+Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at https://kie.ai/.
 
-## Documentation
-- See `web/docs` for per-node details and parameter lists.
-- Development-only notes and tooling configs are not shipped in this repo.
+## Credits and usage
+Kie.ai uses a credit-based model for requests. There is no subscription requirement, and small funding amounts are supported for pay-as-you-go usage.
+
+## Debugging and job visibility
+You can review request history and results at https://kie.ai/logs.
+
+## Project status
+Early release. Interfaces may evolve as the Kie.ai API changes or additional nodes are added.
+
+## Feedback / contributions
+Issues and pull requests are welcome. Please include clear repro steps for bugs and keep changes focused.
+
+## License
+TBD. Add your preferred license file and update this section accordingly.

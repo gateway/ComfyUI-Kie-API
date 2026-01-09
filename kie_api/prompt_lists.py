@@ -20,7 +20,11 @@ def _extract_prompt_index(key: Any) -> int | None:
     normalized = key.strip().lower()
     if not normalized:
         return None
-    match = re.search(r"(\\d+)$", normalized) or re.search(r"(\\d+)", normalized)
+    prompt_match = re.match(r"^\\s*(?:p|prompt)\\s*[_\\-\\s]*([1-9]\\d*)\\s*$", normalized, re.IGNORECASE)
+    if prompt_match:
+        match = prompt_match
+    else:
+        match = re.match(r"^\\s*([1-9]\\d*)\\s*$", normalized)
     if not match:
         return None
     try:
@@ -76,5 +80,7 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False) -> l
 
     prompts = prompts[:max_items]
     if not prompts and strict:
-        raise ValueError("No prompts found in json_text.")
+        raise ValueError(
+            "No prompts found in json_text. Supported keys: prompts (array), prompt1/prompt_1/p1, numeric keys."
+        )
     return prompts

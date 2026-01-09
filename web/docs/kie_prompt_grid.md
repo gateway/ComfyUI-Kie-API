@@ -33,6 +33,15 @@ Object format (keyed prompts):
 }
 ```
 
+Object format (underscore keys):
+```
+{
+  "prompt_1": "Prompt 1",
+  "prompt_2": "Prompt 2",
+  "prompt_3": "Prompt 3"
+}
+```
+
 ---
 
 ## Outputs
