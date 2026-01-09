@@ -34,9 +34,29 @@ def _extract_prompt_index(key: Any) -> int | None:
     return index
 
 
-def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False, debug: bool = False) -> list[str]:
+def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debug: bool = False) -> list[str]:
     if max_items < 1:
         raise ValueError("max_items must be at least 1.")
+
+    flattened = False
+    if isinstance(text, (list, tuple)):
+        flattened = True
+        chosen = ""
+        for item in text:
+            if isinstance(item, str) and item.strip():
+                chosen = item
+                break
+        text = chosen
+    elif isinstance(text, dict):
+        value = text.get("text")
+        if not isinstance(value, str):
+            value = text.get("value")
+        if isinstance(value, str):
+            text = value
+        else:
+            text = str(text)
+    elif not isinstance(text, str):
+        text = str(text)
 
     raw = text.strip() if isinstance(text, str) else ""
     if not raw:
@@ -91,6 +111,11 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False, debu
 
     payload = None
     debug_lines: list[str] = []
+    if debug:
+        debug_lines.append(f"input_type={type(text).__name__}")
+        debug_lines.append(f"normalized_length={len(raw)}")
+        if flattened:
+            debug_lines.append("flattened_input=list_or_tuple")
     try:
         payload = json.loads(raw)
     except json.JSONDecodeError:
@@ -107,6 +132,14 @@ def parse_prompts_json(text: str, max_items: int = 9, strict: bool = False, debu
 
     if payload is None:
         raise ValueError("Failed to parse JSON from json_text. Ensure the input contains a JSON object or array.")
+
+    if isinstance(payload, str):
+        nested = payload.strip()
+        if nested.startswith("{") or nested.startswith("["):
+            try:
+                payload = json.loads(nested)
+            except json.JSONDecodeError:
+                pass
 
     prompts: list[str] = []
 
