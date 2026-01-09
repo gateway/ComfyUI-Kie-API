@@ -32,6 +32,12 @@ from .kie_api.kling26motion_i2v import (
     MODE_OPTIONS as KLING26MOTION_MODE_OPTIONS,
     run_kling26motion_i2v_video,
 )
+from .kie_api.kling26_t2v import (
+    ASPECT_RATIO_OPTIONS as KLING26_T2V_ASPECT_RATIO_OPTIONS,
+    DURATION_OPTIONS as KLING26_T2V_DURATION_OPTIONS,
+    run_kling26_t2v_video,
+)
+from .kie_api.prompt_lists import parse_prompts_json
 from .kie_api.grid import slice_grid_tensor
 from .kie_api.http import TransientKieError
 
@@ -317,6 +323,79 @@ Outputs:
                 time.sleep(backoff)
 
 
+class KIE_Kling26_T2V:
+    HELP = """
+KIE Kling 2.6 (Text-to-Video)
+
+Generate a short video clip from a text prompt using Kling 2.6.
+
+Inputs:
+- prompt: Text prompt (required)
+- sound: Include audio in the output video
+- aspect_ratio: 1:1, 16:9, or 9:16
+- duration: 5s or 10s
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "sound": ("BOOLEAN", {"default": False}),
+                "aspect_ratio": ("COMBO", {"options": KLING26_T2V_ASPECT_RATIO_OPTIONS, "default": "9:16"}),
+                "duration": ("COMBO", {"options": KLING26_T2V_DURATION_OPTIONS, "default": "5"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        sound: bool = False,
+        aspect_ratio: str = "9:16",
+        duration: str = "5",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 900,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_kling26_t2v_video(
+                    prompt=prompt,
+                    sound=sound,
+                    aspect_ratio=aspect_ratio,
+                    duration=duration,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
 class KIE_Kling26Motion_I2V:
     HELP = """
 KIE Kling 2.6 Motion-Control (I2V)
@@ -459,6 +538,81 @@ Outputs:
         return (tile_batch,)
 
 
+class KIEParsePromptGridJSON:
+    HELP = """
+KIE Parse Prompt Grid JSON (1..9)
+
+Parse LLM JSON containing up to 9 prompts and return each prompt as a separate string output.
+
+Inputs:
+- json_text: Raw JSON from an LLM (list or object)
+- default_prompt: Fallback prompt if parsing yields no prompts
+- max_items: Cap the number of prompts (1..9)
+- strict: Raise errors when parsing fails or yields no prompts
+
+Outputs:
+- p1..p9: Prompt strings (empty if missing)
+- count: Number of prompts parsed
+- prompts_list: Raw list of prompts for future automation
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "json_text": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "default_prompt": ("STRING", {"default": ""}),
+                "max_items": ("INT", {"default": 9, "min": 1, "max": 9}),
+                "strict": ("BOOLEAN", {"default": False}),
+            },
+        }
+
+    RETURN_TYPES = (
+        "STRING",
+        "STRING",
+        "STRING",
+        "STRING",
+        "STRING",
+        "STRING",
+        "STRING",
+        "STRING",
+        "STRING",
+        "INT",
+        "STRING",
+    )
+    RETURN_NAMES = ("p1", "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "count", "prompts_list")
+    FUNCTION = "parse"
+    CATEGORY = "kie/helpers"
+
+    def parse(
+        self,
+        json_text: str,
+        default_prompt: str = "",
+        max_items: int = 9,
+        strict: bool = False,
+    ):
+        fallback = (default_prompt or "").strip()
+
+        try:
+            prompts = parse_prompts_json(json_text, max_items=max_items, strict=strict)
+        except ValueError:
+            if strict or not fallback:
+                raise
+            prompts = [fallback]
+
+        if not prompts and fallback and not strict:
+            prompts = [fallback]
+
+        if not prompts:
+            raise ValueError("No prompts found in json_text and no default_prompt provided.")
+
+        padded = prompts[:9] + [""] * (9 - len(prompts))
+        count = len(prompts)
+        return (*padded, count, prompts)
+
+
 NODE_CLASS_MAPPINGS = {
     "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
@@ -467,8 +621,10 @@ NODE_CLASS_MAPPINGS = {
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
     "KIE_Seedance15Pro_I2V": KIE_Seedance15Pro_I2V,
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
+    "KIE_Kling26_T2V": KIE_Kling26_T2V,
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
     "KIE_GridSlice": KIE_GridSlice,
+    "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
@@ -478,6 +634,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
     "KIE_Seedance15Pro_I2V": "KIE Seedance 1.5 Pro (I2V/T2V)",
     "KIE_Kling26_I2V": "KIE Kling 2.6 (I2V/T2V)",
+    "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
     "KIE_GridSlice": "KIE Grid Slice",
+    "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
 }
