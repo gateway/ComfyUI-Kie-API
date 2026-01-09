@@ -31,3 +31,4 @@ ComfyUI custom nodes for the KIE API (image and video generation).
 
 ## Documentation
 - See `web/docs` for per-node details and parameter lists.
+- Development-only notes and tooling configs are not shipped in this repo.
