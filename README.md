@@ -13,7 +13,7 @@ ComfyUI users often need consistent, API-backed nodes that map directly to model
 
 Node-specific documentation is available in `web/docs`.
 
-## Available Nodes
+## Current Available Nodes
 
 This node pack currently includes the following nodes:
 
