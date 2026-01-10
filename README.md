@@ -13,6 +13,18 @@ ComfyUI users often need consistent, API-backed nodes that map directly to model
 
 Node-specific documentation is available in `web/docs`.
 
+## API Key Setup
+
+To use these nodes, you must provide your own Kie.ai API key.
+
+**Steps:**
+- Open `config/kie_key.example.txt`
+- Paste your Kie.ai API key into the file
+- Save the file as `kie_key.txt` in the same `config/` directory
+
+**Important:**  
+Do **NOT** share your API key or commit it to version control.
+
 ## Current Available Nodes
 
 This node pack currently includes the following nodes:
@@ -65,18 +77,6 @@ Kie.ai is a unified API and model marketplace for image, video, and audio genera
 
 ## Credits and usage
 Kie.ai uses a credit-based model for requests. There is no subscription requirement, and pay-as-you-go usage is supported.
-
-## API Key Setup
-
-To use these nodes, you must provide your own Kie.ai API key.
-
-**Steps:**
-- Open `config/kie_key.example.txt`
-- Paste your Kie.ai API key into the file
-- Save the file as `kie_key.txt` in the same `config/` directory
-
-**Important:**  
-Do **NOT** share your API key or commit it to version control.
 
 ## Debugging and job visibility
 You can review request history and results at [https://kie.ai/logs](https://kie.ai/logs). Some models can take longer to finish; the default timeout has been increased to reduce false failures.
