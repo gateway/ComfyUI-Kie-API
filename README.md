@@ -42,6 +42,10 @@ This node pack currently includes the following nodes:
   - Generates video from a single input image.
   - Uses the Kling 2.6 image-to-video model.
 
+- **Kling 2.5 I2V Pro**
+  - Generates video from a required first image and optional tail image.
+  - Uses the Kling 2.5 Turbo image-to-video Pro model.
+
 - **Kling 2.6 Text-to-Video**
   - Generates video directly from a text prompt.
   - Supports aspect ratio, duration, and sound options as exposed by the API.

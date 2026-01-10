@@ -27,6 +27,10 @@ from .kie_api.kling26_i2v import (
     DURATION_OPTIONS as KLING26_DURATION_OPTIONS,
     run_kling26_i2v_video,
 )
+from .kie_api.kling25_i2v import (
+    DURATION_OPTIONS as KLING25_DURATION_OPTIONS,
+    run_kling25_i2v_job,
+)
 from .kie_api.kling26motion_i2v import (
     CHARACTER_ORIENTATION_OPTIONS as KLING26MOTION_CHARACTER_ORIENTATION_OPTIONS,
     MODE_OPTIONS as KLING26MOTION_MODE_OPTIONS,
@@ -248,6 +252,86 @@ Outputs:
             log=log,
         )
         return (image_tensor,)
+
+
+class KIE_Kling25_I2V_Pro:
+    HELP = """
+KIE Kling 2.5 I2V Pro
+
+Generate a short video clip from a prompt and one or two input images using Kling 2.5 Turbo I2V Pro.
+
+Inputs:
+- prompt: Text prompt (required)
+- first_frame: Source image batch (first image used)
+- last_frame: Optional tail image batch (first image used)
+- negative_prompt: Optional negative prompt
+- duration: 5s or 10s
+- cfg_scale: 0.0 to 1.0
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "first_frame": ("IMAGE",),
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "last_frame": ("IMAGE",),
+                "negative_prompt": ("STRING", {"multiline": True, "default": ""}),
+                "duration": ("COMBO", {"options": KLING25_DURATION_OPTIONS, "default": "5"}),
+                "cfg_scale": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.1}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        first_frame: torch.Tensor,
+        prompt: str,
+        last_frame: torch.Tensor | None = None,
+        negative_prompt: str = "",
+        duration: str = "5",
+        cfg_scale: float = 0.5,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 1000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_kling25_i2v_job(
+                    image=first_frame,
+                    tail_image=last_frame,
+                    prompt=prompt,
+                    negative_prompt=negative_prompt,
+                    duration=duration,
+                    cfg_scale=cfg_scale,
+                    timeout_seconds=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
 
 
 class KIE_Kling26_I2V:
@@ -641,6 +725,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
     "KIE_Seedance15Pro_I2V": KIE_Seedance15Pro_I2V,
+    "KIE_Kling25_I2V_Pro": KIE_Kling25_I2V_Pro,
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
     "KIE_Kling26_T2V": KIE_Kling26_T2V,
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
@@ -654,6 +739,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
     "KIE_Seedance15Pro_I2V": "KIE Seedance 1.5 Pro (I2V/T2V)",
+    "KIE_Kling25_I2V_Pro": "KIE Kling 2.5 I2V Pro",
     "KIE_Kling26_I2V": "KIE Kling 2.6 (I2V)",
     "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
