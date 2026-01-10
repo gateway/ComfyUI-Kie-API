@@ -1,8 +1,8 @@
 {
   "id": "a5128023-4a0c-4c85-9500-03b9bb779647",
   "revision": 0,
-  "last_node_id": 89,
-  "last_link_id": 86,
+  "last_node_id": 98,
+  "last_link_id": 96,
   "nodes": [
     {
       "id": 9,
@@ -16,7 +16,7 @@
         540
       ],
       "flags": {},
-      "order": 33,
+      "order": 38,
       "mode": 4,
       "inputs": [
         {
@@ -45,7 +45,7 @@
         540
       ],
       "flags": {},
-      "order": 20,
+      "order": 23,
       "mode": 4,
       "inputs": [
         {
@@ -89,7 +89,7 @@
         540
       ],
       "flags": {},
-      "order": 29,
+      "order": 34,
       "mode": 4,
       "inputs": [
         {
@@ -157,7 +157,7 @@
         286
       ],
       "flags": {},
-      "order": 21,
+      "order": 24,
       "mode": 4,
       "inputs": [
         {
@@ -224,7 +224,7 @@
         66
       ],
       "flags": {},
-      "order": 36,
+      "order": 42,
       "mode": 4,
       "inputs": [
         {
@@ -314,7 +314,7 @@
         334
       ],
       "flags": {},
-      "order": 40,
+      "order": 47,
       "mode": 4,
       "inputs": [
         {
@@ -391,7 +391,7 @@
         66
       ],
       "flags": {},
-      "order": 26,
+      "order": 29,
       "mode": 4,
       "inputs": [
         {
@@ -442,7 +442,7 @@
         200
       ],
       "flags": {},
-      "order": 30,
+      "order": 35,
       "mode": 4,
       "inputs": [
         {
@@ -479,14 +479,14 @@
       "type": "ImageResizeKJv2",
       "pos": [
         4260,
-        1935
+        1950
       ],
       "size": [
         270,
         286
       ],
       "flags": {},
-      "order": 22,
+      "order": 25,
       "mode": 4,
       "inputs": [
         {
@@ -546,14 +546,14 @@
       "type": "CreateVideo",
       "pos": [
         4515,
-        2310
+        2325
       ],
       "size": [
         270,
         78
       ],
       "flags": {},
-      "order": 27,
+      "order": 30,
       "mode": 4,
       "inputs": [
         {
@@ -591,14 +591,14 @@
       "type": "GetVideoComponents",
       "pos": [
         5085,
-        1935
+        1950
       ],
       "size": [
         193.530859375,
         66
       ],
       "flags": {},
-      "order": 39,
+      "order": 45,
       "mode": 4,
       "inputs": [
         {
@@ -642,14 +642,14 @@
       "type": "VHS_VideoCombine",
       "pos": [
         5340,
-        1935
+        1950
       ],
       "size": [
         315,
         334
       ],
       "flags": {},
-      "order": 43,
+      "order": 50,
       "mode": 4,
       "inputs": [
         {
@@ -726,7 +726,7 @@
         334
       ],
       "flags": {},
-      "order": 34,
+      "order": 39,
       "mode": 4,
       "inputs": [
         {
@@ -796,7 +796,7 @@
       "type": "LoadImage",
       "pos": [
         3915,
-        1935
+        1950
       ],
       "size": [
         282.798828125,
@@ -842,7 +842,7 @@
         286
       ],
       "flags": {},
-      "order": 23,
+      "order": 26,
       "mode": 4,
       "inputs": [
         {
@@ -909,7 +909,7 @@
         66
       ],
       "flags": {},
-      "order": 37,
+      "order": 43,
       "mode": 4,
       "inputs": [
         {
@@ -960,7 +960,7 @@
         285
       ],
       "flags": {},
-      "order": 31,
+      "order": 36,
       "mode": 4,
       "inputs": [
         {
@@ -997,14 +997,14 @@
       "type": "KIE_Kling26Motion_I2V",
       "pos": [
         4620,
-        1935
+        1950
       ],
       "size": [
         400,
         200
       ],
       "flags": {},
-      "order": 35,
+      "order": 40,
       "mode": 4,
       "inputs": [
         {
@@ -1092,7 +1092,7 @@
         334
       ],
       "flags": {},
-      "order": 41,
+      "order": 48,
       "mode": 4,
       "inputs": [
         {
@@ -1161,15 +1161,15 @@
       "id": 74,
       "type": "GetVideoComponents",
       "pos": [
-        8790,
-        1935
+        9285,
+        1950
       ],
       "size": [
         193.530859375,
         66
       ],
       "flags": {},
-      "order": 38,
+      "order": 44,
       "mode": 4,
       "inputs": [
         {
@@ -1212,15 +1212,15 @@
       "id": 77,
       "type": "VHS_VideoCombine",
       "pos": [
-        9045,
-        1935
+        9540,
+        1950
       ],
       "size": [
         315,
         334
       ],
       "flags": {},
-      "order": 42,
+      "order": 49,
       "mode": 4,
       "inputs": [
         {
@@ -1289,15 +1289,15 @@
       "id": 73,
       "type": "ImageResizeKJv2",
       "pos": [
-        7950,
-        1935
+        8445,
+        1950
       ],
       "size": [
         270,
         286
       ],
       "flags": {},
-      "order": 24,
+      "order": 27,
       "mode": 4,
       "inputs": [
         {
@@ -1356,8 +1356,8 @@
       "id": 76,
       "type": "LoadImage",
       "pos": [
-        7605,
-        1935
+        8100,
+        1950
       ],
       "size": [
         282.798828125,
@@ -1442,7 +1442,7 @@
         510
       ],
       "flags": {},
-      "order": 25,
+      "order": 28,
       "mode": 4,
       "inputs": [
         {
@@ -1520,7 +1520,7 @@
       "type": "VHS_LoadVideo",
       "pos": [
         4200,
-        2310
+        2325
       ],
       "size": [
         260.4306640625,
@@ -1605,7 +1605,7 @@
       "type": "VHS_LoadVideoPath",
       "pos": [
         3900,
-        2310
+        2325
       ],
       "size": [
         242.74609375,
@@ -1685,15 +1685,15 @@
       "id": 50,
       "type": "KIE_Seedance15Pro_I2V",
       "pos": [
-        8310,
-        1935
+        8805,
+        1950
       ],
       "size": [
         400,
         232
       ],
       "flags": {},
-      "order": 32,
+      "order": 37,
       "mode": 4,
       "inputs": [
         {
@@ -1733,8 +1733,8 @@
       "id": 86,
       "type": "MarkdownNote",
       "pos": [
-        7650,
-        2370
+        8145,
+        2385
       ],
       "size": [
         375,
@@ -1778,30 +1778,6 @@
       "bgcolor": "#653"
     },
     {
-      "id": 83,
-      "type": "MarkdownNote",
-      "pos": [
-        6060,
-        1380
-      ],
-      "size": [
-        360,
-        255
-      ],
-      "flags": {},
-      "order": 11,
-      "mode": 4,
-      "inputs": [],
-      "outputs": [],
-      "title": "Kling 2.6 T2V",
-      "properties": {},
-      "widgets_values": [
-        "Kling 2.6 is Kling AI’s audio-visual generation model that produces synchronized video, speech, ambient sound, and sound effects from text or image inputs.\n\n**Playground Link:** [https://kie.ai/kling-2-6](https://kie.ai/kling-2-6)\n\n- Aspect Ratio: 9:16 etc\n- Duration: 5 or 10 seconds\n- Sound: this parameter is used to specify whether the generated video contains sound\n\n**Pricing (May change):** \n- HD video 5 s no-audio 55 credits ($0.28) / 10 s no-audio 110 credits ($0.55)\n- With audio 5s 110 credits ($0.55) or 10 s 220 credits ($1.10)\n\nLatest pricing can be found here [https://kie.ai/pricing](https://kie.ai)"
-      ],
-      "color": "#432",
-      "bgcolor": "#653"
-    },
-    {
       "id": 82,
       "type": "MarkdownNote",
       "pos": [
@@ -1813,7 +1789,7 @@
         255
       ],
       "flags": {},
-      "order": 12,
+      "order": 11,
       "mode": 4,
       "inputs": [],
       "outputs": [],
@@ -1837,7 +1813,7 @@
         210
       ],
       "flags": {},
-      "order": 13,
+      "order": 12,
       "mode": 4,
       "inputs": [],
       "outputs": [],
@@ -1854,14 +1830,14 @@
       "type": "MarkdownNote",
       "pos": [
         4545,
-        2670
+        2685
       ],
       "size": [
         435,
         375
       ],
       "flags": {},
-      "order": 14,
+      "order": 13,
       "mode": 4,
       "inputs": [],
       "outputs": [],
@@ -1882,10 +1858,10 @@
       ],
       "size": [
         315,
-        226
+        250
       ],
       "flags": {},
-      "order": 15,
+      "order": 14,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1917,7 +1893,7 @@
         78
       ],
       "flags": {},
-      "order": 16,
+      "order": 15,
       "mode": 0,
       "inputs": [],
       "outputs": [
@@ -1957,7 +1933,7 @@
         88
       ],
       "flags": {},
-      "order": 28,
+      "order": 31,
       "mode": 0,
       "inputs": [
         {
@@ -1989,7 +1965,7 @@
         210
       ],
       "flags": {},
-      "order": 17,
+      "order": 16,
       "mode": 4,
       "inputs": [],
       "outputs": [],
@@ -2013,7 +1989,7 @@
         210
       ],
       "flags": {},
-      "order": 18,
+      "order": 17,
       "mode": 0,
       "inputs": [],
       "outputs": [],
@@ -2037,7 +2013,7 @@
         1020
       ],
       "flags": {},
-      "order": 19,
+      "order": 18,
       "mode": 0,
       "inputs": [],
       "outputs": [],
@@ -2048,6 +2024,455 @@
       ],
       "color": "#222",
       "bgcolor": "#000"
+    },
+    {
+      "id": 92,
+      "type": "GetVideoComponents",
+      "pos": [
+        7275,
+        1950
+      ],
+      "size": [
+        193.530859375,
+        66
+      ],
+      "flags": {},
+      "order": 46,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 94
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            89
+          ]
+        },
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            90
+          ]
+        },
+        {
+          "name": "fps",
+          "type": "FLOAT",
+          "links": [
+            91
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.8.2",
+        "Node name for S&R": "GetVideoComponents"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 91,
+      "type": "ImageResizeKJv2",
+      "pos": [
+        6450,
+        1935
+      ],
+      "size": [
+        270,
+        336.0000000000002
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 87
+        },
+        {
+          "name": "mask",
+          "shape": 7,
+          "type": "MASK",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            93
+          ]
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kjnodes",
+        "ver": "055c5ebc127e489867905b4a010d1fde2c311db2",
+        "Node name for S&R": "ImageResizeKJv2"
+      },
+      "widgets_values": [
+        720,
+        1280,
+        "nearest-exact",
+        "crop",
+        "0, 0, 0",
+        "center",
+        2,
+        "cpu",
+        "<tr><td>Output: </td><td><b>1</b> x <b>720</b> x <b>1280 | 10.55MB</b></td></tr>"
+      ]
+    },
+    {
+      "id": 93,
+      "type": "VHS_VideoCombine",
+      "pos": [
+        7530,
+        1950
+      ],
+      "size": [
+        315,
+        872.4444444444445
+      ],
+      "flags": {},
+      "order": 51,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 89
+        },
+        {
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": 90
+        },
+        {
+          "name": "meta_batch",
+          "shape": 7,
+          "type": "VHS_BatchManager",
+          "link": null
+        },
+        {
+          "name": "vae",
+          "shape": 7,
+          "type": "VAE",
+          "link": null
+        },
+        {
+          "name": "frame_rate",
+          "type": "FLOAT",
+          "widget": {
+            "name": "frame_rate"
+          },
+          "link": 91
+        }
+      ],
+      "outputs": [
+        {
+          "name": "Filenames",
+          "type": "VHS_FILENAMES",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-videohelpersuite",
+        "ver": "1.7.9",
+        "Node name for S&R": "VHS_VideoCombine"
+      },
+      "widgets_values": {
+        "frame_rate": 8,
+        "loop_count": 0,
+        "filename_prefix": "Kling26Motion-I2V",
+        "format": "video/h264-mp4",
+        "pix_fmt": "yuv420p",
+        "crf": 19,
+        "save_metadata": true,
+        "trim_to_audio": false,
+        "pingpong": false,
+        "save_output": true,
+        "videopreview": {
+          "hidden": false,
+          "paused": false,
+          "params": {
+            "filename": "Kling26Motion-I2V_00001.mp4",
+            "subfolder": "",
+            "type": "output",
+            "format": "video/h264-mp4",
+            "frame_rate": 24,
+            "workflow": "Kling26Motion-I2V_00001.png",
+            "fullpath": "E:\\ComfyUI_windows_portable\\ComfyUI\\output\\Kling26Motion-I2V_00001.mp4"
+          }
+        }
+      }
+    },
+    {
+      "id": 97,
+      "type": "LoadImage",
+      "pos": [
+        6090,
+        2340
+      ],
+      "size": [
+        282.798828125,
+        314
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            95
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.5.1",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "sadi-alley-1-3.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 94,
+      "type": "LoadImage",
+      "pos": [
+        6090,
+        1935
+      ],
+      "size": [
+        282.798828125,
+        314
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            87
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.5.1",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "sadi-alley-1-1.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 96,
+      "type": "ImageResizeKJv2",
+      "pos": [
+        6465,
+        2340
+      ],
+      "size": [
+        270,
+        336
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 95
+        },
+        {
+          "name": "mask",
+          "shape": 7,
+          "type": "MASK",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            96
+          ]
+        },
+        {
+          "name": "width",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "height",
+          "type": "INT",
+          "links": null
+        },
+        {
+          "name": "mask",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kjnodes",
+        "ver": "055c5ebc127e489867905b4a010d1fde2c311db2",
+        "Node name for S&R": "ImageResizeKJv2"
+      },
+      "widgets_values": [
+        720,
+        1280,
+        "nearest-exact",
+        "crop",
+        "0, 0, 0",
+        "center",
+        2,
+        "cpu",
+        "<tr><td>Output: </td><td><b>1</b> x <b>720</b> x <b>1280 | 10.55MB</b></td></tr>"
+      ]
+    },
+    {
+      "id": 83,
+      "type": "MarkdownNote",
+      "pos": [
+        6060,
+        1380
+      ],
+      "size": [
+        360,
+        255
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [],
+      "title": "Kling 2.6 T2V",
+      "properties": {},
+      "widgets_values": [
+        "Kling 2.6 is Kling AI’s audio-visual generation model that produces synchronized video, speech, ambient sound, and sound effects from text or image inputs.\n\n**Playground Link:** [https://kie.ai/kling-2-6](https://kie.ai/kling-2-6)\n\n- Aspect Ratio: 9:16 etc\n- Duration: 5 or 10 seconds\n- Sound: this parameter is used to specify whether the generated video contains sound\n\n**Pricing (May change):** \n- HD video 5 s no-audio 55 credits ($0.28) / 10 s no-audio 110 credits ($0.55)\n- With audio 5s 110 credits ($0.55) or 10 s 220 credits ($1.10)\n\nLatest pricing can be found here [https://kie.ai/pricing](https://kie.ai)"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 90,
+      "type": "KIE_Kling25_I2V_Pro",
+      "pos": [
+        6810,
+        1935
+      ],
+      "size": [
+        420,
+        360
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "type": "IMAGE",
+          "link": 93
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 96
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            94
+          ]
+        }
+      ],
+      "properties": {
+        "aux_id": "gateway/ComfyUI-Kie-API",
+        "ver": "69be32b6722411d94f9d6374eb415d6474da5694",
+        "Node name for S&R": "KIE_Kling25_I2V_Pro"
+      },
+      "widgets_values": [
+        "a 22 year-old woman with dark wavy hair, blue eyes, pale skin wearing a pink top and white jean shorts is standing in an alleyway. The camera rotates around her as she turns to face away with the camera. She then slowlh looks over her shoulder with a sexy smile.",
+        "blur, distort, and low quality",
+        "5",
+        0.5,
+        true
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 98,
+      "type": "MarkdownNote",
+      "pos": [
+        6840,
+        2400
+      ],
+      "size": [
+        360,
+        285
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [],
+      "title": "Kling 2.5 I2V",
+      "properties": {},
+      "widgets_values": [
+        "Kling 2.5 is Kling AI’s audio-visual generation model that produces synchronized video, speech, ambient sound, and sound effects from text or image inputs.\n\n**Great for First Frame Last Frame**\n\n**Playground Link:** [https://kie.ai/kling-2-5?model=kling%2Fv2-5-turbo-image-to-video-pro](https://kie.ai/kling-2-5?model=kling%2Fv2-5-turbo-image-to-video-pro)\n\n- Duration: 5 or 10 seconds\n- CFG Scale: Classifier Free Guidance scale is a measure of how close you want the model to stick to your prompt\n- Negative: Elements to avoid in the video, Min: 0, Max: 1, Step: 0.1\n\n**Pricing (May change):** \n- 42 credits per 5s video ($0.21)\n- 84 credits per 10s video ($0.42).\n\nLatest pricing can be found here [https://kie.ai/pricing](https://kie.ai)"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
     }
   ],
   "links": [
@@ -2338,6 +2763,70 @@
       88,
       0,
       "INT"
+    ],
+    [
+      87,
+      94,
+      0,
+      91,
+      0,
+      "IMAGE"
+    ],
+    [
+      89,
+      92,
+      0,
+      93,
+      0,
+      "IMAGE"
+    ],
+    [
+      90,
+      92,
+      1,
+      93,
+      1,
+      "AUDIO"
+    ],
+    [
+      91,
+      92,
+      2,
+      93,
+      4,
+      "FLOAT"
+    ],
+    [
+      93,
+      91,
+      0,
+      90,
+      0,
+      "IMAGE"
+    ],
+    [
+      94,
+      90,
+      0,
+      92,
+      0,
+      "VIDEO"
+    ],
+    [
+      95,
+      97,
+      0,
+      96,
+      0,
+      "IMAGE"
+    ],
+    [
+      96,
+      96,
+      0,
+      90,
+      1,
+      "IMAGE"
     ]
   ],
   "groups": [
@@ -2398,7 +2887,7 @@
       "title": "Kling 2.6 Motion I2V",
       "bounding": [
         3840,
-        1800,
+        1815,
         2130,
         1545
       ],
@@ -2423,8 +2912,8 @@
       "id": 7,
       "title": "Seedance 1.5 Pro",
       "bounding": [
-        7560,
-        1815,
+        8055,
+        1830,
         2160,
         975
       ],
@@ -2444,15 +2933,28 @@
       "color": "#3f789e",
       "font_size": 24,
       "flags": {}
+    },
+    {
+      "id": 9,
+      "title": "Kling 2.5 Turbo - First Frame / Last Frame (Optional)",
+      "bounding": [
+        6015,
+        1815,
+        1980,
+        1155
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
     }
   ],
   "config": {},
   "extra": {
     "ds": {
-      "scale": 2.326924318842641,
+      "scale": 0.2541905368816801,
       "offset": [
-        -1335.427104643539,
-        -1244.27545843809
+        474.70265275685585,
+        323.3831613517035
       ]
     },
     "workflowRendererVersion": "LG",
