@@ -6,6 +6,14 @@ A set of ComfyUI custom nodes that connect to the Kie.ai API for image and video
 ## Why this exists
 ComfyUI users often need consistent, API-backed nodes that map directly to model capabilities and work reliably in production workflows. This pack focuses on clear inputs, predictable outputs, and practical integration.
 
+### Supporting Development
+
+This project is built for the ComfyUI community and maintained in personal time.
+
+If you find the nodes useful and are already planning to use **Kie.ai**, using the link below is one way to support continued development and improvements. There is no obligation, and everything works the same regardless.
+
+👉 [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42)
+
 ## What’s included
 - Image generation nodes
 - Image-to-video and text-to-video nodes
