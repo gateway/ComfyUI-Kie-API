@@ -91,7 +91,7 @@ This repository includes two example workflows intended as both a test bed and a
 ---
 
 ### 1) Node Pack Test & Reference Workflow
-- Kie-AI-Nodes.json
+**Kie-AI-Nodes.json**
 This workflow includes **all nodes in this pack**, each accompanied by inline notes explaining what the node does and how to use it.
 
 **Recommended first step:**  
@@ -105,7 +105,7 @@ Once credits are confirmed, you can unmute individual node groups and test them 
 ---
 
 ### 2) Nano Banana Pro Grid Workflow (Advanced Example)
-- Kie-AI-Banana-Pro-Grid.json
+**Kie-AI-Banana-Pro-Grid.json**
 
 This workflow demonstrates a more advanced use case built around **Nano Banana Pro** and grid-based image generation.
 
