@@ -134,7 +134,7 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 
 
 ## About Kie.ai
-Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai).
+Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).
 
 ## Credits and usage
 Kie.ai uses a credit-based model for requests. There is no subscription requirement, and pay-as-you-go usage is supported.
