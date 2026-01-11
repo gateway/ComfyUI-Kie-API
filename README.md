@@ -84,6 +84,54 @@ This node pack currently includes the following nodes:
 
 Each node has its own documentation page under `web/docs/` with detailed inputs, outputs, and usage examples.
 
+## Included Example Workflows
+
+This repository includes two example workflows intended as both a test bed and a reference for how these nodes can be used together.
+
+---
+
+### 1) Node Pack Test & Reference Workflow
+- Kie-AI-Nodes.json
+This workflow includes **all nodes in this pack**, each accompanied by inline notes explaining what the node does and how to use it.
+
+**Recommended first step:**  
+Always start by running the **Credits / Account Check** node. This confirms:
+- Your Kie.ai API key is installed correctly
+- Your account has available credits
+- The API is reachable
+
+Once credits are confirmed, you can unmute individual node groups and test them incrementally. This workflow is designed to be a safe environment for validation, learning, and debugging before building custom graphs.
+
+---
+
+### 2) Nano Banana Pro Grid Workflow (Advanced Example)
+- Kie-AI-Banana-Pro-Grid.json
+
+This workflow demonstrates a more advanced use case built around **Nano Banana Pro** and grid-based image generation.
+
+**Overview:**
+- An optional *face reference image* and a required *source image* are provided
+- A language model analyzes the inputs and generates structured prompts
+- These prompts are used to generate a **2×2 or 3×3 grid of images**
+- The resulting grid is then sliced into individual images using the Grid Slice node
+
+**About the LLM step:**
+- This workflow uses an OpenAI Chat LLM node provided by ComfyUI (not part of this node pack)
+- This step incurs its own API cost
+- You are free to replace this LLM with any compatible model or remove it entirely
+
+**Why this workflow exists:**
+This pattern is useful for:
+- Generating multiple prompt variations from a single concept
+- Creating image sets for downstream video generation
+- Breaking large composite images into reusable individual assets
+
+---
+
+Both workflows are meant as **examples**, not strict requirements.  
+Feel free to adapt, simplify, or remix them to fit your own pipelines.
+
+
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai).
 
