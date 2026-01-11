@@ -92,6 +92,7 @@ This repository includes two example workflows intended as both a test bed and a
 
 ### 1) Node Pack Test & Reference Workflow
 **Kie-AI-Nodes.json**
+
 This workflow includes **all nodes in this pack**, each accompanied by inline notes explaining what the node does and how to use it.
 
 **Recommended first step:**  
