@@ -666,6 +666,7 @@ Outputs:
         "STRING",
         "INT",
         "STRING",
+        "STRING",
     )
     RETURN_NAMES = (
         "prompt 1",
@@ -679,6 +680,21 @@ Outputs:
         "prompt 9",
         "count",
         "prompts_list",
+        "prompts_list_seq",
+    )
+    OUTPUT_IS_LIST = (
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        True,
     )
     FUNCTION = "parse"
     CATEGORY = "kie/helpers"
@@ -715,7 +731,7 @@ Outputs:
 
         padded = prompts[:9] + [""] * (9 - len(prompts))
         count = len(prompts)
-        return (*padded, count, prompts)
+        return (*padded, count, prompts, prompts)
 
 
 NODE_CLASS_MAPPINGS = {

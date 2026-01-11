@@ -57,6 +57,9 @@ Object format (underscore keys):
 - **prompts_list**
   Raw list of prompts for future automation or batching (not stringified).
 
+- **prompts_list_seq**
+  Prompts as a ComfyUI list output (OUTPUT_IS_LIST) for sequential downstream processing.
+
 ---
 
 ## Grid wiring tips
