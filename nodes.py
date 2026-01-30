@@ -43,6 +43,7 @@ from .kie_api.kling26_t2v import (
 )
 from .kie_api.gemini3_pro_llm import (
     REASONING_EFFORT_OPTIONS as GEMINI3_REASONING_EFFORT_OPTIONS,
+    ROLE_OPTIONS as GEMINI3_ROLE_OPTIONS,
     run_gemini3_pro_chat,
 )
 from .kie_api.flux2_i2i import (
@@ -640,7 +641,10 @@ Generate text using Gemini 3 Pro.
 
 Inputs:
 - prompt: Text prompt (required if messages_json is empty)
-- messages_json: Optional JSON array of message objects (overrides prompt)
+- role: Message role for the prompt (developer/system/user/assistant/tool)
+- images: Optional image batch to include as media content
+- video: Optional video input to include as media content
+- messages_json: Optional JSON array of message objects (overrides prompt/role/media)
 - stream: Stream responses (SSE); output is returned after completion
 - include_thoughts: Include reasoning content in output
 - reasoning_effort: low or high
@@ -659,8 +663,11 @@ Outputs:
         return {
             "required": {
                 "prompt": ("STRING", {"multiline": True}),
+                "role": ("COMBO", {"options": GEMINI3_ROLE_OPTIONS, "default": "user"}),
             },
             "optional": {
+                "images": ("IMAGE",),
+                "video": ("VIDEO",),
                 "messages_json": ("STRING", {"multiline": True, "default": ""}),
                 "stream": ("BOOLEAN", {"default": True}),
                 "include_thoughts": ("BOOLEAN", {"default": True}),
@@ -679,6 +686,9 @@ Outputs:
     def generate(
         self,
         prompt: str,
+        role: str = "user",
+        images: torch.Tensor | None = None,
+        video: object | None = None,
         messages_json: str = "",
         stream: bool = True,
         include_thoughts: bool = True,
@@ -690,6 +700,9 @@ Outputs:
         content, reasoning, raw_json = run_gemini3_pro_chat(
             prompt=prompt,
             messages_json=messages_json,
+            role=role,
+            images=images,
+            video=video,
             stream=stream,
             include_thoughts=include_thoughts,
             reasoning_effort=reasoning_effort,

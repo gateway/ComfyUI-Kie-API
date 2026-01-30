@@ -6,9 +6,12 @@ from typing import Any
 from .auth import _load_api_key
 from .http import TransientKieError, requests
 from .log import _log
+from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image, _upload_video
+from .video import _coerce_video_to_mp4_bytes
 
 CHAT_COMPLETIONS_URL = "https://api.kie.ai/gemini-3-pro/v1/chat/completions"
 REASONING_EFFORT_OPTIONS = ["low", "high"]
+ROLE_OPTIONS = ["developer", "system", "user", "assistant", "tool"]
 
 
 def _parse_json_optional(raw: str | None, label: str) -> Any | None:
@@ -23,20 +26,38 @@ def _parse_json_optional(raw: str | None, label: str) -> Any | None:
         raise RuntimeError(f"{label} is not valid JSON.") from exc
 
 
-def _normalize_messages(prompt: str, messages_json: str | None) -> list[dict[str, Any]]:
+def _normalize_messages(
+    prompt: str,
+    messages_json: str | None,
+    role: str,
+    image_urls: list[str],
+    video_urls: list[str],
+) -> list[dict[str, Any]]:
     if messages_json:
         data = _parse_json_optional(messages_json, "messages_json")
         if not isinstance(data, list):
             raise RuntimeError("messages_json must be a JSON array of message objects.")
         return data
 
+    if role not in ROLE_OPTIONS:
+        raise RuntimeError("Invalid role. Use the pinned enum options.")
+
     prompt_text = (prompt or "").strip()
-    if not prompt_text:
-        raise RuntimeError("prompt is required when messages_json is not provided.")
+    if not prompt_text and not image_urls and not video_urls:
+        raise RuntimeError("prompt or media input is required when messages_json is not provided.")
+
+    content: list[dict[str, Any]] = []
+    if prompt_text:
+        content.append({"type": "text", "text": prompt_text})
+    for url in image_urls:
+        content.append({"type": "image_url", "image_url": {"url": url}})
+    for url in video_urls:
+        content.append({"type": "image_url", "image_url": {"url": url}})
+
     return [
         {
-            "role": "user",
-            "content": [{"type": "text", "text": prompt_text}],
+            "role": role,
+            "content": content,
         }
     ]
 
@@ -65,6 +86,9 @@ def run_gemini3_pro_chat(
     *,
     prompt: str,
     messages_json: str | None = None,
+    role: str = "user",
+    images: Any | None = None,
+    video: Any | None = None,
     stream: bool = True,
     include_thoughts: bool = True,
     reasoning_effort: str = "high",
@@ -86,7 +110,41 @@ def run_gemini3_pro_chat(
         raise RuntimeError("response_format cannot be used with tools.")
     _validate_tools_payload(tools_payload)
 
-    messages = _normalize_messages(prompt, messages_json)
+    api_key = _load_api_key()
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    image_urls: list[str] = []
+    video_urls: list[str] = []
+
+    if messages_json:
+        if images is not None or video is not None:
+            raise RuntimeError("images/video inputs cannot be used with messages_json.")
+    else:
+        if images is not None:
+            if not hasattr(images, "shape"):
+                raise RuntimeError("images input must be a tensor batch.")
+            if images.dim() != 4 or images.shape[-1] != 3:
+                raise RuntimeError("images input must have shape [B, H, W, 3].")
+            total_images = images.shape[0]
+            if total_images > 0:
+                _log(log, f"Uploading {total_images} image(s) for Gemini 3 Pro...")
+            for idx in range(total_images):
+                png_bytes = _image_tensor_to_png_bytes(images[idx])
+                url = _upload_image(api_key, png_bytes)
+                image_urls.append(url)
+                _log(log, f"Image {idx + 1} upload success: {_truncate_url(url)}")
+
+        if video is not None:
+            video_bytes, source = _coerce_video_to_mp4_bytes(video)
+            _log(log, f"Uploading video for Gemini 3 Pro ({source})...")
+            video_url = _upload_video(api_key, video_bytes)
+            video_urls.append(video_url)
+            _log(log, f"Video upload success: {_truncate_url(video_url)}")
+
+    messages = _normalize_messages(prompt, messages_json, role, image_urls, video_urls)
 
     payload: dict[str, Any] = {
         "messages": messages,
@@ -98,12 +156,6 @@ def run_gemini3_pro_chat(
         payload["tools"] = tools_payload
     if response_format_payload is not None:
         payload["response_format"] = response_format_payload
-
-    api_key = _load_api_key()
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
 
     try:
         response = requests.post(

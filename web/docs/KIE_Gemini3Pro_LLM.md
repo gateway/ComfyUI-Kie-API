@@ -3,14 +3,30 @@
 Generate text using Gemini 3 Pro. This node is experimental.
 
 ## Inputs
-- **prompt** (STRING, required): Text prompt. Used if `messages_json` is empty.
-- **messages_json** (STRING, optional): JSON array of message objects (overrides `prompt`).
-- **stream** (BOOLEAN, optional): Stream responses via SSE. Output is returned after completion.
-- **include_thoughts** (BOOLEAN, optional): Include reasoning content.
-- **reasoning_effort** (COMBO, optional): `low`, `high`
+- **prompt** (STRING, required): Main text prompt. Used when `messages_json` is empty.
+- **role** (COMBO, required): Message role for the prompt. Options: `developer`, `system`, `user`, `assistant`, `tool`.
+- **images** (IMAGE, optional): One or more images (batch) to include as media content.
+- **video** (VIDEO, optional): A single video input to include as media content.
+- **messages_json** (STRING, optional): Full JSON array of message objects. If provided, it overrides `prompt`, `role`, and media inputs.
+- **stream** (BOOLEAN, optional): Use streaming responses (SSE). Output is returned after completion.
+- **include_thoughts** (BOOLEAN, optional): When enabled, reasoning content is returned in the reasoning output.
+- **reasoning_effort** (COMBO, optional): Controls reasoning depth: `low` or `high`.
 - **tools_json** (STRING, optional): JSON array of tool definitions. Mutually exclusive with `response_format_json`.
 - **response_format_json** (STRING, optional): JSON schema output format. Mutually exclusive with `tools_json`.
-- **log** (BOOLEAN, optional): Enable console logging.
+- **log** (BOOLEAN, optional): Enable console logging for uploads and response status.
+
+## Node UI Reference (What each widget expects)
+- **Prompt (text box)**: A natural language instruction or question. Leave empty only if you provide `messages_json` or media.
+- **Role (dropdown)**: Sets the `role` field in the message object (default: `user`).
+- **Images (input socket)**: Connect a ComfyUI IMAGE or batch. All images are uploaded and appended to message content.
+- **Video (input socket)**: Connect a ComfyUI VIDEO. The video is uploaded and appended to message content.
+- **Messages JSON (text box)**: Raw JSON array of messages (advanced). Overrides prompt/role/media entirely.
+- **Stream (toggle)**: Enables SSE streaming under the hood; output still returns when complete.
+- **Include Thoughts (toggle)**: When on, reasoning text is captured and returned in the second output.
+- **Reasoning Effort (dropdown)**: `low` is faster, `high` is more thorough.
+- **Tools JSON (text box)**: Raw JSON array of tool definitions (advanced).
+- **Response Format JSON (text box)**: Raw JSON schema definition (advanced).
+- **Log (toggle)**: Emits upload and completion messages to the console.
 
 ## Outputs
 - **STRING**: Assistant response text.
@@ -20,4 +36,5 @@ Generate text using Gemini 3 Pro. This node is experimental.
 ## Helper behavior
 - Validates `reasoning_effort`.
 - Enforces mutual exclusivity for tools vs response_format.
-- If `messages_json` is provided, it is used as the message array.
+- If `messages_json` is provided, it is used as the message array and media inputs are rejected.
+- Media inputs are uploaded and added to the message content using the unified `image_url` format.
