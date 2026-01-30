@@ -644,6 +644,7 @@ Inputs:
 - role: Message role for the prompt (developer/system/user/assistant/tool)
 - images: Optional image batch to include as media content
 - video: Optional video input to include as media content
+- audio: Optional audio input to include as media content
 - messages_json: Optional JSON array of message objects (overrides prompt/role/media)
 - stream: Stream responses (SSE); output is returned after completion
 - include_thoughts: Include reasoning content in output
@@ -668,6 +669,7 @@ Outputs:
             "optional": {
                 "images": ("IMAGE",),
                 "video": ("VIDEO",),
+                "audio": ("AUDIO",),
                 "messages_json": ("STRING", {"multiline": True, "default": ""}),
                 "stream": ("BOOLEAN", {"default": True}),
                 "include_thoughts": ("BOOLEAN", {"default": True}),
@@ -689,6 +691,7 @@ Outputs:
         role: str = "user",
         images: torch.Tensor | None = None,
         video: object | None = None,
+        audio: object | None = None,
         messages_json: str = "",
         stream: bool = True,
         include_thoughts: bool = True,
@@ -703,6 +706,7 @@ Outputs:
             role=role,
             images=images,
             video=video,
+            audio=audio,
             stream=stream,
             include_thoughts=include_thoughts,
             reasoning_effort=reasoning_effort,

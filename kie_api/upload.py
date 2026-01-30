@@ -11,6 +11,7 @@ from .http import TransientKieError, requests
 UPLOAD_URL = "https://kieai.redpandaai.co/api/file-stream-upload"
 IMAGE_UPLOAD_PATH = "images/user-uploads"
 VIDEO_UPLOAD_PATH = "videos/user-uploads"
+AUDIO_UPLOAD_PATH = "audio/user-uploads"
 
 
 def _truncate_url(url: str, max_length: int = 80) -> str:
@@ -91,6 +92,49 @@ def _upload_video(api_key: str, video_bytes: bytes, filename: str = "video.mp4")
         )
     except requests.RequestException as exc:
         raise RuntimeError(f"Failed to upload video: {exc}") from exc
+
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"upload returned HTTP {response.status_code}: {response.text}",
+            status_code=response.status_code,
+        )
+
+    payload = response.json()
+    if not payload.get("success") or payload.get("code") != 200:
+        raise RuntimeError(f"Upload failed: {payload.get('msg')}")
+
+    url = (payload.get("data") or {}).get("downloadUrl")
+    if not url:
+        raise RuntimeError("Upload response missing downloadUrl.")
+
+    return url
+
+
+def _upload_audio(api_key: str, audio_bytes: bytes, filename: str = "audio.wav") -> str:
+    if not isinstance(audio_bytes, (bytes, bytearray)):
+        raise RuntimeError("audio_bytes must be raw bytes.")
+    if len(audio_bytes) == 0:
+        raise RuntimeError("audio_bytes is empty.")
+
+    name = filename or "audio.wav"
+    lower = name.lower()
+    if lower.endswith(".mp3"):
+        content_type = "audio/mpeg"
+    elif lower.endswith(".wav"):
+        content_type = "audio/wav"
+    else:
+        content_type = "application/octet-stream"
+
+    try:
+        response = requests.post(
+            UPLOAD_URL,
+            headers={"Authorization": f"Bearer {api_key}"},
+            files={"file": (name, audio_bytes, content_type)},
+            data={"uploadPath": AUDIO_UPLOAD_PATH, "fileName": name},
+            timeout=300,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to upload audio: {exc}") from exc
 
     if response.status_code == 429 or response.status_code >= 500:
         raise TransientKieError(

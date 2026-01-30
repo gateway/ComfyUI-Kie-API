@@ -7,6 +7,7 @@ Generate text using Gemini 3 Pro. This node is experimental.
 - **role** (COMBO, required): Message role for the prompt. Options: `developer`, `system`, `user`, `assistant`, `tool`.
 - **images** (IMAGE, optional): One or more images (batch) to include as media content.
 - **video** (VIDEO, optional): A single video input to include as media content.
+- **audio** (AUDIO, optional): Audio input (WAV/MP3) to include as media content.
 - **messages_json** (STRING, optional): Full JSON array of message objects. If provided, it overrides `prompt`, `role`, and media inputs.
 - **stream** (BOOLEAN, optional): Use streaming responses (SSE). Output is returned after completion.
 - **include_thoughts** (BOOLEAN, optional): When enabled, reasoning content is returned in the reasoning output.
@@ -20,6 +21,7 @@ Generate text using Gemini 3 Pro. This node is experimental.
 - **Role (dropdown)**: Sets the `role` field in the message object (default: `user`).
 - **Images (input socket)**: Connect a ComfyUI IMAGE or batch. All images are uploaded and appended to message content.
 - **Video (input socket)**: Connect a ComfyUI VIDEO. The video is uploaded and appended to message content.
+- **Audio (input socket)**: Connect a ComfyUI AUDIO. The audio is uploaded and appended to message content.
 - **Messages JSON (text box)**: Raw JSON array of messages (advanced). Overrides prompt/role/media entirely.
 - **Stream (toggle)**: Enables SSE streaming under the hood; output still returns when complete.
 - **Include Thoughts (toggle)**: When on, reasoning text is captured and returned in the second output.

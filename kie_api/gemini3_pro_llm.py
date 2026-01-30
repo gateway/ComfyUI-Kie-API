@@ -5,8 +5,9 @@ from typing import Any
 
 from .auth import _load_api_key
 from .http import TransientKieError, requests
+from .audio import _coerce_audio_to_wav_bytes
 from .log import _log
-from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image, _upload_video
+from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_audio, _upload_image, _upload_video
 from .video import _coerce_video_to_mp4_bytes
 
 CHAT_COMPLETIONS_URL = "https://api.kie.ai/gemini-3-pro/v1/chat/completions"
@@ -89,6 +90,7 @@ def run_gemini3_pro_chat(
     role: str = "user",
     images: Any | None = None,
     video: Any | None = None,
+    audio: Any | None = None,
     stream: bool = True,
     include_thoughts: bool = True,
     reasoning_effort: str = "high",
@@ -118,10 +120,11 @@ def run_gemini3_pro_chat(
 
     image_urls: list[str] = []
     video_urls: list[str] = []
+    audio_urls: list[str] = []
 
     if messages_json:
-        if images is not None or video is not None:
-            raise RuntimeError("images/video inputs cannot be used with messages_json.")
+        if images is not None or video is not None or audio is not None:
+            raise RuntimeError("media inputs cannot be used with messages_json.")
     else:
         if images is not None:
             if not hasattr(images, "shape"):
@@ -144,7 +147,20 @@ def run_gemini3_pro_chat(
             video_urls.append(video_url)
             _log(log, f"Video upload success: {_truncate_url(video_url)}")
 
-    messages = _normalize_messages(prompt, messages_json, role, image_urls, video_urls)
+        if audio is not None:
+            audio_bytes, source = _coerce_audio_to_wav_bytes(audio)
+            _log(log, f"Uploading audio for Gemini 3 Pro ({source})...")
+            audio_url = _upload_audio(api_key, audio_bytes)
+            audio_urls.append(audio_url)
+            _log(log, f"Audio upload success: {_truncate_url(audio_url)}")
+
+    messages = _normalize_messages(
+        prompt,
+        messages_json,
+        role,
+        image_urls,
+        video_urls + audio_urls,
+    )
 
     payload: dict[str, Any] = {
         "messages": messages,
