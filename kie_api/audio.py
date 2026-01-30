@@ -18,7 +18,7 @@ def _coerce_audio_to_wav_bytes(audio: Any) -> tuple[bytes, str]:
             raise RuntimeError(f"Failed to read audio file: {exc}") from exc
 
     if isinstance(audio, dict):
-        audio_path = audio.get("path") or audio.get("filename")
+        audio_path = audio.get("path") or audio.get("filename") or audio.get("file")
         if isinstance(audio_path, str):
             try:
                 return Path(audio_path).read_bytes(), f"dict_path:{audio_path}"
@@ -51,8 +51,20 @@ def _waveform_to_wav_bytes(waveform, sample_rate: int) -> bytes:
 
     if data.ndim == 1:
         data = data[None, :]
+    if data.ndim == 3:
+        # Handle [B, C, T] or [B, T, C]
+        if data.shape[0] == 1:
+            data = data[0]
+        else:
+            data = data[0]
+        if data.ndim == 2 and data.shape[0] <= 8 and data.shape[1] > data.shape[0]:
+            # likely [C, T]
+            data = data
     if data.ndim == 2:
-        data = data.transpose(1, 0)
+        # Normalize to [T, C]
+        if data.shape[0] <= 8 and data.shape[1] > data.shape[0]:
+            # likely [C, T]
+            data = data.transpose(1, 0)
     if data.ndim != 2:
         raise RuntimeError("waveform must be 1D or 2D.")
 
