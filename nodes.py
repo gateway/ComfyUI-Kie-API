@@ -41,6 +41,10 @@ from .kie_api.kling26_t2v import (
     DURATION_OPTIONS as KLING26_T2V_DURATION_OPTIONS,
     run_kling26_t2v_video,
 )
+from .kie_api.gemini3_pro_llm import (
+    REASONING_EFFORT_OPTIONS as GEMINI3_REASONING_EFFORT_OPTIONS,
+    run_gemini3_pro_chat,
+)
 from .kie_api.flux2_i2i import (
     ASPECT_RATIO_OPTIONS as FLUX2_ASPECT_RATIO_OPTIONS,
     MODEL_OPTIONS as FLUX2_MODEL_OPTIONS,
@@ -628,6 +632,74 @@ Outputs:
         return (image_tensor,)
 
 
+class KIE_Gemini3Pro_LLM:
+    HELP = """
+KIE Gemini 3 Pro (LLM) [Experimental]
+
+Generate text using Gemini 3 Pro.
+
+Inputs:
+- prompt: Text prompt (required if messages_json is empty)
+- messages_json: Optional JSON array of message objects (overrides prompt)
+- stream: Stream responses (SSE); output is returned after completion
+- include_thoughts: Include reasoning content in output
+- reasoning_effort: low or high
+- tools_json: Optional JSON array of tool definitions (mutually exclusive with response_format_json)
+- response_format_json: Optional JSON schema output format (mutually exclusive with tools_json)
+- log: Console logging on/off
+
+Outputs:
+- STRING: Assistant response text
+- STRING: Reasoning text (empty if include_thoughts is false)
+- STRING: Raw JSON from last response chunk
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "messages_json": ("STRING", {"multiline": True, "default": ""}),
+                "stream": ("BOOLEAN", {"default": True}),
+                "include_thoughts": ("BOOLEAN", {"default": True}),
+                "reasoning_effort": ("COMBO", {"options": GEMINI3_REASONING_EFFORT_OPTIONS, "default": "high"}),
+                "tools_json": ("STRING", {"multiline": True, "default": ""}),
+                "response_format_json": ("STRING", {"multiline": True, "default": ""}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING", "STRING", "STRING")
+    RETURN_NAMES = ("text", "reasoning", "raw_json")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        messages_json: str = "",
+        stream: bool = True,
+        include_thoughts: bool = True,
+        reasoning_effort: str = "high",
+        tools_json: str = "",
+        response_format_json: str = "",
+        log: bool = True,
+    ):
+        content, reasoning, raw_json = run_gemini3_pro_chat(
+            prompt=prompt,
+            messages_json=messages_json,
+            stream=stream,
+            include_thoughts=include_thoughts,
+            reasoning_effort=reasoning_effort,
+            tools_json=tools_json,
+            response_format_json=response_format_json,
+            log=log,
+        )
+        return (content, reasoning, raw_json)
+
+
 class KIE_GridSlice:
     HELP = """
 KIE Grid Slice
@@ -814,6 +886,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Kling26_T2V": KIE_Kling26_T2V,
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
     "KIE_Flux2_I2I": KIE_Flux2_I2I,
+    "KIE_Gemini3Pro_LLM": KIE_Gemini3Pro_LLM,
     "KIE_GridSlice": KIE_GridSlice,
     "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
 }
@@ -829,6 +902,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
     "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
+    "KIE_Gemini3Pro_LLM": "KIE Gemini 3 Pro (LLM) [Experimental]",
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
 }

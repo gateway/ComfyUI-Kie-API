@@ -50,6 +50,10 @@ This node pack currently includes the following nodes:
   - Image-to-image node with a model dropdown for Pro or Flex.
   - Accepts 1–8 input images via ComfyUI batch.
 
+- **Gemini 3 Pro (LLM) [Experimental]**
+  - Text generation node using Gemini 3 Pro chat completions.
+  - Supports optional reasoning output and JSON payload inputs.
+
 - **Kling 2.6 Image-to-Video**
   - Generates video from a single input image.
   - Uses the Kling 2.6 image-to-video model.
@@ -138,6 +142,7 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 
 ## Changelog
 - 2026-01-30: Added Flux 2 Image-to-Image node (Pro/Flex) with model dropdown.
+- 2026-01-30: Added Gemini 3 Pro LLM node (phase 1, experimental).
 
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).
