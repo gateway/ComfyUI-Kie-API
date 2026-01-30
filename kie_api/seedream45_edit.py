@@ -1,7 +1,7 @@
 """Seedream 4.5 image edit helper.
 
 Implements the Seedream 4.5 edit workflow as documented in
-`docs/KIE_API_SEEDREAM_45_EDIT_SPEC.md`.
+`_internal/docs/KIE_API_SEEDREAM_45_EDIT_SPEC.md`.
 
 This module:
 - validates inputs
