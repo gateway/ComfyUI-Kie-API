@@ -41,6 +41,12 @@ from .kie_api.kling26_t2v import (
     DURATION_OPTIONS as KLING26_T2V_DURATION_OPTIONS,
     run_kling26_t2v_video,
 )
+from .kie_api.flux2_i2i import (
+    ASPECT_RATIO_OPTIONS as FLUX2_ASPECT_RATIO_OPTIONS,
+    MODEL_OPTIONS as FLUX2_MODEL_OPTIONS,
+    RESOLUTION_OPTIONS as FLUX2_RESOLUTION_OPTIONS,
+    run_flux2_i2i,
+)
 from .kie_api.prompt_lists import parse_prompts_json
 from .kie_api.grid import slice_grid_tensor
 from .kie_api.http import TransientKieError
@@ -560,6 +566,68 @@ Outputs:
                 time.sleep(backoff)
 
 
+class KIE_Flux2_I2I:
+    HELP = """
+KIE Flux 2 (Image-to-Image)
+
+Generate an image from one or more input images using Flux 2 Pro or Flux 2 Flex.
+
+Inputs:
+- images: Source image batch (1-8 images; all uploaded)
+- prompt: Text prompt (required, 3–5000 chars)
+- model: flux-2/pro-image-to-image or flux-2/flex-image-to-image
+- aspect_ratio: Output aspect ratio (enum)
+- resolution: 1K or 2K
+- log: Console logging on/off
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0–1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "images": ("IMAGE",),
+                "prompt": ("STRING", {"multiline": True}),
+                "model": ("COMBO", {"options": FLUX2_MODEL_OPTIONS, "default": "flux-2/pro-image-to-image"}),
+                "aspect_ratio": ("COMBO", {"options": FLUX2_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "resolution": ("COMBO", {"options": FLUX2_RESOLUTION_OPTIONS, "default": "1K"}),
+            },
+            "optional": {
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        images: torch.Tensor,
+        prompt: str,
+        model: str = "flux-2/pro-image-to-image",
+        aspect_ratio: str = "1:1",
+        resolution: str = "1K",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_flux2_i2i(
+            model=model,
+            prompt=prompt,
+            images=images,
+            aspect_ratio=aspect_ratio,
+            resolution=resolution,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
 class KIE_GridSlice:
     HELP = """
 KIE Grid Slice
@@ -745,6 +813,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
     "KIE_Kling26_T2V": KIE_Kling26_T2V,
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
+    "KIE_Flux2_I2I": KIE_Flux2_I2I,
     "KIE_GridSlice": KIE_GridSlice,
     "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
 }
@@ -759,6 +828,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling26_I2V": "KIE Kling 2.6 (I2V)",
     "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
+    "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
 }

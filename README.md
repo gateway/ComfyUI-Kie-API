@@ -46,6 +46,10 @@ This node pack currently includes the following nodes:
   - Text-to-image and image-editing node for Seedream models.
   - Supports prompt-based generation and edits.
 
+- **Flux 2 Image-to-Image (Pro/Flex)**
+  - Image-to-image node with a model dropdown for Pro or Flex.
+  - Accepts 1–8 input images via ComfyUI batch.
+
 - **Kling 2.6 Image-to-Video**
   - Generates video from a single input image.
   - Uses the Kling 2.6 image-to-video model.
@@ -132,6 +136,8 @@ This pattern is useful for:
 Both workflows are meant as **examples**, not strict requirements.  
 Feel free to adapt, simplify, or remix them to fit your own pipelines.
 
+## Changelog
+- 2026-01-30: Added Flux 2 Image-to-Image node (Pro/Flex) with model dropdown.
 
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).
