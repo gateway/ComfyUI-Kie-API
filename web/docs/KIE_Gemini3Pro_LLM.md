@@ -12,7 +12,7 @@ Generate text using Gemini 3 Pro. This node is experimental.
 - **stream** (BOOLEAN, optional): Use streaming responses (SSE). Output is returned after completion.
 - **include_thoughts** (BOOLEAN, optional): When enabled, reasoning content is returned in the reasoning output.
 - **reasoning_effort** (COMBO, optional): Controls reasoning depth: `low` or `high`.
-- **tools_json** (STRING, optional): JSON array of tool definitions. Mutually exclusive with `response_format_json`.
+- **enable_google_search** (BOOLEAN, optional): Enable the Google Search tool. Mutually exclusive with `response_format_json`.
 - **response_format_json** (STRING, optional): JSON schema output format. Mutually exclusive with `tools_json`.
 - **log** (BOOLEAN, optional): Enable console logging for uploads and response status.
 
@@ -26,7 +26,7 @@ Generate text using Gemini 3 Pro. This node is experimental.
 - **Stream (toggle)**: Enables SSE streaming under the hood; output still returns when complete.
 - **Include Thoughts (toggle)**: When on, reasoning text is captured and returned in the second output.
 - **Reasoning Effort (dropdown)**: `low` is faster, `high` is more thorough.
-- **Tools JSON (text box)**: Raw JSON array of tool definitions (advanced).
+- **Enable Google Search (toggle)**: Sends the Google Search tool payload to the API.
 - **Response Format JSON (text box)**: Raw JSON schema definition (advanced).
 - **Log (toggle)**: Emits upload and completion messages to the console.
 
@@ -37,6 +37,6 @@ Generate text using Gemini 3 Pro. This node is experimental.
 
 ## Helper behavior
 - Validates `reasoning_effort`.
-- Enforces mutual exclusivity for tools vs response_format.
+- Enforces mutual exclusivity for Google Search vs response_format.
 - If `messages_json` is provided, it is used as the message array and media inputs are rejected.
 - Media inputs are uploaded and added to the message content using the unified `image_url` format.

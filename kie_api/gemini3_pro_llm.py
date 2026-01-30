@@ -63,26 +63,6 @@ def _normalize_messages(
     ]
 
 
-def _validate_tools_payload(tools_payload: Any | None) -> None:
-    if tools_payload is None:
-        return
-    if not isinstance(tools_payload, list):
-        raise RuntimeError("tools_json must be a JSON array.")
-
-    tool_names = []
-    for item in tools_payload:
-        if not isinstance(item, dict):
-            raise RuntimeError("tools_json must be a JSON array of objects.")
-        fn = (item.get("function") or {})
-        if isinstance(fn, dict):
-            name = fn.get("name")
-            if isinstance(name, str):
-                tool_names.append(name)
-
-    if "googleSearch" in tool_names and len(tool_names) > 1:
-        raise RuntimeError("googleSearch cannot be combined with other tools.")
-
-
 def run_gemini3_pro_chat(
     *,
     prompt: str,
@@ -94,7 +74,7 @@ def run_gemini3_pro_chat(
     stream: bool = True,
     include_thoughts: bool = True,
     reasoning_effort: str = "high",
-    tools_json: str | None = None,
+    enable_google_search: bool = False,
     response_format_json: str | None = None,
     log: bool = True,
 ) -> tuple[str, str, str]:
@@ -106,11 +86,9 @@ def run_gemini3_pro_chat(
     if reasoning_effort not in REASONING_EFFORT_OPTIONS:
         raise RuntimeError("Invalid reasoning_effort. Use the pinned enum options.")
 
-    tools_payload = _parse_json_optional(tools_json, "tools_json")
     response_format_payload = _parse_json_optional(response_format_json, "response_format_json")
-    if tools_payload is not None and response_format_payload is not None:
+    if enable_google_search and response_format_payload is not None:
         raise RuntimeError("response_format cannot be used with tools.")
-    _validate_tools_payload(tools_payload)
 
     api_key = _load_api_key()
     headers = {
@@ -168,8 +146,8 @@ def run_gemini3_pro_chat(
         "include_thoughts": bool(include_thoughts),
         "reasoning_effort": reasoning_effort,
     }
-    if tools_payload is not None:
-        payload["tools"] = tools_payload
+    if enable_google_search:
+        payload["tools"] = [{"type": "function", "function": {"name": "googleSearch"}}]
     if response_format_payload is not None:
         payload["response_format"] = response_format_payload
 

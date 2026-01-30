@@ -52,7 +52,7 @@ This node pack currently includes the following nodes:
 
 - **Gemini 3 Pro (LLM) [Experimental]**
   - Text generation node using Gemini 3 Pro chat completions.
-  - Supports role selection, media inputs (images/video/audio), optional reasoning output, and JSON payload inputs.
+  - Supports role selection, media inputs (images/video/audio), optional reasoning output, and Google Search toggle.
 
 - **Kling 2.6 Image-to-Video**
   - Generates video from a single input image.

@@ -649,8 +649,8 @@ Inputs:
 - stream: Stream responses (SSE); output is returned after completion
 - include_thoughts: Include reasoning content in output
 - reasoning_effort: low or high
-- tools_json: Optional JSON array of tool definitions (mutually exclusive with response_format_json)
-- response_format_json: Optional JSON schema output format (mutually exclusive with tools_json)
+- enable_google_search: Enable the Google Search tool (mutually exclusive with response_format_json)
+- response_format_json: Optional JSON schema output format (mutually exclusive with Google Search)
 - log: Console logging on/off
 
 Outputs:
@@ -674,7 +674,7 @@ Outputs:
                 "stream": ("BOOLEAN", {"default": True}),
                 "include_thoughts": ("BOOLEAN", {"default": True}),
                 "reasoning_effort": ("COMBO", {"options": GEMINI3_REASONING_EFFORT_OPTIONS, "default": "high"}),
-                "tools_json": ("STRING", {"multiline": True, "default": ""}),
+                "enable_google_search": ("BOOLEAN", {"default": False}),
                 "response_format_json": ("STRING", {"multiline": True, "default": ""}),
                 "log": ("BOOLEAN", {"default": True}),
             },
@@ -696,7 +696,7 @@ Outputs:
         stream: bool = True,
         include_thoughts: bool = True,
         reasoning_effort: str = "high",
-        tools_json: str = "",
+        enable_google_search: bool = False,
         response_format_json: str = "",
         log: bool = True,
     ):
@@ -710,7 +710,7 @@ Outputs:
             stream=stream,
             include_thoughts=include_thoughts,
             reasoning_effort=reasoning_effort,
-            tools_json=tools_json,
+            enable_google_search=enable_google_search,
             response_format_json=response_format_json,
             log=log,
         )
