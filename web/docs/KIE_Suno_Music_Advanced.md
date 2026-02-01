@@ -1,6 +1,6 @@
-# KIE Suno Music (Generate)
+# KIE Suno Music (Advanced)
 
-Create a Suno music generation task via KIE API. This node polls until completion and returns an AUDIO output.
+Create a Suno music generation task via KIE API. This node exposes advanced weights and returns an AUDIO output.
 
 ## Inputs
 - **title** (STRING, required): Track title (required in custom mode).
@@ -11,7 +11,7 @@ Create a Suno music generation task via KIE API. This node polls until completio
 - **model** (COMBO, required): `V4`, `V4_5`, `V4_5PLUS`, `V4_5ALL`, `V5`
 Optional:
 - **negative_tags** (STRING): Optional.
-- **vocal_gender** (COMBO): `m` or `f` (custom mode only).
+- **vocal_gender** (COMBO): `male` or `female` (custom mode only).
 - **style_weight** (FLOAT): 0..1
 - **weirdness_constraint** (FLOAT): 0..1
 - **audio_weight** (FLOAT): 0..1

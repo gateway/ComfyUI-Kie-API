@@ -37,51 +37,48 @@ Do **NOT** share your API key or commit it to version control.
 
 This node pack currently includes the following nodes:
 
-### Generation Nodes
-
+## Image Nodes
 - **Nano Banana Pro Image**
   - Image generation node using the Googles Nano Banana Pro model
-
 - **Seedream Text-to-Image / Edit**
   - Text-to-image and image-editing node for Seedream models.
   - Supports prompt-based generation and edits.
-
 - **Flux 2 Image-to-Image (Pro/Flex)**
   - Image-to-image node with a model dropdown for Pro or Flex.
   - Accepts 1–8 input images via ComfyUI batch.
 
+## Video Nodes
+- **Kling 2.6 Image-to-Video**
+  - Generates video from a single input image.
+  - Uses the Kling 2.6 image-to-video model.
+- **Kling 2.5 I2V Pro**
+  - Generates video from a required first image and optional tail image.
+  - Uses the Kling 2.5 Turbo image-to-video Pro model.
+- **Kling 2.6 Text-to-Video**
+  - Generates video directly from a text prompt.
+  - Supports aspect ratio, duration, and sound options as exposed by the API.
+- **Kling 2.6 Motion-Control Image-to-Video**
+  - Image-to-video generation with additional motion control parameters.
+  - Designed for more directed camera and motion behavior.
+- **Seedance V1 Pro (Fast) Image-to-Video**  
+  Fast image-to-video generation optimized for quick iteration.
+- **Seedance 1.5 Pro Image-to-Video, Text-to-Video**  
+  Higher-quality image-to-video generation using the Seedance 1.5 Pro model.
+
+## LLM Nodes
 - **Gemini (LLM) [Experimental]**
   - Text generation node using Gemini 2.5/3 Pro/Flash chat completions.
   - Supports role selection, media inputs (images/video/audio), optional reasoning output, and Google Search toggle.
 
-- **Suno Music (Generate)**
-  - Generates music and returns AUDIO output.
-  - Uses KIE Suno API `generate` + `record-info` polling.
+## Audio Nodes
+- **Suno Music (Basic)**
+  - Minimal inputs: title, style, prompt, model, instrument, tags, gender.
+  - Returns AUDIO output via KIE Suno API `generate` + `record-info` polling.
+- **Suno Music (Advanced)**
+  - Adds style/creative weights to the Basic node.
+  - Returns AUDIO output via KIE Suno API `generate` + `record-info` polling.
 
-- **Kling 2.6 Image-to-Video**
-  - Generates video from a single input image.
-  - Uses the Kling 2.6 image-to-video model.
-
-- **Kling 2.5 I2V Pro**
-  - Generates video from a required first image and optional tail image.
-  - Uses the Kling 2.5 Turbo image-to-video Pro model.
-
-- **Kling 2.6 Text-to-Video**
-  - Generates video directly from a text prompt.
-  - Supports aspect ratio, duration, and sound options as exposed by the API.
-
-- **Kling 2.6 Motion-Control Image-to-Video**
-  - Image-to-video generation with additional motion control parameters.
-  - Designed for more directed camera and motion behavior.
-
-- **Seedance V1 Pro (Fast) Image-to-Video**  
-  Fast image-to-video generation optimized for quick iteration.
-
-- **Seedance 1.5 Pro Image-to-Video, Text-to-Video**  
-  Higher-quality image-to-video generation using the Seedance 1.5 Pro model.
-
-
-### Utility / Helper Nodes
+## Utility / Helper Nodes
 
 - **Get Remaining Credits**
   - Return number of credits remaining

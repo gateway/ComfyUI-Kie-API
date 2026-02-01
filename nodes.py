@@ -723,11 +723,11 @@ Outputs:
         return (content, reasoning, raw_json)
 
 
-class KIE_Suno_Music:
+class KIE_Suno_Music_Basic:
     HELP = """
-KIE Suno Music (Generate)
+KIE Suno Music (Basic)
 
-Create a Suno music generation task via KIE API. Returns a taskId.
+Create a Suno music generation task via KIE API. Returns an AUDIO output and record JSON.
 
 Inputs:
 - title: Track title (required in custom mode)
@@ -736,14 +736,13 @@ Inputs:
 - custom_mode: Enable custom mode (required)
 - instrumental: Instrumental-only mode (required)
 - model: V4 / V4_5 / V4_5PLUS / V4_5ALL / V5
-- style: Required in custom mode
-- title: Required in custom mode
+
+Optional:
 - negative_tags: Optional tags to avoid
 - vocal_gender: m or f (custom mode only)
-- style_weight / weirdness_constraint / audio_weight: 0..1
 - log: Console logging on/off
 
-    Outputs:
+Outputs:
 - AUDIO: Generated audio
 - STRING: raw_json
 """
@@ -761,7 +760,82 @@ Inputs:
             },
             "optional": {
                 "negative_tags": ("STRING", {"default": ""}),
-                "vocal_gender": ("COMBO", {"options": ["m", "f"], "default": "m"}),
+                "vocal_gender": ("COMBO", {"options": ["male", "female"], "default": "male"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("AUDIO", "STRING")
+    RETURN_NAMES = ("audio", "raw_json")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        title: str,
+        style: str,
+        prompt: str,
+        custom_mode: bool,
+        instrumental: bool,
+        model: str,
+        negative_tags: str = "",
+        vocal_gender: str = "male",
+        log: bool = True,
+    ):
+        gender_value = "m" if vocal_gender == "male" else "f"
+        audio_output, raw_json = run_suno_generate(
+            prompt=prompt,
+            custom_mode=custom_mode,
+            instrumental=instrumental,
+            model=model,
+            style=style,
+            title=title,
+            negative_tags=negative_tags,
+            vocal_gender=gender_value,
+            log=log,
+        )
+        return (audio_output, raw_json)
+
+
+class KIE_Suno_Music_Advanced:
+    HELP = """
+KIE Suno Music (Advanced)
+
+Create a Suno music generation task via KIE API. Returns an AUDIO output and record JSON.
+
+Inputs:
+- title: Track title (required in custom mode)
+- style: Style text (required in custom mode)
+- prompt: Text prompt (lyrics in custom mode when instrumental is false)
+- custom_mode: Enable custom mode (required)
+- instrumental: Instrumental-only mode (required)
+- model: V4 / V4_5 / V4_5PLUS / V4_5ALL / V5
+
+Optional:
+- negative_tags: Optional tags to avoid
+- vocal_gender: m or f (custom mode only)
+- style_weight / weirdness_constraint / audio_weight: 0..1
+- log: Console logging on/off
+
+Outputs:
+- AUDIO: Generated audio
+- STRING: raw_json
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "title": ("STRING", {"default": ""}),
+                "style": ("STRING", {"default": "", "multiline": True}),
+                "prompt": ("STRING", {"multiline": True}),
+                "custom_mode": ("BOOLEAN", {"default": True}),
+                "instrumental": ("BOOLEAN", {"default": True}),
+                "model": ("COMBO", {"options": SUNO_MODEL_OPTIONS, "default": "V4_5"}),
+            },
+            "optional": {
+                "negative_tags": ("STRING", {"default": ""}),
+                "vocal_gender": ("COMBO", {"options": ["male", "female"], "default": "male"}),
                 "style_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "weirdness_constraint": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "audio_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
@@ -783,12 +857,13 @@ Inputs:
         instrumental: bool,
         model: str,
         negative_tags: str = "",
-        vocal_gender: str = "m",
+        vocal_gender: str = "male",
         style_weight: float = 0.65,
         weirdness_constraint: float = 0.65,
         audio_weight: float = 0.65,
         log: bool = True,
     ):
+        gender_value = "m" if vocal_gender == "male" else "f"
         audio_output, raw_json = run_suno_generate(
             prompt=prompt,
             custom_mode=custom_mode,
@@ -797,7 +872,7 @@ Inputs:
             style=style,
             title=title,
             negative_tags=negative_tags,
-            vocal_gender=vocal_gender,
+            vocal_gender=gender_value,
             style_weight=style_weight,
             weirdness_constraint=weirdness_constraint,
             audio_weight=audio_weight,
@@ -993,7 +1068,8 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
     "KIE_Flux2_I2I": KIE_Flux2_I2I,
     "KIE_Gemini3Pro_LLM": KIE_Gemini3Pro_LLM,
-    "KIE_Suno_Music": KIE_Suno_Music,
+    "KIE_Suno_Music_Basic": KIE_Suno_Music_Basic,
+    "KIE_Suno_Music_Advanced": KIE_Suno_Music_Advanced,
     "KIE_GridSlice": KIE_GridSlice,
     "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
 }
@@ -1010,7 +1086,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
     "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
     "KIE_Gemini3Pro_LLM": "KIE Gemini (LLM) [Experimental]",
-    "KIE_Suno_Music": "KIE Suno Music (Generate)",
+    "KIE_Suno_Music_Basic": "KIE Suno Music (Basic)",
+    "KIE_Suno_Music_Advanced": "KIE Suno Music (Advanced)",
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
 }

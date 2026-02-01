@@ -264,6 +264,18 @@ def run_suno_generate(
         raise RuntimeError(f"Failed to download audio: {exc}") from exc
 
     audio_output = _audio_bytes_to_comfy_audio(audio_bytes, "audio.mp3")
+    try:
+        import torch
+        waveform = audio_output.get("waveform")
+        if not isinstance(waveform, torch.Tensor):
+            waveform = torch.as_tensor(waveform)
+        if waveform.ndim == 1:
+            waveform = waveform.unsqueeze(0)
+        if waveform.ndim == 2:
+            waveform = waveform.unsqueeze(0)
+        audio_output["waveform"] = waveform
+    except Exception as exc:
+        raise RuntimeError(f"Failed to normalize audio waveform for ComfyUI: {exc}") from exc
     if log:
         waveform = audio_output.get("waveform")
         shape = getattr(waveform, "shape", None)
