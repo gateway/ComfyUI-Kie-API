@@ -55,8 +55,8 @@ This node pack currently includes the following nodes:
   - Supports role selection, media inputs (images/video/audio), optional reasoning output, and Google Search toggle.
 
 - **Suno Music (Generate)**
-  - Creates a music generation task and returns a task ID.
-  - Uses KIE Suno API `generate` endpoint.
+  - Generates music and returns AUDIO output.
+  - Uses KIE Suno API `generate` + `record-info` polling.
 
 - **Kling 2.6 Image-to-Video**
   - Generates video from a single input image.

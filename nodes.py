@@ -743,7 +743,8 @@ Inputs:
 - persona_id: Optional persona (custom mode only)
 - log: Console logging on/off
 
-Outputs:
+    Outputs:
+- AUDIO: Generated audio
 - STRING: task_id
 - STRING: raw_json
 """
@@ -771,8 +772,8 @@ Outputs:
             },
         }
 
-    RETURN_TYPES = ("STRING", "STRING")
-    RETURN_NAMES = ("task_id", "raw_json")
+    RETURN_TYPES = ("AUDIO", "STRING", "STRING")
+    RETURN_NAMES = ("audio", "task_id", "raw_json")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -793,7 +794,7 @@ Outputs:
         persona_id: str = "",
         log: bool = True,
     ):
-        task_id, raw_json = run_suno_generate(
+        audio_output, task_id, raw_json = run_suno_generate(
             prompt=prompt,
             custom_mode=custom_mode,
             instrumental=instrumental,
@@ -809,7 +810,7 @@ Outputs:
             persona_id=persona_id,
             log=log,
         )
-        return (task_id, raw_json)
+        return (audio_output, task_id, raw_json)
 
 
 class KIE_GridSlice:

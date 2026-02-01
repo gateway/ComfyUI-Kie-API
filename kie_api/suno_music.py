@@ -1,15 +1,26 @@
 """KIE Suno music generation helper (v1 create-only)."""
 
 import json
+import time
 from typing import Any
 
 from .auth import _load_api_key
+from .audio import _audio_bytes_to_comfy_audio
 from .http import TransientKieError, requests
 from .log import _log
 
 GENERATE_URL = "https://api.kie.ai/api/v1/generate"
+RECORD_INFO_URL = "https://api.kie.ai/api/v1/generate/record-info"
 MODEL_OPTIONS = ["V4", "V4_5", "V4_5PLUS", "V4_5ALL", "V5"]
 VOCAL_GENDER_OPTIONS = ["m", "f"]
+POLLABLE_STATES = {"PENDING", "TEXT_SUCCESS", "FIRST_SUCCESS"}
+SUCCESS_STATE = "SUCCESS"
+FAIL_STATES = {
+    "CREATE_TASK_FAILED",
+    "GENERATE_AUDIO_FAILED",
+    "CALLBACK_EXCEPTION",
+    "SENSITIVE_WORD_ERROR",
+}
 
 
 def _validate_length(field_name: str, value: str | None, max_len: int) -> None:
@@ -27,6 +38,89 @@ def _max_style_len(model: str) -> int:
     return 200 if model == "V4" else 1000
 
 
+def _fetch_music_record(api_key: str, task_id: str) -> dict[str, Any]:
+    try:
+        response = requests.get(
+            RECORD_INFO_URL,
+            headers={"Authorization": f"Bearer {api_key}"},
+            params={"taskId": task_id},
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to call record-info endpoint: {exc}") from exc
+
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"record-info returned HTTP {response.status_code}: {response.text}",
+            status_code=response.status_code,
+        )
+
+    try:
+        payload_json: Any = response.json()
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("record-info endpoint did not return valid JSON.") from exc
+
+    if payload_json.get("code") != 200:
+        message = payload_json.get("msg") or payload_json.get("message")
+        raise RuntimeError(f"record-info returned error code {payload_json.get('code')}: {message}")
+
+    data = payload_json.get("data")
+    if data is None:
+        raise RuntimeError("record-info endpoint returned no data field.")
+
+    return data
+
+
+def _extract_audio_urls(record_data: dict[str, Any]) -> list[str]:
+    # Expected: record_data["data"] is a list of items with audio_url
+    items = record_data.get("data")
+    urls: list[str] = []
+    if isinstance(items, list):
+        for item in items:
+            if isinstance(item, dict) and item.get("audio_url"):
+                urls.append(item["audio_url"])
+    if not urls and isinstance(record_data, dict) and record_data.get("audio_url"):
+        urls.append(record_data["audio_url"])
+    if not urls:
+        raise RuntimeError("No audio_url found in record-info response.")
+    return urls
+
+
+def _poll_music_until_complete(
+    api_key: str,
+    task_id: str,
+    poll_interval_s: float,
+    timeout_s: int,
+    log: bool,
+) -> dict[str, Any]:
+    start_time = time.time()
+    last_state = None
+
+    while True:
+        elapsed = time.time() - start_time
+        if elapsed > timeout_s:
+            raise RuntimeError(f"Task {task_id} timed out after {timeout_s}s.")
+
+        record = _fetch_music_record(api_key, task_id)
+        state = record.get("status") or record.get("state") or record.get("callbackType")
+
+        if log and state != last_state:
+            _log(log, f"Suno task {task_id} state: {state}")
+            last_state = state
+
+        if state == SUCCESS_STATE or state == "complete":
+            return record
+        if state in FAIL_STATES or state == "error":
+            raise RuntimeError(f"Suno task {task_id} failed with state: {state}")
+
+        if state in POLLABLE_STATES or state is None:
+            time.sleep(poll_interval_s)
+            continue
+
+        # Unknown state, keep polling conservatively
+        time.sleep(poll_interval_s)
+
+
 def run_suno_generate(
     *,
     prompt: str,
@@ -42,9 +136,11 @@ def run_suno_generate(
     weirdness_constraint: float | None = None,
     audio_weight: float | None = None,
     persona_id: str | None = None,
+    poll_interval_s: float = 30.0,
+    timeout_s: int = 1800,
     log: bool = True,
-) -> tuple[str, str]:
-    """Create a Suno music generation task. Returns (task_id, raw_json)."""
+) -> tuple[dict, str, str]:
+    """Create a Suno music generation task and return audio output."""
     if model not in MODEL_OPTIONS:
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
@@ -128,4 +224,22 @@ def run_suno_generate(
     if log:
         _log(log, f"Suno task created: {task_id} (model={model})")
 
-    return task_id, json.dumps(payload_json)
+    record = _poll_music_until_complete(
+        api_key,
+        task_id,
+        poll_interval_s=poll_interval_s,
+        timeout_s=timeout_s,
+        log=log,
+    )
+    audio_urls = _extract_audio_urls(record)
+    audio_url = audio_urls[0]
+    if log:
+        _log(log, f"Suno audio URL: {audio_url}")
+
+    try:
+        audio_bytes = requests.get(audio_url, timeout=180).content
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to download audio: {exc}") from exc
+
+    audio_output = _audio_bytes_to_comfy_audio(audio_bytes, "audio.mp3")
+    return audio_output, task_id, json.dumps(payload_json)

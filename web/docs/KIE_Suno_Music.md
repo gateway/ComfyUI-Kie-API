@@ -1,6 +1,6 @@
 # KIE Suno Music (Generate)
 
-Create a Suno music generation task via KIE API. This v1 node returns a task ID; retrieval of the final audio is handled via callback or a future polling node.
+Create a Suno music generation task via KIE API. This node polls until completion and returns an AUDIO output.
 
 ## Inputs
 - **prompt** (STRING, required): Prompt text (lyrics in custom mode when instrumental is false).
@@ -21,6 +21,7 @@ Optional:
 - **log** (BOOLEAN): Enable console logging.
 
 ## Outputs
+- **audio** (AUDIO): Generated audio.
 - **task_id** (STRING): Task ID returned by the API.
 - **raw_json** (STRING): Full API response JSON.
 

@@ -78,3 +78,40 @@ def _waveform_to_wav_bytes(waveform, sample_rate: int) -> bytes:
             wf.setframerate(sample_rate)
             wf.writeframes(pcm.tobytes())
         return buffer.getvalue()
+
+
+def _audio_bytes_to_comfy_audio(audio_bytes: bytes, filename_hint: str = "audio.mp3"):
+    """Decode audio bytes into a ComfyUI AUDIO dict."""
+    if not isinstance(audio_bytes, (bytes, bytearray)) or not audio_bytes:
+        raise RuntimeError("audio_bytes must be non-empty bytes.")
+
+    try:
+        from tempfile import gettempdir
+        from time import time
+        from pathlib import Path
+        tmp_dir = Path(gettempdir())
+        suffix = Path(filename_hint).suffix or ".mp3"
+        tmp_path = tmp_dir / f"kie_audio_{int(time() * 1000)}{suffix}"
+        tmp_path.write_bytes(audio_bytes)
+    except Exception as exc:
+        raise RuntimeError(f"Failed to write temp audio file: {exc}") from exc
+
+    # Try torchaudio first
+    try:
+        import torchaudio
+        waveform, sample_rate = torchaudio.load(str(tmp_path))
+        return {"waveform": waveform, "sample_rate": sample_rate, "path": str(tmp_path)}
+    except Exception:
+        pass
+
+    # Fallback to soundfile
+    try:
+        import soundfile as sf
+        import torch
+        data, sample_rate = sf.read(str(tmp_path), always_2d=True)
+        waveform = torch.from_numpy(data.T).float()
+        return {"waveform": waveform, "sample_rate": sample_rate, "path": str(tmp_path)}
+    except Exception as exc:
+        raise RuntimeError(
+            "Failed to decode audio. Install torchaudio or soundfile to enable audio output."
+        ) from exc
