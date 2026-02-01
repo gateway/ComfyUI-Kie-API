@@ -15,7 +15,6 @@ def _fetch_remaining_credits(api_key: str) -> Tuple[str, int]:
     except requests.RequestException as exc:
         raise RuntimeError(f"Failed to call remaining credits endpoint: {exc}") from exc
 
-    raw_text = response.text
     try:
         payload: Any = response.json()
     except json.JSONDecodeError as exc:
@@ -33,7 +32,8 @@ def _fetch_remaining_credits(api_key: str) -> Tuple[str, int]:
     except (TypeError, ValueError) as exc:
         raise RuntimeError("Remaining credits value is not an integer.") from exc
 
-    return raw_text, credits_remaining
+    formatted_json = json.dumps(payload, indent=2, ensure_ascii=False)
+    return formatted_json, credits_remaining
 
 
 def _log_remaining_credits(log: bool, record_data: dict[str, Any], api_key: str, log_fn) -> None:

@@ -69,6 +69,7 @@ Inputs:
 - (none)
 
 Outputs:
+- STRING: data
 - INT: Remaining credits
 Notes:
 - If your key is missing/invalid, this node errors.
@@ -78,7 +79,7 @@ Notes:
         return {"required": {"log": ("BOOLEAN", {"default": True})}}
 
     RETURN_TYPES = ("STRING", "INT")
-    RETURN_NAMES = ("raw_json", "credits_remaining")
+    RETURN_NAMES = ("data", "credits_remaining")
     FUNCTION = "get_remaining_credits"
     CATEGORY = "kie/api"
 
@@ -659,7 +660,7 @@ Inputs:
 Outputs:
 - STRING: Assistant response text
 - STRING: Reasoning text (empty if include_thoughts is false)
-- STRING: Raw JSON from last response chunk
+- STRING: data (formatted JSON from last response chunk)
 """
 
     @classmethod
@@ -685,7 +686,7 @@ Outputs:
         }
 
     RETURN_TYPES = ("STRING", "STRING", "STRING")
-    RETURN_NAMES = ("text", "reasoning", "raw_json")
+    RETURN_NAMES = ("text", "reasoning", "data")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -744,7 +745,7 @@ Optional:
 
 Outputs:
 - AUDIO: Generated audio
-- STRING: raw_json
+- STRING: data
 """
 
     @classmethod
@@ -766,7 +767,7 @@ Outputs:
         }
 
     RETURN_TYPES = ("AUDIO", "STRING")
-    RETURN_NAMES = ("audio", "raw_json")
+    RETURN_NAMES = ("audio", "data")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -819,7 +820,7 @@ Optional:
 
 Outputs:
 - AUDIO: Generated audio
-- STRING: raw_json
+- STRING: data
 """
 
     @classmethod
@@ -844,7 +845,7 @@ Outputs:
         }
 
     RETURN_TYPES = ("AUDIO", "STRING")
-    RETURN_NAMES = ("audio", "raw_json")
+    RETURN_NAMES = ("audio", "data")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 

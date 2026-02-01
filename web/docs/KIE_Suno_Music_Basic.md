@@ -17,7 +17,7 @@ Optional:
 
 ## Outputs
 - **audio** (AUDIO): Generated audio.
-- **raw_json** (STRING): Full API response JSON.
+- **data** (STRING): Full API response JSON (formatted).
 
 ## Notes
 - Non-custom mode expects **prompt only** (500 chars max); other fields should be empty.

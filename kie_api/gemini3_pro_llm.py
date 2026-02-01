@@ -33,6 +33,15 @@ def _parse_json_optional(raw: str | None, label: str) -> Any | None:
         raise RuntimeError(f"{label} is not valid JSON.") from exc
 
 
+def _format_json_for_output(payload: Any) -> str:
+    if payload is None:
+        return ""
+    try:
+        return json.dumps(payload, indent=2, ensure_ascii=False)
+    except TypeError:
+        return json.dumps(payload, indent=2, ensure_ascii=False, default=str)
+
+
 def _normalize_messages(
     prompt: str,
     messages_json: str | None,
@@ -88,7 +97,7 @@ def run_gemini3_pro_chat(
     """Run a Gemini 3 Pro chat completion request.
 
     Returns:
-        (content_text, reasoning_text, raw_json)
+        (content_text, reasoning_text, data_json)
     """
     if model not in CHAT_COMPLETIONS_URLS:
         raise RuntimeError("Invalid model. Use the pinned enum options.")
@@ -198,7 +207,7 @@ def run_gemini3_pro_chat(
         message = (choices[0].get("message") or {})
         content = message.get("content") or ""
         reasoning = message.get("reasoning_content") or ""
-        return (str(content), str(reasoning), json.dumps(payload_json))
+        return (str(content), str(reasoning), _format_json_for_output(payload_json))
 
     content_parts: list[str] = []
     reasoning_parts: list[str] = []
@@ -233,7 +242,7 @@ def run_gemini3_pro_chat(
 
     content_text = "".join(content_parts)
     reasoning_text = "".join(reasoning_parts)
-    raw_json = json.dumps(last_payload) if last_payload is not None else ""
+    raw_json = _format_json_for_output(last_payload) if last_payload is not None else ""
 
     if log:
         _log(log, f"{model} response length: {len(content_text)} chars")

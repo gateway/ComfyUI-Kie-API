@@ -1808,7 +1808,7 @@
       "inputs": [],
       "outputs": [
         {
-          "name": "raw_json",
+          "name": "data",
           "type": "STRING",
           "links": null
         },

@@ -23,6 +23,22 @@ FAIL_STATES = {
 }
 
 
+def _format_record_for_output(record: dict[str, Any]) -> str:
+    try:
+        record_copy = json.loads(json.dumps(record))
+    except TypeError:
+        record_copy = dict(record)
+
+    param_value = record_copy.get("param")
+    if isinstance(param_value, str):
+        try:
+            record_copy["param"] = json.loads(param_value)
+        except json.JSONDecodeError:
+            record_copy["param"] = param_value
+
+    return json.dumps(record_copy, indent=2, ensure_ascii=False, default=str)
+
+
 def _validate_length(field_name: str, value: str | None, max_len: int) -> None:
     if value is None:
         return
@@ -163,7 +179,7 @@ def run_suno_generate(
     timeout_s: int = 1800,
     log: bool = True,
 ) -> tuple[dict, str]:
-    """Create a Suno music generation task and return audio output + raw record-info JSON."""
+    """Create a Suno music generation task and return audio output + formatted record-info JSON."""
     if model not in MODEL_OPTIONS:
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
@@ -280,4 +296,4 @@ def run_suno_generate(
         waveform = audio_output.get("waveform")
         shape = getattr(waveform, "shape", None)
         _log(log, f"Suno audio waveform shape: {shape}")
-    return audio_output, json.dumps(record)
+    return audio_output, _format_record_for_output(record)
