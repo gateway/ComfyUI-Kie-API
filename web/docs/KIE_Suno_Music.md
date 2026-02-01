@@ -1,0 +1,31 @@
+# KIE Suno Music (Generate)
+
+Create a Suno music generation task via KIE API. This v1 node returns a task ID; retrieval of the final audio is handled via callback or a future polling node.
+
+## Inputs
+- **prompt** (STRING, required): Prompt text (lyrics in custom mode when instrumental is false).
+- **custom_mode** (BOOLEAN, required): Enable custom mode.
+- **instrumental** (BOOLEAN, required): Instrumental-only mode.
+- **model** (COMBO, required): `V4`, `V4_5`, `V4_5PLUS`, `V4_5ALL`, `V5`
+- **callback_url** (STRING, required): Webhook URL to receive results.
+
+Optional:
+- **style** (STRING): Required in custom mode. Length limit depends on model.
+- **title** (STRING): Required in custom mode. Max 80 chars.
+- **negative_tags** (STRING): Optional.
+- **vocal_gender** (COMBO): `m` or `f` (custom mode only).
+- **style_weight** (FLOAT): 0..1
+- **weirdness_constraint** (FLOAT): 0..1
+- **audio_weight** (FLOAT): 0..1
+- **persona_id** (STRING): Optional (custom mode only).
+- **log** (BOOLEAN): Enable console logging.
+
+## Outputs
+- **task_id** (STRING): Task ID returned by the API.
+- **raw_json** (STRING): Full API response JSON.
+
+## Notes
+- Non-custom mode expects **prompt only** (500 chars max); other fields should be empty.
+- Custom mode requirements:
+  - Instrumental: `style` + `title`
+  - Non-instrumental: `style` + `title` + `prompt`

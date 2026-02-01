@@ -41,6 +41,7 @@ from .kie_api.kling26_t2v import (
     DURATION_OPTIONS as KLING26_T2V_DURATION_OPTIONS,
     run_kling26_t2v_video,
 )
+from .kie_api.suno_music import MODEL_OPTIONS as SUNO_MODEL_OPTIONS, run_suno_generate
 from .kie_api.gemini3_pro_llm import (
     MODEL_OPTIONS as GEMINI3_MODEL_OPTIONS,
     REASONING_EFFORT_OPTIONS as GEMINI3_REASONING_EFFORT_OPTIONS,
@@ -722,6 +723,95 @@ Outputs:
         return (content, reasoning, raw_json)
 
 
+class KIE_Suno_Music:
+    HELP = """
+KIE Suno Music (Generate)
+
+Create a Suno music generation task via KIE API. Returns a taskId.
+
+Inputs:
+- prompt: Text prompt (lyrics in custom mode when instrumental is false)
+- custom_mode: Enable custom mode (required)
+- instrumental: Instrumental-only mode (required)
+- model: V4 / V4_5 / V4_5PLUS / V4_5ALL / V5
+- callback_url: Webhook URL for results (required by API)
+- style: Required in custom mode
+- title: Required in custom mode
+- negative_tags: Optional tags to avoid
+- vocal_gender: m or f (custom mode only)
+- style_weight / weirdness_constraint / audio_weight: 0..1
+- persona_id: Optional persona (custom mode only)
+- log: Console logging on/off
+
+Outputs:
+- STRING: task_id
+- STRING: raw_json
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "custom_mode": ("BOOLEAN", {"default": True}),
+                "instrumental": ("BOOLEAN", {"default": True}),
+                "model": ("COMBO", {"options": SUNO_MODEL_OPTIONS, "default": "V4_5"}),
+                "callback_url": ("STRING", {"default": ""}),
+            },
+            "optional": {
+                "style": ("STRING", {"default": ""}),
+                "title": ("STRING", {"default": ""}),
+                "negative_tags": ("STRING", {"default": ""}),
+                "vocal_gender": ("COMBO", {"options": ["m", "f"], "default": "m"}),
+                "style_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "weirdness_constraint": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "audio_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "persona_id": ("STRING", {"default": ""}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("task_id", "raw_json")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        custom_mode: bool,
+        instrumental: bool,
+        model: str,
+        callback_url: str,
+        style: str = "",
+        title: str = "",
+        negative_tags: str = "",
+        vocal_gender: str = "m",
+        style_weight: float = 0.65,
+        weirdness_constraint: float = 0.65,
+        audio_weight: float = 0.65,
+        persona_id: str = "",
+        log: bool = True,
+    ):
+        task_id, raw_json = run_suno_generate(
+            prompt=prompt,
+            custom_mode=custom_mode,
+            instrumental=instrumental,
+            model=model,
+            callback_url=callback_url,
+            style=style,
+            title=title,
+            negative_tags=negative_tags,
+            vocal_gender=vocal_gender,
+            style_weight=style_weight,
+            weirdness_constraint=weirdness_constraint,
+            audio_weight=audio_weight,
+            persona_id=persona_id,
+            log=log,
+        )
+        return (task_id, raw_json)
+
+
 class KIE_GridSlice:
     HELP = """
 KIE Grid Slice
@@ -909,6 +999,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
     "KIE_Flux2_I2I": KIE_Flux2_I2I,
     "KIE_Gemini3Pro_LLM": KIE_Gemini3Pro_LLM,
+    "KIE_Suno_Music": KIE_Suno_Music,
     "KIE_GridSlice": KIE_GridSlice,
     "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
 }
@@ -925,6 +1016,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
     "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
     "KIE_Gemini3Pro_LLM": "KIE Gemini (LLM) [Experimental]",
+    "KIE_Suno_Music": "KIE Suno Music (Generate)",
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
 }

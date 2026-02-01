@@ -54,6 +54,10 @@ This node pack currently includes the following nodes:
   - Text generation node using Gemini 2.5/3 Pro/Flash chat completions.
   - Supports role selection, media inputs (images/video/audio), optional reasoning output, and Google Search toggle.
 
+- **Suno Music (Generate)**
+  - Creates a music generation task and returns a task ID.
+  - Uses KIE Suno API `generate` endpoint.
+
 - **Kling 2.6 Image-to-Video**
   - Generates video from a single input image.
   - Uses the Kling 2.6 image-to-video model.
