@@ -97,7 +97,7 @@ def _audio_bytes_to_comfy_audio(audio_bytes: bytes, filename_hint: str = "audio.
         raise RuntimeError(f"Failed to write temp audio file: {exc}") from exc
 
     # Try torchaudio first
-    def _ensure_tensor_2d(waveform):
+    def _ensure_tensor_3d(waveform):
         try:
             import torch
         except Exception as exc:
@@ -109,12 +109,14 @@ def _audio_bytes_to_comfy_audio(audio_bytes: bytes, filename_hint: str = "audio.
             waveform = waveform.unsqueeze(0)
         if waveform.ndim == 1:
             waveform = waveform.unsqueeze(0)
+        if waveform.ndim == 2:
+            waveform = waveform.unsqueeze(0)
         return waveform
 
     try:
         import torchaudio
         waveform, sample_rate = torchaudio.load(str(tmp_path))
-        waveform = _ensure_tensor_2d(waveform)
+        waveform = _ensure_tensor_3d(waveform)
         return {"waveform": waveform, "sample_rate": sample_rate, "path": str(tmp_path)}
     except Exception:
         pass
@@ -125,7 +127,7 @@ def _audio_bytes_to_comfy_audio(audio_bytes: bytes, filename_hint: str = "audio.
         import torch
         data, sample_rate = sf.read(str(tmp_path), always_2d=True)
         waveform = torch.from_numpy(data.T).float()
-        waveform = _ensure_tensor_2d(waveform)
+        waveform = _ensure_tensor_3d(waveform)
         return {"waveform": waveform, "sample_rate": sample_rate, "path": str(tmp_path)}
     except Exception as exc:
         raise RuntimeError(
