@@ -745,7 +745,6 @@ Inputs:
 
     Outputs:
 - AUDIO: Generated audio
-- STRING: task_id
 - STRING: raw_json
 """
 
@@ -770,8 +769,8 @@ Inputs:
             },
         }
 
-    RETURN_TYPES = ("AUDIO", "STRING", "STRING")
-    RETURN_NAMES = ("audio", "task_id", "raw_json")
+    RETURN_TYPES = ("AUDIO", "STRING")
+    RETURN_NAMES = ("audio", "raw_json")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -790,7 +789,7 @@ Inputs:
         audio_weight: float = 0.65,
         log: bool = True,
     ):
-        audio_output, task_id, raw_json = run_suno_generate(
+        audio_output, raw_json = run_suno_generate(
             prompt=prompt,
             custom_mode=custom_mode,
             instrumental=instrumental,
@@ -804,7 +803,7 @@ Inputs:
             audio_weight=audio_weight,
             log=log,
         )
-        return (audio_output, task_id, raw_json)
+        return (audio_output, raw_json)
 
 
 class KIE_GridSlice:

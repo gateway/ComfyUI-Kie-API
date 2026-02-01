@@ -162,8 +162,8 @@ def run_suno_generate(
     poll_interval_s: float = 30.0,
     timeout_s: int = 1800,
     log: bool = True,
-) -> tuple[dict, str, str]:
-    """Create a Suno music generation task and return audio output."""
+) -> tuple[dict, str]:
+    """Create a Suno music generation task and return audio output + raw record-info JSON."""
     if model not in MODEL_OPTIONS:
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
@@ -264,4 +264,4 @@ def run_suno_generate(
         raise RuntimeError(f"Failed to download audio: {exc}") from exc
 
     audio_output = _audio_bytes_to_comfy_audio(audio_bytes, "audio.mp3")
-    return audio_output, task_id, json.dumps(payload_json)
+    return audio_output, json.dumps(record)

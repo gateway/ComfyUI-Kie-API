@@ -19,7 +19,6 @@ Optional:
 
 ## Outputs
 - **audio** (AUDIO): Generated audio.
-- **task_id** (STRING): Task ID returned by the API.
 - **raw_json** (STRING): Full API response JSON.
 
 ## Notes
