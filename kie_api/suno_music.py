@@ -143,8 +143,7 @@ def run_suno_generate(
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
         raise RuntimeError("vocal_gender must be 'm' or 'f'.")
-    if not callback_url:
-        raise RuntimeError("callback_url is required by the API spec.")
+    callback_url = "https://example.com/kie-suno-callback"
 
     prompt_text = (prompt or "").strip()
     style_text = (style or "").strip()

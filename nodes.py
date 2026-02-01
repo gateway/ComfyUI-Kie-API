@@ -736,7 +736,6 @@ Inputs:
 - custom_mode: Enable custom mode (required)
 - instrumental: Instrumental-only mode (required)
 - model: V4 / V4_5 / V4_5PLUS / V4_5ALL / V5
-- callback_url: Webhook URL for results (required by API; can be dummy)
 - style: Required in custom mode
 - title: Required in custom mode
 - negative_tags: Optional tags to avoid
@@ -755,12 +754,11 @@ Inputs:
         return {
             "required": {
                 "title": ("STRING", {"default": ""}),
-                "style": ("STRING", {"default": ""}),
+                "style": ("STRING", {"default": "", "multiline": True}),
                 "prompt": ("STRING", {"multiline": True}),
                 "custom_mode": ("BOOLEAN", {"default": True}),
                 "instrumental": ("BOOLEAN", {"default": True}),
                 "model": ("COMBO", {"options": SUNO_MODEL_OPTIONS, "default": "V4_5"}),
-                "callback_url": ("STRING", {"default": "https://example.com/kie-suno-callback"}),
             },
             "optional": {
                 "negative_tags": ("STRING", {"default": ""}),
@@ -785,7 +783,6 @@ Inputs:
         custom_mode: bool,
         instrumental: bool,
         model: str,
-        callback_url: str,
         negative_tags: str = "",
         vocal_gender: str = "m",
         style_weight: float = 0.65,
@@ -798,7 +795,6 @@ Inputs:
             custom_mode=custom_mode,
             instrumental=instrumental,
             model=model,
-            callback_url=callback_url,
             style=style,
             title=title,
             negative_tags=negative_tags,
