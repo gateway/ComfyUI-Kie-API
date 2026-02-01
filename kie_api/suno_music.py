@@ -72,15 +72,40 @@ def _fetch_music_record(api_key: str, task_id: str) -> dict[str, Any]:
 
 
 def _extract_audio_urls(record_data: dict[str, Any]) -> list[str]:
-    # Expected: record_data["data"] is a list of items with audio_url
-    items = record_data.get("data")
     urls: list[str] = []
+
+    # Callback-style payload: data.data[].audio_url
+    items = record_data.get("data")
     if isinstance(items, list):
         for item in items:
-            if isinstance(item, dict) and item.get("audio_url"):
-                urls.append(item["audio_url"])
-    if not urls and isinstance(record_data, dict) and record_data.get("audio_url"):
-        urls.append(record_data["audio_url"])
+            if isinstance(item, dict):
+                audio_url = item.get("audio_url") or item.get("audioUrl")
+                stream_url = item.get("stream_audio_url") or item.get("streamAudioUrl")
+                if audio_url:
+                    urls.append(audio_url)
+                elif stream_url:
+                    urls.append(stream_url)
+
+    # record-info payload: data.response.sunoData[].audioUrl
+    response = record_data.get("response")
+    if isinstance(response, dict):
+        suno_data = response.get("sunoData")
+        if isinstance(suno_data, list):
+            for item in suno_data:
+                if isinstance(item, dict):
+                    audio_url = item.get("audioUrl") or item.get("audio_url")
+                    stream_url = item.get("streamAudioUrl") or item.get("stream_audio_url")
+                    if audio_url:
+                        urls.append(audio_url)
+                    elif stream_url:
+                        urls.append(stream_url)
+
+    # direct field fallback
+    if not urls and isinstance(record_data, dict):
+        audio_url = record_data.get("audio_url") or record_data.get("audioUrl")
+        if audio_url:
+            urls.append(audio_url)
+
     if not urls:
         raise RuntimeError("No audio_url found in record-info response.")
     return urls
@@ -226,6 +251,8 @@ def run_suno_generate(
         timeout_s=timeout_s,
         log=log,
     )
+    if log:
+        _log(log, f"Suno record-info response keys: {list(record.keys())}")
     audio_urls = _extract_audio_urls(record)
     audio_url = audio_urls[0]
     if log:

@@ -27,3 +27,4 @@ Optional:
 - Custom mode requirements:
   - Instrumental: `style` + `title`
   - Non-instrumental: `style` + `title` + `prompt`
+- Polling parses both callback-style (`data.data[].audio_url`) and record-info style (`data.response.sunoData[].audioUrl`) responses.
