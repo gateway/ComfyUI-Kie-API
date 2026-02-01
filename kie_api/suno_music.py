@@ -127,7 +127,6 @@ def run_suno_generate(
     custom_mode: bool,
     instrumental: bool,
     model: str,
-    callback_url: str,
     style: str | None = None,
     title: str | None = None,
     negative_tags: str | None = None,
@@ -145,8 +144,7 @@ def run_suno_generate(
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
         raise RuntimeError("vocal_gender must be 'm' or 'f'.")
-    if not callback_url:
-        raise RuntimeError("callback_url is required by the API spec.")
+    # callback_url intentionally omitted; polling mode only
 
     prompt_text = (prompt or "").strip()
     style_text = (style or "").strip()
@@ -175,7 +173,6 @@ def run_suno_generate(
         "customMode": bool(custom_mode),
         "instrumental": bool(instrumental),
         "model": model,
-        "callBackUrl": callback_url,
     }
     if style_text:
         payload["style"] = style_text

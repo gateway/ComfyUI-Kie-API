@@ -734,7 +734,6 @@ Inputs:
 - custom_mode: Enable custom mode (required)
 - instrumental: Instrumental-only mode (required)
 - model: V4 / V4_5 / V4_5PLUS / V4_5ALL / V5
-- callback_url: Webhook URL for results (required by API)
 - style: Required in custom mode
 - title: Required in custom mode
 - negative_tags: Optional tags to avoid
@@ -757,7 +756,6 @@ Inputs:
                 "custom_mode": ("BOOLEAN", {"default": True}),
                 "instrumental": ("BOOLEAN", {"default": True}),
                 "model": ("COMBO", {"options": SUNO_MODEL_OPTIONS, "default": "V4_5"}),
-                "callback_url": ("STRING", {"default": ""}),
             },
             "optional": {
                 "style": ("STRING", {"default": ""}),
@@ -783,7 +781,6 @@ Inputs:
         custom_mode: bool,
         instrumental: bool,
         model: str,
-        callback_url: str,
         style: str = "",
         title: str = "",
         negative_tags: str = "",
@@ -799,7 +796,6 @@ Inputs:
             custom_mode=custom_mode,
             instrumental=instrumental,
             model=model,
-            callback_url=callback_url,
             style=style,
             title=title,
             negative_tags=negative_tags,
