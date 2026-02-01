@@ -134,7 +134,6 @@ def run_suno_generate(
     style_weight: float | None = None,
     weirdness_constraint: float | None = None,
     audio_weight: float | None = None,
-    persona_id: str | None = None,
     poll_interval_s: float = 30.0,
     timeout_s: int = 1800,
     log: bool = True,
@@ -144,7 +143,8 @@ def run_suno_generate(
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
         raise RuntimeError("vocal_gender must be 'm' or 'f'.")
-    # callback_url intentionally omitted; polling mode only
+    if not callback_url:
+        raise RuntimeError("callback_url is required by the API spec.")
 
     prompt_text = (prompt or "").strip()
     style_text = (style or "").strip()
@@ -165,14 +165,15 @@ def run_suno_generate(
             raise RuntimeError("prompt is required when custom_mode is disabled.")
         _validate_length("prompt", prompt_text, 500)
         # Spec says other fields should be empty in non-custom mode.
-        if any([style_text, title_text, negative_tags, vocal_gender, persona_id]):
-            raise RuntimeError("style/title/negative_tags/vocal_gender/persona_id must be empty when custom_mode is false.")
+        if any([style_text, title_text, negative_tags, vocal_gender]):
+            raise RuntimeError("style/title/negative_tags/vocal_gender must be empty when custom_mode is false.")
 
     payload: dict[str, Any] = {
         "prompt": prompt_text,
         "customMode": bool(custom_mode),
         "instrumental": bool(instrumental),
         "model": model,
+        "callBackUrl": callback_url,
     }
     if style_text:
         payload["style"] = style_text
@@ -188,8 +189,6 @@ def run_suno_generate(
         payload["weirdnessConstraint"] = weirdness_constraint
     if audio_weight is not None:
         payload["audioWeight"] = audio_weight
-    if persona_id:
-        payload["personaId"] = persona_id
 
     api_key = _load_api_key()
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}

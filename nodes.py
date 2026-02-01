@@ -730,16 +730,18 @@ KIE Suno Music (Generate)
 Create a Suno music generation task via KIE API. Returns a taskId.
 
 Inputs:
+- title: Track title (required in custom mode)
+- style: Style text (required in custom mode)
 - prompt: Text prompt (lyrics in custom mode when instrumental is false)
 - custom_mode: Enable custom mode (required)
 - instrumental: Instrumental-only mode (required)
 - model: V4 / V4_5 / V4_5PLUS / V4_5ALL / V5
+- callback_url: Webhook URL for results (required by API; can be dummy)
 - style: Required in custom mode
 - title: Required in custom mode
 - negative_tags: Optional tags to avoid
 - vocal_gender: m or f (custom mode only)
 - style_weight / weirdness_constraint / audio_weight: 0..1
-- persona_id: Optional persona (custom mode only)
 - log: Console logging on/off
 
     Outputs:
@@ -752,20 +754,20 @@ Inputs:
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "title": ("STRING", {"default": ""}),
+                "style": ("STRING", {"default": ""}),
                 "prompt": ("STRING", {"multiline": True}),
                 "custom_mode": ("BOOLEAN", {"default": True}),
                 "instrumental": ("BOOLEAN", {"default": True}),
                 "model": ("COMBO", {"options": SUNO_MODEL_OPTIONS, "default": "V4_5"}),
+                "callback_url": ("STRING", {"default": "https://example.com/kie-suno-callback"}),
             },
             "optional": {
-                "style": ("STRING", {"default": ""}),
-                "title": ("STRING", {"default": ""}),
                 "negative_tags": ("STRING", {"default": ""}),
                 "vocal_gender": ("COMBO", {"options": ["m", "f"], "default": "m"}),
                 "style_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "weirdness_constraint": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
                 "audio_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "persona_id": ("STRING", {"default": ""}),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -777,18 +779,18 @@ Inputs:
 
     def generate(
         self,
+        title: str,
+        style: str,
         prompt: str,
         custom_mode: bool,
         instrumental: bool,
         model: str,
-        style: str = "",
-        title: str = "",
+        callback_url: str,
         negative_tags: str = "",
         vocal_gender: str = "m",
         style_weight: float = 0.65,
         weirdness_constraint: float = 0.65,
         audio_weight: float = 0.65,
-        persona_id: str = "",
         log: bool = True,
     ):
         audio_output, task_id, raw_json = run_suno_generate(
@@ -796,6 +798,7 @@ Inputs:
             custom_mode=custom_mode,
             instrumental=instrumental,
             model=model,
+            callback_url=callback_url,
             style=style,
             title=title,
             negative_tags=negative_tags,
@@ -803,7 +806,6 @@ Inputs:
             style_weight=style_weight,
             weirdness_constraint=weirdness_constraint,
             audio_weight=audio_weight,
-            persona_id=persona_id,
             log=log,
         )
         return (audio_output, task_id, raw_json)
