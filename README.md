@@ -50,8 +50,8 @@ This node pack currently includes the following nodes:
   - Image-to-image node with a model dropdown for Pro or Flex.
   - Accepts 1–8 input images via ComfyUI batch.
 
-- **Gemini 3 Pro (LLM) [Experimental]**
-  - Text generation node using Gemini 3 Pro chat completions.
+- **Gemini (LLM) [Experimental]**
+  - Text generation node using Gemini 2.5/3 Pro/Flash chat completions.
   - Supports role selection, media inputs (images/video/audio), optional reasoning output, and Google Search toggle.
 
 - **Kling 2.6 Image-to-Video**

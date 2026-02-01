@@ -10,9 +10,15 @@ from .log import _log
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_audio, _upload_image, _upload_video
 from .video import _coerce_video_to_mp4_bytes
 
-CHAT_COMPLETIONS_URL = "https://api.kie.ai/gemini-3-pro/v1/chat/completions"
+CHAT_COMPLETIONS_URLS = {
+    "gemini-3-pro": "https://api.kie.ai/gemini-3-pro/v1/chat/completions",
+    "gemini-3-flash": "https://api.kie.ai/gemini-3-flash/v1/chat/completions",
+    "gemini-2.5-pro": "https://api.kie.ai/gemini-2.5-pro/v1/chat/completions",
+    "gemini-2.5-flash": "https://api.kie.ai/gemini-2.5-flash/v1/chat/completions",
+}
 REASONING_EFFORT_OPTIONS = ["low", "high"]
 ROLE_OPTIONS = ["developer", "system", "user", "assistant", "tool"]
+MODEL_OPTIONS = list(CHAT_COMPLETIONS_URLS.keys())
 
 
 def _parse_json_optional(raw: str | None, label: str) -> Any | None:
@@ -65,6 +71,7 @@ def _normalize_messages(
 
 def run_gemini3_pro_chat(
     *,
+    model: str = "gemini-3-pro",
     prompt: str,
     messages_json: str | None = None,
     role: str = "user",
@@ -83,12 +90,16 @@ def run_gemini3_pro_chat(
     Returns:
         (content_text, reasoning_text, raw_json)
     """
+    if model not in CHAT_COMPLETIONS_URLS:
+        raise RuntimeError("Invalid model. Use the pinned enum options.")
     if reasoning_effort not in REASONING_EFFORT_OPTIONS:
         raise RuntimeError("Invalid reasoning_effort. Use the pinned enum options.")
 
     response_format_payload = _parse_json_optional(response_format_json, "response_format_json")
     if enable_google_search and response_format_payload is not None:
         raise RuntimeError("response_format cannot be used with tools.")
+    if model == "gemini-3-flash" and response_format_payload is not None:
+        raise RuntimeError("response_format is not supported for gemini-3-flash.")
 
     api_key = _load_api_key()
     headers = {
@@ -144,16 +155,22 @@ def run_gemini3_pro_chat(
         "messages": messages,
         "stream": bool(stream),
         "include_thoughts": bool(include_thoughts),
-        "reasoning_effort": reasoning_effort,
     }
+    if model != "gemini-2.5-flash":
+        payload["reasoning_effort"] = reasoning_effort
+    elif log:
+        _log(log, "reasoning_effort is not supported for gemini-2.5-flash; skipping.")
     if enable_google_search:
         payload["tools"] = [{"type": "function", "function": {"name": "googleSearch"}}]
     if response_format_payload is not None:
         payload["response_format"] = response_format_payload
 
+    if log:
+        _log(log, f"Gemini model selected: {model}")
+
     try:
         response = requests.post(
-            CHAT_COMPLETIONS_URL,
+            CHAT_COMPLETIONS_URLS[model],
             headers=headers,
             json=payload,
             timeout=60,

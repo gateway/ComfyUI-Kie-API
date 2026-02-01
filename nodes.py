@@ -42,6 +42,7 @@ from .kie_api.kling26_t2v import (
     run_kling26_t2v_video,
 )
 from .kie_api.gemini3_pro_llm import (
+    MODEL_OPTIONS as GEMINI3_MODEL_OPTIONS,
     REASONING_EFFORT_OPTIONS as GEMINI3_REASONING_EFFORT_OPTIONS,
     ROLE_OPTIONS as GEMINI3_ROLE_OPTIONS,
     run_gemini3_pro_chat,
@@ -635,11 +636,12 @@ Outputs:
 
 class KIE_Gemini3Pro_LLM:
     HELP = """
-KIE Gemini 3 Pro (LLM) [Experimental]
+KIE Gemini (LLM) [Experimental]
 
-Generate text using Gemini 3 Pro.
+Generate text using Gemini 2.5/3 (Pro/Flash).
 
 Inputs:
+- model: Gemini model selection (2.5/3 Pro/Flash)
 - prompt: Text prompt (required if messages_json is empty)
 - role: Message role for the prompt (developer/system/user/assistant/tool)
 - images: Optional image batch to include as media content
@@ -663,6 +665,7 @@ Outputs:
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "model": ("COMBO", {"options": GEMINI3_MODEL_OPTIONS, "default": "gemini-3-pro"}),
                 "prompt": ("STRING", {"multiline": True}),
                 "role": ("COMBO", {"options": GEMINI3_ROLE_OPTIONS, "default": "user"}),
             },
@@ -670,11 +673,11 @@ Outputs:
                 "images": ("IMAGE",),
                 "video": ("VIDEO",),
                 "audio": ("AUDIO",),
-                "messages_json": ("STRING", {"multiline": True, "default": ""}),
                 "stream": ("BOOLEAN", {"default": True}),
                 "include_thoughts": ("BOOLEAN", {"default": True}),
                 "reasoning_effort": ("COMBO", {"options": GEMINI3_REASONING_EFFORT_OPTIONS, "default": "high"}),
                 "enable_google_search": ("BOOLEAN", {"default": False}),
+                "messages_json": ("STRING", {"multiline": True, "default": ""}),
                 "response_format_json": ("STRING", {"multiline": True, "default": ""}),
                 "log": ("BOOLEAN", {"default": True}),
             },
@@ -688,6 +691,7 @@ Outputs:
     def generate(
         self,
         prompt: str,
+        model: str = "gemini-3-pro",
         role: str = "user",
         images: torch.Tensor | None = None,
         video: object | None = None,
@@ -701,6 +705,7 @@ Outputs:
         log: bool = True,
     ):
         content, reasoning, raw_json = run_gemini3_pro_chat(
+            model=model,
             prompt=prompt,
             messages_json=messages_json,
             role=role,
@@ -919,7 +924,7 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
     "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
-    "KIE_Gemini3Pro_LLM": "KIE Gemini 3 Pro (LLM) [Experimental]",
+    "KIE_Gemini3Pro_LLM": "KIE Gemini (LLM) [Experimental]",
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
 }
