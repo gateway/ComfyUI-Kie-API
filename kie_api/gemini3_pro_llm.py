@@ -122,7 +122,7 @@ def run_gemini3_pro_chat(
                 raise RuntimeError("images input must have shape [B, H, W, 3].")
             total_images = images.shape[0]
             if total_images > 0:
-                _log(log, f"Uploading {total_images} image(s) for Gemini 3 Pro...")
+                _log(log, f"Uploading {total_images} image(s) for {model}...")
             for idx in range(total_images):
                 png_bytes = _image_tensor_to_png_bytes(images[idx])
                 url = _upload_image(api_key, png_bytes)
@@ -131,14 +131,14 @@ def run_gemini3_pro_chat(
 
         if video is not None:
             video_bytes, source = _coerce_video_to_mp4_bytes(video)
-            _log(log, f"Uploading video for Gemini 3 Pro ({source})...")
+            _log(log, f"Uploading video for {model} ({source})...")
             video_url = _upload_video(api_key, video_bytes)
             video_urls.append(video_url)
             _log(log, f"Video upload success: {_truncate_url(video_url)}")
 
         if audio is not None:
             audio_bytes, source = _coerce_audio_to_wav_bytes(audio)
-            _log(log, f"Uploading audio for Gemini 3 Pro ({source})...")
+            _log(log, f"Uploading audio for {model} ({source})...")
             audio_url = _upload_audio(api_key, audio_bytes)
             audio_urls.append(audio_url)
             _log(log, f"Audio upload success: {_truncate_url(audio_url)}")
@@ -236,6 +236,6 @@ def run_gemini3_pro_chat(
     raw_json = json.dumps(last_payload) if last_payload is not None else ""
 
     if log:
-        _log(log, f"Gemini 3 Pro response length: {len(content_text)} chars")
+        _log(log, f"{model} response length: {len(content_text)} chars")
 
     return (content_text, reasoning_text, raw_json)
