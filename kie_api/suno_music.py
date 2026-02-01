@@ -4,8 +4,10 @@ import json
 import time
 from typing import Any
 
+import torch
 from .auth import _load_api_key
 from .audio import _audio_bytes_to_comfy_audio
+from .images import _download_image, _image_bytes_to_tensor
 from .http import TransientKieError, requests
 from .log import _log
 
@@ -127,6 +129,38 @@ def _extract_audio_urls(record_data: dict[str, Any]) -> list[str]:
     return urls
 
 
+def _extract_image_urls(record_data: dict[str, Any]) -> list[str]:
+    urls: list[str] = []
+
+    # Callback-style payload: data.data[].image_url
+    items = record_data.get("data")
+    if isinstance(items, list):
+        for item in items:
+            if isinstance(item, dict):
+                image_url = item.get("image_url") or item.get("imageUrl")
+                if image_url:
+                    urls.append(image_url)
+
+    # record-info payload: data.response.sunoData[].imageUrl
+    response = record_data.get("response")
+    if isinstance(response, dict):
+        suno_data = response.get("sunoData")
+        if isinstance(suno_data, list):
+            for item in suno_data:
+                if isinstance(item, dict):
+                    image_url = item.get("imageUrl") or item.get("image_url")
+                    if image_url:
+                        urls.append(image_url)
+
+    # direct field fallback
+    if not urls and isinstance(record_data, dict):
+        image_url = record_data.get("image_url") or record_data.get("imageUrl")
+        if image_url:
+            urls.append(image_url)
+
+    return urls
+
+
 def _poll_music_until_complete(
     api_key: str,
     task_id: str,
@@ -178,8 +212,8 @@ def run_suno_generate(
     poll_interval_s: float = 30.0,
     timeout_s: int = 1800,
     log: bool = True,
-) -> tuple[dict, str]:
-    """Create a Suno music generation task and return audio output + formatted record-info JSON."""
+) -> tuple[dict, str, torch.Tensor]:
+    """Create a Suno music generation task and return audio output + formatted record-info JSON + cover image."""
     if model not in MODEL_OPTIONS:
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
@@ -296,4 +330,17 @@ def run_suno_generate(
         waveform = audio_output.get("waveform")
         shape = getattr(waveform, "shape", None)
         _log(log, f"Suno audio waveform shape: {shape}")
-    return audio_output, _format_record_for_output(record)
+
+    image_urls = _extract_image_urls(record)
+    if not image_urls:
+        raise RuntimeError("No image_url found in record-info response.")
+    image_url = image_urls[0]
+    if log:
+        _log(log, f"Suno cover image URL: {image_url}")
+    try:
+        image_bytes = _download_image(image_url)
+        image_tensor = _image_bytes_to_tensor(image_bytes)
+    except Exception as exc:
+        raise RuntimeError(f"Failed to download cover image: {exc}") from exc
+
+    return audio_output, _format_record_for_output(record), image_tensor
