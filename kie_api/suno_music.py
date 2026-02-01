@@ -264,4 +264,8 @@ def run_suno_generate(
         raise RuntimeError(f"Failed to download audio: {exc}") from exc
 
     audio_output = _audio_bytes_to_comfy_audio(audio_bytes, "audio.mp3")
+    if log:
+        waveform = audio_output.get("waveform")
+        shape = getattr(waveform, "shape", None)
+        _log(log, f"Suno audio waveform shape: {shape}")
     return audio_output, json.dumps(record)
