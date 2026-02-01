@@ -1,0 +1,14 @@
+<svg width="256" height="256" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="256" height="256" rx="32" fill="#0F1629"/>
+  <rect x="24" y="24" width="208" height="208" rx="24" fill="#111C33" stroke="#1F2A44" stroke-width="2"/>
+  <circle cx="70" cy="86" r="10" fill="#4CC9F0"/>
+  <circle cx="186" cy="86" r="10" fill="#4CC9F0"/>
+  <circle cx="70" cy="170" r="10" fill="#4CC9F0"/>
+  <circle cx="186" cy="170" r="10" fill="#4CC9F0"/>
+  <path d="M70 86H186" stroke="#2B8CF7" stroke-width="3"/>
+  <path d="M70 170H186" stroke="#2B8CF7" stroke-width="3"/>
+  <path d="M70 86V170" stroke="#2B8CF7" stroke-width="3"/>
+  <path d="M186 86V170" stroke="#2B8CF7" stroke-width="3"/>
+  <path d="M96 128C106 112 118 144 128 128C138 112 150 144 160 128" stroke="#F4D35E" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="128" y="210" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#E6F0FF" letter-spacing="1">KIE</text>
+</svg>

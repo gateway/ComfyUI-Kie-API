@@ -1,0 +1,15 @@
+[project]
+name = "comfyui-kie-api"
+version = "0.1.0"
+description = "ComfyUI node pack integrating Kie.ai image, video, LLM, and audio (Suno) models, with helper utilities for uploads, grid slicing, prompt parsing, and API polling."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+[project.urls]
+Repository = "https://github.com/gateway/ComfyUI-Kie-API"
+
+[tool.comfy]
+PublisherId = "gateway"
+DisplayName = "ComfyUI Kie API"
+Icon = "https://raw.githubusercontent.com/gateway/ComfyUI-Kie-API/main/web/docs/assets/kie-icon.svg"
