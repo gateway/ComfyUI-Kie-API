@@ -1,7 +1,7 @@
 [project]
 name = "comfyui-kie-api"
 version = "0.1.2"
-description = Node pack integrating Kie.ai API nodes for Nano Banana Pro, Kling, Seedance, Gemini and (Suno) models, with helper utilities for uploads, grid slicing, prompt parsing, and API polling."
+description = "Node pack integrating Kie.ai API nodes for Nano Banana Pro, Kling, Seedance, Gemini and (Suno) models, with helper utilities for uploads, grid slicing, prompt parsing, and API polling."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
