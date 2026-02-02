@@ -1,3 +1,4 @@
+import os
 import time
 
 import torch
@@ -57,6 +58,60 @@ from .kie_api.flux2_i2i import (
 from .kie_api.prompt_lists import parse_prompts_json
 from .kie_api.grid import slice_grid_tensor
 from .kie_api.http import TransientKieError
+
+
+SYSTEM_PROMPT_MARKER = "system prompt below"
+SYSTEM_PROMPT_PLACEHOLDER = "{user_prompt}"
+SYSTEM_PROMPT_CATEGORIES = ("images", "videos")
+
+
+def _system_prompt_dir() -> str:
+    return os.path.join(os.path.dirname(os.path.abspath(__file__)), "prompts")
+
+
+def _scan_system_prompt_templates() -> dict[str, str]:
+    prompt_dir = _system_prompt_dir()
+    if not os.path.isdir(prompt_dir):
+        raise RuntimeError(f"Prompt folder not found: {prompt_dir}")
+
+    templates: dict[str, str] = {}
+    for category in SYSTEM_PROMPT_CATEGORIES:
+        category_dir = os.path.join(prompt_dir, category)
+        if not os.path.isdir(category_dir):
+            continue
+        for filename in sorted(os.listdir(category_dir)):
+            if not filename.lower().endswith(".txt"):
+                continue
+            if filename.lower() == "readme.txt":
+                continue
+            path = os.path.join(category_dir, filename)
+            try:
+                with open(path, "r", encoding="utf-8") as handle:
+                    lines = handle.read().splitlines()
+            except OSError:
+                continue
+
+            name: str | None = None
+            body_index: int | None = None
+            for idx, line in enumerate(lines):
+                stripped = line.strip()
+                lower = stripped.lower()
+                if lower.startswith("name:") and name is None:
+                    name = stripped[5:].strip()
+                if lower == SYSTEM_PROMPT_MARKER and body_index is None:
+                    body_index = idx + 1
+
+            if not name or body_index is None:
+                continue
+
+            body = "\n".join(lines[body_index:]).strip()
+            if not body:
+                continue
+
+            label = f"{category}: {name}"
+            templates[label] = body
+
+    return templates
 
 
 class KIE_GetRemainingCredits:
@@ -1058,6 +1113,67 @@ Outputs:
         return (*padded, count, prompts, prompts)
 
 
+class KIE_SystemPrompt_Selector:
+    HELP = """
+KIE System Prompt Selector
+
+Combine a user prompt with a system prompt template loaded from the `prompts/` folder.
+
+Template format (in prompts/images or prompts/videos .txt files):
+- name: <dropdown label>
+- system prompt below
+- <system prompt body with optional {user_prompt} placeholder>
+
+Inputs:
+- user_prompt: The user prompt text to inject
+- system_template: Dropdown from prompt files (images/videos)
+
+Outputs:
+- STRING: Combined prompt
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        try:
+            templates = _scan_system_prompt_templates()
+            options = sorted(templates.keys())
+        except RuntimeError:
+            options = []
+
+        if not options:
+            options = ["(no templates found)"]
+
+        return {
+            "required": {
+                "user_prompt": ("STRING", {"multiline": True, "default": ""}),
+                "system_template": ("COMBO", {"options": options}),
+            }
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("prompt",)
+    FUNCTION = "build"
+    CATEGORY = "kie/helpers"
+
+    def build(self, user_prompt: str, system_template: str):
+        templates = _scan_system_prompt_templates()
+        if system_template not in templates:
+            raise RuntimeError(
+                f"System template '{system_template}' not found in {_system_prompt_dir()}."
+            )
+
+        template = templates[system_template]
+        user_prompt = (user_prompt or "").strip()
+        if SYSTEM_PROMPT_PLACEHOLDER in template:
+            combined = template.replace(SYSTEM_PROMPT_PLACEHOLDER, user_prompt)
+        elif template and user_prompt:
+            combined = f"{template}\n\n{user_prompt}"
+        else:
+            combined = template or user_prompt
+
+        return (combined,)
+
+
 NODE_CLASS_MAPPINGS = {
     "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
@@ -1075,6 +1191,7 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Suno_Music_Advanced": KIE_Suno_Music_Advanced,
     "KIE_GridSlice": KIE_GridSlice,
     "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
+    "KIE_SystemPrompt_Selector": KIE_SystemPrompt_Selector,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
@@ -1093,4 +1210,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Suno_Music_Advanced": "KIE Suno Music (Advanced)",
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
+    "KIE_SystemPrompt_Selector": "KIE System Prompt Selector",
 }
