@@ -90,6 +90,9 @@ This node pack currently includes the following nodes:
 - **Prompt Grid JSON Parser**
   - Parses structured JSON output (for example, from an LLM) into individual prompt outputs.
   - Designed for multi-image and storyboard-style workflows.
+- **System Prompt Selector**
+  - Combines a user prompt with a system prompt template from `prompts/`.
+  - See [prompts/README.md](prompts/README.md) for creating new templates.
 
 Each node has its own documentation page under `web/docs/` with detailed inputs, outputs, and usage examples.
 
