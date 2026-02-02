@@ -42,7 +42,7 @@ This node pack currently includes the following nodes:
   - Image generation node using the Googles Nano Banana Pro model
 - **Seedream Text-to-Image / Edit**
   - Text-to-image and image-editing node for Seedream models.
-  - Supports prompt-based generation and edits.
+  - Supports prompt-based generation and edits (edit node accepts up to 14 input images).
 - **Flux 2 Image-to-Image (Pro/Flex)**
   - Image-to-image node with a model dropdown for Pro or Flex.
   - Accepts 1–8 input images via ComfyUI batch.

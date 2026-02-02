@@ -219,7 +219,7 @@ Edit an input image using Seedream 4.5.
 
 Inputs:
 - prompt: Edit prompt (required)
-- images: Source image batch (first image used)
+- images: Source image batch (up to 14 images; all uploaded)
 - aspect_ratio / quality
 - poll_interval_s / timeout_s / log
 

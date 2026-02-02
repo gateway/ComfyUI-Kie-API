@@ -33,6 +33,7 @@ MODEL_NAME = "seedream/4.5-edit"
 ASPECT_RATIO_OPTIONS = ["1:1", "4:3", "3:4", "16:9", "9:16", "2:3", "3:2", "21:9"]
 QUALITY_OPTIONS = ["basic", "high"]
 PROMPT_MAX_LENGTH = 3000
+MAX_IMAGE_COUNT = 14
 
 
 def _validate_options(aspect_ratio: str, quality: str) -> None:
@@ -119,24 +120,32 @@ def run_seedream45_edit(
 
     api_key = _load_api_key()
 
-    if images.shape[0] > 1:
-        _log(log, f"More than 1 image provided ({images.shape[0]}); only the first will be used.")
+    total_images = images.shape[0]
+    if total_images > MAX_IMAGE_COUNT:
+        _log(log, f"More than {MAX_IMAGE_COUNT} images provided ({total_images}); only first {MAX_IMAGE_COUNT} used.")
 
-    _log(log, "Uploading edit input image...")
-    png_bytes = _image_tensor_to_png_bytes(images[0])
-    image_url = _upload_image(api_key, png_bytes)
-    _log(log, f"Input image upload success: {_truncate_url(image_url)}")
+    upload_count = min(total_images, MAX_IMAGE_COUNT)
+    image_urls: list[str] = []
+    if upload_count > 0:
+        _log(log, f"Uploading {upload_count} edit image(s)...")
+
+    for idx in range(upload_count):
+        png_bytes = _image_tensor_to_png_bytes(images[idx])
+        image_url = _upload_image(api_key, png_bytes)
+        image_urls.append(image_url)
+        _log(log, f"Image {idx + 1} upload success: {_truncate_url(image_url)}")
 
     payload = {
         "model": MODEL_NAME,
         "input": {
             "prompt": prompt,
-            "image_urls": [image_url],
+            "image_urls": image_urls,
             "aspect_ratio": aspect_ratio,
             "quality": quality,
         },
     }
 
+    _log(log, f"Sending {len(image_urls)} image URL(s) to createTask")
     _log(log, "Creating Seedream 4.5 edit task...")
     start_time = time.time()
     task_id, create_response_text = _create_seedream45_edit_task(api_key, payload)

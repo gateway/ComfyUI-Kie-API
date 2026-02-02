@@ -1,6 +1,6 @@
 # Internal Status
 
-Last updated: 2026-01-31
+Last updated: 2026-02-02
 
 ## Active Tasks
 - [x] Consolidate Gemini LLM nodes into one with model dropdown (2.5/3 Pro/Flash)
@@ -9,3 +9,4 @@ Last updated: 2026-01-31
 
 ## Notes
 - 2026-01-31: Gemini LLM node now selects model via dropdown and logs selected model.
+- 2026-02-02: Seedream 4.5 Edit updated to accept up to 14 input images.
