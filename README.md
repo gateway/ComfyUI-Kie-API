@@ -73,10 +73,10 @@ This node pack currently includes the following nodes:
 ## Audio Nodes
 - **Suno Music (Basic)**
   - Minimal inputs: title, style, prompt, model, instrument, tags, gender.
-  - Returns AUDIO output via KIE Suno API `generate` + `record-info` polling.
+  - Returns two AUDIO outputs + two cover images via KIE Suno API `generate` + `record-info` polling.
 - **Suno Music (Advanced)**
   - Adds style/creative weights to the Basic node.
-  - Returns AUDIO output via KIE Suno API `generate` + `record-info` polling.
+  - Returns two AUDIO outputs + two cover images via KIE Suno API `generate` + `record-info` polling.
 
 ## Utility / Helper Nodes
 
@@ -149,6 +149,7 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 - 2026-01-30: Added Gemini 3 Pro LLM node (phase 1, experimental).
 - 2026-01-30: Gemini 3 Pro LLM updated with role dropdown and media inputs (phase 1.5).
 - 2026-01-30: Gemini 3 Pro LLM updated with audio input support.
+- 2026-02-03: Suno Music nodes now return two songs and two cover images.
 
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).

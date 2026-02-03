@@ -16,3 +16,4 @@ Last updated: 2026-02-03
 - 2026-02-03: Refactored shared image validation + createTask helper into `kie_api/validation.py` and `kie_api/jobs.py` (branch `dev/refactor-helpers`).
 - 2026-02-03: Added refactor plan doc for phased helper consolidation in `_internal/docs/KIE_API_REFRACTOR_HELPERS.md`.
 - 2026-02-03: Updated Suno music nodes to return two audio outputs and two cover images to match API responses.
+- 2026-02-03: Updated README and Suno docs to note two-song/two-cover outputs.
