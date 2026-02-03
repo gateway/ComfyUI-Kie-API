@@ -212,8 +212,8 @@ def run_suno_generate(
     poll_interval_s: float = 30.0,
     timeout_s: int = 1800,
     log: bool = True,
-) -> tuple[dict, str, torch.Tensor]:
-    """Create a Suno music generation task and return audio output + formatted record-info JSON + cover image."""
+) -> tuple[dict, dict, str, torch.Tensor, torch.Tensor]:
+    """Create a Suno music generation task and return two audio outputs + formatted record-info JSON + two cover images."""
     if model not in MODEL_OPTIONS:
         raise RuntimeError("Invalid model. Use the pinned enum options.")
     if vocal_gender and vocal_gender not in VOCAL_GENDER_OPTIONS:
@@ -304,43 +304,57 @@ def run_suno_generate(
     if log:
         _log(log, f"Suno record-info response keys: {list(record.keys())}")
     audio_urls = _extract_audio_urls(record)
-    audio_url = audio_urls[0]
+    if len(audio_urls) < 2:
+        raise RuntimeError("Expected two audio_url entries in record-info response.")
+    audio_url_1 = audio_urls[0]
+    audio_url_2 = audio_urls[1]
     if log:
-        _log(log, f"Suno audio URL: {audio_url}")
+        _log(log, f"Suno audio URL 1: {audio_url_1}")
+        _log(log, f"Suno audio URL 2: {audio_url_2}")
 
     try:
-        audio_bytes = requests.get(audio_url, timeout=180).content
+        audio_bytes_1 = requests.get(audio_url_1, timeout=180).content
+        audio_bytes_2 = requests.get(audio_url_2, timeout=180).content
     except requests.RequestException as exc:
         raise RuntimeError(f"Failed to download audio: {exc}") from exc
 
-    audio_output = _audio_bytes_to_comfy_audio(audio_bytes, "audio.mp3")
+    audio_output_1 = _audio_bytes_to_comfy_audio(audio_bytes_1, "audio_1.mp3")
+    audio_output_2 = _audio_bytes_to_comfy_audio(audio_bytes_2, "audio_2.mp3")
     try:
         import torch
-        waveform = audio_output.get("waveform")
-        if not isinstance(waveform, torch.Tensor):
-            waveform = torch.as_tensor(waveform)
-        if waveform.ndim == 1:
-            waveform = waveform.unsqueeze(0)
-        if waveform.ndim == 2:
-            waveform = waveform.unsqueeze(0)
-        audio_output["waveform"] = waveform
+        for audio_output in (audio_output_1, audio_output_2):
+            waveform = audio_output.get("waveform")
+            if not isinstance(waveform, torch.Tensor):
+                waveform = torch.as_tensor(waveform)
+            if waveform.ndim == 1:
+                waveform = waveform.unsqueeze(0)
+            if waveform.ndim == 2:
+                waveform = waveform.unsqueeze(0)
+            audio_output["waveform"] = waveform
     except Exception as exc:
         raise RuntimeError(f"Failed to normalize audio waveform for ComfyUI: {exc}") from exc
     if log:
-        waveform = audio_output.get("waveform")
-        shape = getattr(waveform, "shape", None)
-        _log(log, f"Suno audio waveform shape: {shape}")
+        waveform_1 = audio_output_1.get("waveform")
+        shape_1 = getattr(waveform_1, "shape", None)
+        _log(log, f"Suno audio 1 waveform shape: {shape_1}")
+        waveform_2 = audio_output_2.get("waveform")
+        shape_2 = getattr(waveform_2, "shape", None)
+        _log(log, f"Suno audio 2 waveform shape: {shape_2}")
 
     image_urls = _extract_image_urls(record)
-    if not image_urls:
-        raise RuntimeError("No image_url found in record-info response.")
-    image_url = image_urls[0]
+    if len(image_urls) < 2:
+        raise RuntimeError("Expected two image_url entries in record-info response.")
+    image_url_1 = image_urls[0]
+    image_url_2 = image_urls[1]
     if log:
-        _log(log, f"Suno cover image URL: {image_url}")
+        _log(log, f"Suno cover image URL 1: {image_url_1}")
+        _log(log, f"Suno cover image URL 2: {image_url_2}")
     try:
-        image_bytes = _download_image(image_url)
-        image_tensor = _image_bytes_to_tensor(image_bytes)
+        image_bytes_1 = _download_image(image_url_1)
+        image_tensor_1 = _image_bytes_to_tensor(image_bytes_1)
+        image_bytes_2 = _download_image(image_url_2)
+        image_tensor_2 = _image_bytes_to_tensor(image_bytes_2)
     except Exception as exc:
         raise RuntimeError(f"Failed to download cover image: {exc}") from exc
 
-    return audio_output, _format_record_for_output(record), image_tensor
+    return audio_output_1, audio_output_2, _format_record_for_output(record), image_tensor_1, image_tensor_2

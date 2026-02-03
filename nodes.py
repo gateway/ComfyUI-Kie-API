@@ -783,7 +783,7 @@ class KIE_Suno_Music_Basic:
     HELP = """
 KIE Suno Music (Basic)
 
-Create a Suno music generation task via KIE API. Returns an AUDIO output and record JSON.
+Create a Suno music generation task via KIE API. Returns two AUDIO outputs and record JSON.
 
 Inputs:
 - title: Track title (required in custom mode)
@@ -799,9 +799,11 @@ Optional:
 - log: Console logging on/off
 
 Outputs:
-- AUDIO: Generated audio
+- AUDIO: Generated audio 1
+- AUDIO: Generated audio 2
 - STRING: data
-- IMAGE: Cover image
+- IMAGE: Cover image 1
+- IMAGE: Cover image 2
 """
 
     @classmethod
@@ -822,8 +824,8 @@ Outputs:
             },
         }
 
-    RETURN_TYPES = ("AUDIO", "STRING", "IMAGE")
-    RETURN_NAMES = ("audio", "data", "image")
+    RETURN_TYPES = ("AUDIO", "AUDIO", "STRING", "IMAGE", "IMAGE")
+    RETURN_NAMES = ("audio_1", "audio_2", "data", "image_1", "image_2")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -840,7 +842,7 @@ Outputs:
         log: bool = True,
     ):
         gender_value = "m" if vocal_gender == "male" else "f"
-        audio_output, raw_json, image_output = run_suno_generate(
+        audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2 = run_suno_generate(
             prompt=prompt,
             custom_mode=custom_mode,
             instrumental=instrumental,
@@ -851,14 +853,14 @@ Outputs:
             vocal_gender=gender_value,
             log=log,
         )
-        return (audio_output, raw_json, image_output)
+        return (audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2)
 
 
 class KIE_Suno_Music_Advanced:
     HELP = """
 KIE Suno Music (Advanced)
 
-Create a Suno music generation task via KIE API. Returns an AUDIO output and record JSON.
+Create a Suno music generation task via KIE API. Returns two AUDIO outputs and record JSON.
 
 Inputs:
 - title: Track title (required in custom mode)
@@ -875,9 +877,11 @@ Optional:
 - log: Console logging on/off
 
 Outputs:
-- AUDIO: Generated audio
+- AUDIO: Generated audio 1
+- AUDIO: Generated audio 2
 - STRING: data
-- IMAGE: Cover image
+- IMAGE: Cover image 1
+- IMAGE: Cover image 2
 """
 
     @classmethod
@@ -901,8 +905,8 @@ Outputs:
             },
         }
 
-    RETURN_TYPES = ("AUDIO", "STRING", "IMAGE")
-    RETURN_NAMES = ("audio", "data", "image")
+    RETURN_TYPES = ("AUDIO", "AUDIO", "STRING", "IMAGE", "IMAGE")
+    RETURN_NAMES = ("audio_1", "audio_2", "data", "image_1", "image_2")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -922,7 +926,7 @@ Outputs:
         log: bool = True,
     ):
         gender_value = "m" if vocal_gender == "male" else "f"
-        audio_output, raw_json, image_output = run_suno_generate(
+        audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2 = run_suno_generate(
             prompt=prompt,
             custom_mode=custom_mode,
             instrumental=instrumental,
@@ -936,7 +940,7 @@ Outputs:
             audio_weight=audio_weight,
             log=log,
         )
-        return (audio_output, raw_json, image_output)
+        return (audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2)
 
 
 class KIE_GridSlice:

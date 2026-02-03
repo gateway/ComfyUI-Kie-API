@@ -1,6 +1,6 @@
 # KIE Suno Music (Advanced)
 
-Create a Suno music generation task via KIE API. This node exposes advanced weights and returns AUDIO + cover image outputs.
+Create a Suno music generation task via KIE API. This node exposes advanced weights and returns two AUDIO outputs + two cover images.
 
 ## Inputs
 - **title** (STRING, required): Track title (required in custom mode).
@@ -18,9 +18,11 @@ Optional:
 - **log** (BOOLEAN): Enable console logging.
 
 ## Outputs
-- **audio** (AUDIO): Generated audio.
+- **audio_1** (AUDIO): Generated audio 1.
+- **audio_2** (AUDIO): Generated audio 2.
 - **data** (STRING): Full API response JSON (formatted).
-- **image** (IMAGE): Generated cover image.
+- **image_1** (IMAGE): Generated cover image 1.
+- **image_2** (IMAGE): Generated cover image 2.
 
 ## Notes
 - Non-custom mode expects **prompt only** (500 chars max); other fields should be empty.
