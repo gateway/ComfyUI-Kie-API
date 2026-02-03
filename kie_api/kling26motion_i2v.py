@@ -1,6 +1,5 @@
 """Kling 2.6 motion-control image-to-video helper."""
 
-import json
 import time
 from typing import Any
 
@@ -8,16 +7,14 @@ import torch
 
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
-from .http import TransientKieError, requests
-from .jobs import _poll_task_until_complete
+from .jobs import _create_task, _poll_task_until_complete
 from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image, _upload_video
-from .validation import _validate_prompt
+from .validation import _validate_image_tensor_batch, _validate_prompt
 from .video import _coerce_video_to_mp4_bytes, _download_video, _video_bytes_to_comfy_video
 
 
-CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 MODEL_NAME = "kling-2.6/motion-control"
 PROMPT_MAX_LENGTH = 2500
 CHARACTER_ORIENTATION_OPTIONS = ["image", "video"]
@@ -31,54 +28,10 @@ def _validate_options(character_orientation: str, mode: str) -> None:
         raise RuntimeError("Invalid mode. Use the pinned enum options.")
 
 
-def _validate_image_input(images: torch.Tensor | None) -> torch.Tensor:
-    if images is None:
-        raise RuntimeError("images input is required.")
-    if not isinstance(images, torch.Tensor):
-        raise RuntimeError("images input must be a tensor batch.")
-    if images.dim() != 4 or images.shape[-1] != 3:
-        raise RuntimeError("images input must have shape [B, H, W, 3].")
-    if images.shape[0] < 1:
-        raise RuntimeError("images input batch is empty.")
-    return images
-
-
 def _validate_video_input(video: Any) -> Any:
     if video is None:
         raise RuntimeError("video input is required.")
     return video
-
-
-def _create_kling_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:
-    try:
-        response = requests.post(
-            CREATE_TASK_URL,
-            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json=payload,
-            timeout=30,
-        )
-    except requests.RequestException as exc:
-        raise RuntimeError(f"Failed to call createTask endpoint: {exc}") from exc
-
-    if response.status_code == 429 or response.status_code >= 500:
-        raise TransientKieError(
-            f"createTask returned HTTP {response.status_code}: {response.text}", status_code=response.status_code
-        )
-
-    try:
-        payload_json: Any = response.json()
-    except json.JSONDecodeError as exc:
-        raise RuntimeError("createTask endpoint did not return valid JSON.") from exc
-
-    if payload_json.get("code") != 200:
-        message = payload_json.get("message") or payload_json.get("msg")
-        raise RuntimeError(f"createTask endpoint returned error code {payload_json.get('code')}: {message}")
-
-    task_id = (payload_json.get("data") or {}).get("taskId")
-    if not task_id:
-        raise RuntimeError("createTask endpoint did not return a taskId.")
-
-    return task_id, response.text
 
 
 def run_kling26motion_i2v_video(
@@ -94,7 +47,7 @@ def run_kling26motion_i2v_video(
     # Validate prompt length and required inputs.
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(character_orientation, mode)
-    images = _validate_image_input(images)
+    images = _validate_image_tensor_batch(images)
     video = _validate_video_input(video)
 
     # Load the API key once for uploads and task creation.
@@ -133,7 +86,7 @@ def run_kling26motion_i2v_video(
     # Create the task and log the raw response for troubleshooting.
     _log(log, "Creating Kling 2.6 Motion I2V task...")
     start_time = time.time()
-    task_id, create_response_text = _create_kling_task(api_key, payload)
+    task_id, create_response_text = _create_task(api_key, payload)
     _log(log, f"createTask response (elapsed={time.time() - start_time:.1f}s): {create_response_text}")
     _log(log, f"Task created with ID {task_id}. Polling for completion...")
 

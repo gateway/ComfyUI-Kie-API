@@ -5,7 +5,7 @@ import time
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .jobs import _poll_task_until_complete
-from .kling26_i2v import _create_kling_task
+from .jobs import _create_task
 from .log import _log
 from .results import _extract_result_urls
 from .validation import _validate_prompt
@@ -49,7 +49,7 @@ def run_kling26_t2v_video(
 
     _log(log, "Creating Kling 2.6 T2V task...")
     start_time = time.time()
-    task_id, create_response_text = _create_kling_task(api_key, payload)
+    task_id, create_response_text = _create_task(api_key, payload)
     _log(log, f"createTask response (elapsed={time.time() - start_time:.1f}s): {create_response_text}")
     _log(log, f"Task created with ID {task_id}. Polling for completion...")
 

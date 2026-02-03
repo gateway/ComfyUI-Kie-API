@@ -18,8 +18,50 @@ from .http import TransientKieError, requests
 from .log import _log
 
 
+CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
 DEFAULT_TIMEOUT_S = 1000
+
+
+def _create_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:
+    """Create a task via the KIE createTask endpoint.
+
+    Returns:
+        A tuple of (task_id, raw_response_text).
+    Raises:
+        RuntimeError: If the request fails, returns non-JSON, or returns an error code.
+        TransientKieError: If the API responds with retryable errors (429 or >=500).
+    """
+    try:
+        response = requests.post(
+            CREATE_TASK_URL,
+            headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+            json=payload,
+            timeout=30,
+        )
+    except requests.RequestException as exc:
+        raise RuntimeError(f"Failed to call createTask endpoint: {exc}") from exc
+
+    if response.status_code == 429 or response.status_code >= 500:
+        raise TransientKieError(
+            f"createTask returned HTTP {response.status_code}: {response.text}", status_code=response.status_code
+        )
+
+    raw_text = response.text
+    try:
+        payload_json: Any = response.json()
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("createTask endpoint did not return valid JSON.") from exc
+
+    if payload_json.get("code") != 200:
+        message = payload_json.get("message") or payload_json.get("msg")
+        raise RuntimeError(f"createTask endpoint returned error code {payload_json.get('code')}: {message}")
+
+    task_id = (payload_json.get("data") or {}).get("taskId")
+    if not task_id:
+        raise RuntimeError("createTask endpoint did not return a taskId.")
+
+    return task_id, raw_text
 
 
 def _fetch_task_record(api_key: str, task_id: str) -> tuple[dict[str, Any], str, Any]:
