@@ -1,139 +1,9 @@
 {
   "id": "a2036489-5aab-4743-8450-5c7c3eb21b90",
   "revision": 0,
-  "last_node_id": 12,
-  "last_link_id": 12,
+  "last_node_id": 19,
+  "last_link_id": 21,
   "nodes": [
-    {
-      "id": 9,
-      "type": "PreviewAudio",
-      "pos": [
-        11200,
-        6032
-      ],
-      "size": [
-        336,
-        88
-      ],
-      "flags": {},
-      "order": 9,
-      "mode": 4,
-      "inputs": [
-        {
-          "name": "audio",
-          "type": "AUDIO",
-          "link": 9
-        }
-      ],
-      "outputs": [],
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.11.1",
-        "Node name for S&R": "PreviewAudio"
-      },
-      "widgets_values": []
-    },
-    {
-      "id": 10,
-      "type": "Display Any (rgthree)",
-      "pos": [
-        11200,
-        6192
-      ],
-      "size": [
-        416,
-        272
-      ],
-      "flags": {},
-      "order": 10,
-      "mode": 4,
-      "inputs": [
-        {
-          "dir": 3,
-          "name": "source",
-          "type": "*",
-          "link": 10
-        }
-      ],
-      "outputs": [],
-      "properties": {
-        "cnr_id": "rgthree-comfy",
-        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
-        "Node name for S&R": "Display Any (rgthree)"
-      },
-      "widgets_values": [
-        "{\n  \"taskId\": \"4e6360d472ca90d9b437d32d9479800a\",\n  \"parentMusicId\": \"\",\n  \"param\": {\n    \"callBackUrl\": \"https://example.com/kie-suno-callback\",\n    \"customMode\": true,\n    \"instrumental\": false,\n    \"model\": \"V5\",\n    \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.\\nNot revenge.\\nNot silence.\\nJust… gone.\\n\\nGhostin’ — the softest exit from the hardest truths.\\nIf you wouldn’t want it done to you,\\ndon’t throw it at the ones who stood through your storms.\\n\\nLet’s talk facts.\\n\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads,\\nNine years wired, no peace, just codes.\\nWe swung hard — no saints in that mess,\\nBoth dropped lines we still regret.\\n\\nBut we came back — bruised, not fake,\\nTruth stitched up what pain would break.\\nWe weren’t perfect, weren’t clean or sweet,\\nBut real ain’t tidy, and real ain’t neat.\\n\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo flex in pain, no pride in scars,\\nBut we told truths in foreign bars.\\nFrom dust to laughs, from fire to screams,\\nThat bond felt deeper than it seemed.\\n\\nThen you ghosted — sharp, no breath,\\nLike months just died a quiet death.\\nNo word, no close, no space to say,\\nJust gone… and I replay.\\n\\n\\n[DROP 2 – Beat Cut, Sub-Bass Hit, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet like memory don’t bite.\\nYou vanished like saying one truth was too much fight.\\nSilence ain’t peace — it’s just weight left unpaid.\\n\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — friends, lovers, new days,\\nPosting bright like I’m erased.\\nDo they know who held your storms?\\nOr am I a chapter you reform?\\n\\nWe weren’t clean, but we were steel,\\nUgly love but brutally real.\\nNow I’m ghosted like none of it bled,\\nLike the last two years snapped like thread.\\n\\nIf I did that, you’d say I’m foul —\\nBut when it’s you? It’s “healing,” it’s “style.”\\nYou call it growth — I call it retreat.\\nYou call it closure — but it's incomplete.\\n\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s fear delayed.\\n(No message means the truth got mislaid.)\\n\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive]\\nYou say the chaos hit you back home,\\nThat old wounds flared, you felt alone.\\nI ain’t blind — I know your pain,\\nBut silence cuts deeper than any flame.\\n\\nOne line from you could’ve eased the sting,\\nBut quiet? Quiet does the dirtiest thing.\\nIf I meant something, I’d hear it still —\\nBut ghosts don’t talk — they just vanish at will.\\n\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass]\\nGhostin’ ain’t soft — it’s fear dressed clean.\\nA tidy exit from everything seen.\\nIf this was peace, it wouldn’t tear,\\nWouldn’t leave truth hanging in air.\\n\\nNot here to beg, not here for blame,\\nBut your silence still screams your name.\\nYou left like fiction someone erased —\\nBut truth don’t vanish — it stays unfaced.\\n\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.\\nOne breath.\\nOne truth.\\n\\nInstead you let silence rewrite the story.\\nGhostin’ ain’t the end —\\nit’s just the exit\\nwithout the courage\\nto stay real.\",\n    \"style\": \"UK Grime x UK Rap fusion, 140 BPM, Dark Minor Key, Deep Male British Vocal, Raw Delivery, Double Time Flow, Heavy 808 Sub, Industrial Texture, London Ambience, Cold Energy, raw vocal grit, sparse dark production, distorted bass, minimal synth stabs, dark atmosphere\",\n    \"title\": \"Ghosted\",\n    \"vocalGender\": \"m\"\n  },\n  \"response\": {\n    \"taskId\": \"4e6360d472ca90d9b437d32d9479800a\",\n    \"sunoData\": [\n      {\n        \"id\": \"57412caa-fa7c-42a9-bfea-88b7e4a22ba2\",\n        \"audioUrl\": \"https://musicfile.kie.ai/NTc0MTJjYWEtZmE3Yy00MmE5LWJmZWEtODhiN2U0YTIyYmEy.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/57412caa-fa7c-42a9-bfea-88b7e4a22ba2.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/NTc0MTJjYWEtZmE3Yy00MmE5LWJmZWEtODhiN2U0YTIyYmEy\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/57412caa-fa7c-42a9-bfea-88b7e4a22ba2.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/NTc0MTJjYWEtZmE3Yy00MmE5LWJmZWEtODhiN2U0YTIyYmEy.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_57412caa-fa7c-42a9-bfea-88b7e4a22ba2.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.\\nNot revenge.\\nNot silence.\\nJust… gone.\\n\\nGhostin’ — the softest exit from the hardest truths.\\nIf you wouldn’t want it done to you,\\ndon’t throw it at the ones who stood through your storms.\\n\\nLet’s talk facts.\\n\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads,\\nNine years wired, no peace, just codes.\\nWe swung hard — no saints in that mess,\\nBoth dropped lines we still regret.\\n\\nBut we came back — bruised, not fake,\\nTruth stitched up what pain would break.\\nWe weren’t perfect, weren’t clean or sweet,\\nBut real ain’t tidy, and real ain’t neat.\\n\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo flex in pain, no pride in scars,\\nBut we told truths in foreign bars.\\nFrom dust to laughs, from fire to screams,\\nThat bond felt deeper than it seemed.\\n\\nThen you ghosted — sharp, no breath,\\nLike months just died a quiet death.\\nNo word, no close, no space to say,\\nJust gone… and I replay.\\n\\n\\n[DROP 2 – Beat Cut, Sub-Bass Hit, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet like memory don’t bite.\\nYou vanished like saying one truth was too much fight.\\nSilence ain’t peace — it’s just weight left unpaid.\\n\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — friends, lovers, new days,\\nPosting bright like I’m erased.\\nDo they know who held your storms?\\nOr am I a chapter you reform?\\n\\nWe weren’t clean, but we were steel,\\nUgly love but brutally real.\\nNow I’m ghosted like none of it bled,\\nLike the last two years snapped like thread.\\n\\nIf I did that, you’d say I’m foul —\\nBut when it’s you? It’s “healing,” it’s “style.”\\nYou call it growth — I call it retreat.\\nYou call it closure — but it's incomplete.\\n\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s fear delayed.\\n(No message means the truth got mislaid.)\\n\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive]\\nYou say the chaos hit you back home,\\nThat old wounds flared, you felt alone.\\nI ain’t blind — I know your pain,\\nBut silence cuts deeper than any flame.\\n\\nOne line from you could’ve eased the sting,\\nBut quiet? Quiet does the dirtiest thing.\\nIf I meant something, I’d hear it still —\\nBut ghosts don’t talk — they just vanish at will.\\n\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass]\\nGhostin’ ain’t soft — it’s fear dressed clean.\\nA tidy exit from everything seen.\\nIf this was peace, it wouldn’t tear,\\nWouldn’t leave truth hanging in air.\\n\\nNot here to beg, not here for blame,\\nBut your silence still screams your name.\\nYou left like fiction someone erased —\\nBut truth don’t vanish — it stays unfaced.\\n\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.\\nOne breath.\\nOne truth.\\n\\nInstead you let silence rewrite the story.\\nGhostin’ ain’t the end —\\nit’s just the exit\\nwithout the courage\\nto stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"UK Grime x UK Rap fusion, 140 BPM, Dark Minor Key, Deep Male British Vocal, Raw Delivery, Double Time Flow, Heavy 808 Sub, Industrial Texture, London Ambience, Cold Energy, raw vocal grit, sparse dark production, distorted bass, minimal synth stabs, dark atmosphere\",\n        \"createTime\": 1769935533838,\n        \"duration\": 160.44\n      },\n      {\n        \"id\": \"22c9a141-7b7b-4759-aa84-726e9b32072e\",\n        \"audioUrl\": \"https://musicfile.kie.ai/MjJjOWExNDEtN2I3Yi00NzU5LWFhODQtNzI2ZTliMzIwNzJl.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/22c9a141-7b7b-4759-aa84-726e9b32072e.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/MjJjOWExNDEtN2I3Yi00NzU5LWFhODQtNzI2ZTliMzIwNzJl\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/22c9a141-7b7b-4759-aa84-726e9b32072e.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/MjJjOWExNDEtN2I3Yi00NzU5LWFhODQtNzI2ZTliMzIwNzJl.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_22c9a141-7b7b-4759-aa84-726e9b32072e.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.\\nNot revenge.\\nNot silence.\\nJust… gone.\\n\\nGhostin’ — the softest exit from the hardest truths.\\nIf you wouldn’t want it done to you,\\ndon’t throw it at the ones who stood through your storms.\\n\\nLet’s talk facts.\\n\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads,\\nNine years wired, no peace, just codes.\\nWe swung hard — no saints in that mess,\\nBoth dropped lines we still regret.\\n\\nBut we came back — bruised, not fake,\\nTruth stitched up what pain would break.\\nWe weren’t perfect, weren’t clean or sweet,\\nBut real ain’t tidy, and real ain’t neat.\\n\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo flex in pain, no pride in scars,\\nBut we told truths in foreign bars.\\nFrom dust to laughs, from fire to screams,\\nThat bond felt deeper than it seemed.\\n\\nThen you ghosted — sharp, no breath,\\nLike months just died a quiet death.\\nNo word, no close, no space to say,\\nJust gone… and I replay.\\n\\n\\n[DROP 2 – Beat Cut, Sub-Bass Hit, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet like memory don’t bite.\\nYou vanished like saying one truth was too much fight.\\nSilence ain’t peace — it’s just weight left unpaid.\\n\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — friends, lovers, new days,\\nPosting bright like I’m erased.\\nDo they know who held your storms?\\nOr am I a chapter you reform?\\n\\nWe weren’t clean, but we were steel,\\nUgly love but brutally real.\\nNow I’m ghosted like none of it bled,\\nLike the last two years snapped like thread.\\n\\nIf I did that, you’d say I’m foul —\\nBut when it’s you? It’s “healing,” it’s “style.”\\nYou call it growth — I call it retreat.\\nYou call it closure — but it's incomplete.\\n\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s fear delayed.\\n(No message means the truth got mislaid.)\\n\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive]\\nYou say the chaos hit you back home,\\nThat old wounds flared, you felt alone.\\nI ain’t blind — I know your pain,\\nBut silence cuts deeper than any flame.\\n\\nOne line from you could’ve eased the sting,\\nBut quiet? Quiet does the dirtiest thing.\\nIf I meant something, I’d hear it still —\\nBut ghosts don’t talk — they just vanish at will.\\n\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass]\\nGhostin’ ain’t soft — it’s fear dressed clean.\\nA tidy exit from everything seen.\\nIf this was peace, it wouldn’t tear,\\nWouldn’t leave truth hanging in air.\\n\\nNot here to beg, not here for blame,\\nBut your silence still screams your name.\\nYou left like fiction someone erased —\\nBut truth don’t vanish — it stays unfaced.\\n\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.\\nOne breath.\\nOne truth.\\n\\nInstead you let silence rewrite the story.\\nGhostin’ ain’t the end —\\nit’s just the exit\\nwithout the courage\\nto stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"UK Grime x UK Rap fusion, 140 BPM, Dark Minor Key, Deep Male British Vocal, Raw Delivery, Double Time Flow, Heavy 808 Sub, Industrial Texture, London Ambience, Cold Energy, raw vocal grit, sparse dark production, distorted bass, minimal synth stabs, dark atmosphere\",\n        \"createTime\": 1769935533838,\n        \"duration\": 157.72\n      }\n    ]\n  },\n  \"status\": \"SUCCESS\",\n  \"type\": \"chirp-crow\",\n  \"operationType\": \"generate\",\n  \"errorCode\": null,\n  \"errorMessage\": null,\n  \"createTime\": 1769935436000\n}"
-      ]
-    },
-    {
-      "id": 7,
-      "type": "Display Any (rgthree)",
-      "pos": [
-        11184,
-        5696
-      ],
-      "size": [
-        416,
-        272
-      ],
-      "flags": {},
-      "order": 7,
-      "mode": 0,
-      "inputs": [
-        {
-          "dir": 3,
-          "name": "source",
-          "type": "*",
-          "link": 6
-        }
-      ],
-      "outputs": [],
-      "properties": {
-        "cnr_id": "rgthree-comfy",
-        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
-        "Node name for S&R": "Display Any (rgthree)"
-      },
-      "widgets_values": [
-        "{\n  \"taskId\": \"9b4a036fb029e2ac63eab68ae100a0f5\",\n  \"parentMusicId\": \"\",\n  \"param\": {\n    \"callBackUrl\": \"https://example.com/kie-suno-callback\",\n    \"customMode\": true,\n    \"instrumental\": false,\n    \"model\": \"V5\",\n    \"negativeTags\": \"female vocals\",\n    \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n    \"style\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n    \"title\": \"Ghosted\",\n    \"vocalGender\": \"m\"\n  },\n  \"response\": {\n    \"taskId\": \"9b4a036fb029e2ac63eab68ae100a0f5\",\n    \"sunoData\": [\n      {\n        \"id\": \"90778258-284e-40f3-9a47-2000f3badead\",\n        \"audioUrl\": \"https://musicfile.kie.ai/OTA3NzgyNTgtMjg0ZS00MGYzLTlhNDctMjAwMGYzYmFkZWFk.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/90778258-284e-40f3-9a47-2000f3badead.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/OTA3NzgyNTgtMjg0ZS00MGYzLTlhNDctMjAwMGYzYmFkZWFk\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/90778258-284e-40f3-9a47-2000f3badead.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/OTA3NzgyNTgtMjg0ZS00MGYzLTlhNDctMjAwMGYzYmFkZWFk.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_90778258-284e-40f3-9a47-2000f3badead.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n        \"createTime\": 1769936935831,\n        \"duration\": 157.6\n      },\n      {\n        \"id\": \"d665fba6-ce64-4ff5-ac12-c4a92cae0cb4\",\n        \"audioUrl\": \"https://musicfile.kie.ai/ZDY2NWZiYTYtY2U2NC00ZmY1LWFjMTItYzRhOTJjYWUwY2I0.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/d665fba6-ce64-4ff5-ac12-c4a92cae0cb4.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/ZDY2NWZiYTYtY2U2NC00ZmY1LWFjMTItYzRhOTJjYWUwY2I0\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/d665fba6-ce64-4ff5-ac12-c4a92cae0cb4.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/ZDY2NWZiYTYtY2U2NC00ZmY1LWFjMTItYzRhOTJjYWUwY2I0.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_d665fba6-ce64-4ff5-ac12-c4a92cae0cb4.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n        \"createTime\": 1769936935831,\n        \"duration\": 165.2\n      }\n    ]\n  },\n  \"status\": \"SUCCESS\",\n  \"type\": \"chirp-crow\",\n  \"operationType\": \"generate\",\n  \"errorCode\": null,\n  \"errorMessage\": null,\n  \"createTime\": 1769936774000\n}"
-      ]
-    },
-    {
-      "id": 8,
-      "type": "PrimitiveString",
-      "pos": [
-        9952,
-        5568
-      ],
-      "size": [
-        512,
-        64
-      ],
-      "flags": {},
-      "order": 0,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "STRING",
-          "type": "STRING",
-          "links": [
-            7,
-            8
-          ]
-        }
-      ],
-      "title": "Title",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.11.1",
-        "Node name for S&R": "PrimitiveString"
-      },
-      "widgets_values": [
-        "Ghosted"
-      ],
-      "color": "#223",
-      "bgcolor": "#335"
-    },
     {
       "id": 5,
       "type": "MarkdownNote",
@@ -146,7 +16,7 @@
         1200
       ],
       "flags": {},
-      "order": 1,
+      "order": 0,
       "mode": 0,
       "inputs": [],
       "outputs": [],
@@ -159,52 +29,15 @@
       "bgcolor": "#000"
     },
     {
-      "id": 3,
-      "type": "PrimitiveStringMultiline",
-      "pos": [
-        9968,
-        5984
-      ],
-      "size": [
-        496,
-        480
-      ],
-      "flags": {},
-      "order": 2,
-      "mode": 0,
-      "inputs": [],
-      "outputs": [
-        {
-          "name": "STRING",
-          "type": "STRING",
-          "links": [
-            1,
-            2
-          ]
-        }
-      ],
-      "title": "Lyrics",
-      "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.11.1",
-        "Node name for S&R": "PrimitiveStringMultiline"
-      },
-      "widgets_values": [
-        "[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\nNot hate.  [Dry, quiet, almost whispered]\nNot silence.  [Short delay tail]\nJust gone.\nGhosting — the most coward move.\nIf you wouldn’t want it done to you,\nDon’t do it to the ones who stood through your storms.\nLet’s talk facts. \n\n------------------------------------------------------------\n\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\nTwo years deep on reckless roads\nNine years wild — no calm, just code\nWe clashed — no medals in that war\nBoth dropped lines we still abhor\nBut we came back — scarred, not fake\nNot perfect love, just what truth makes\n\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\nNo pride in pain, no flex in scars  \nBut we bled truth in foreign bars  \nDust to dance, silence to screams  \nThat bond was forged beyond the seams  \n\nBut now you ghost — clean, no breath  \nLike all that weight just met its death  \nNo word, no close, no final say  \nJust gone… and I replay \n\n------------------------------------------------------------\n\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\nYou dipped quiet — like memory don’t scream louder than words.\nSilence ain’t peace — it’s just guilt with no guts.\n\n\n------------------------------------------------------------\n\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\nNow you’re home — fam, friends, lovers, safe face  \nNew feed, new days, my memory erased  \nDo they know who stood through fire?  \nOr am I just a name you retired?  \n\nWe weren’t clean, but we were real  \nMessy love, forged in steel  \nNow I’m ghosted like I ain’t bled  \nLike the last two years snapped with one thread  \n\nIf I did that, you’d call it foul  \nBut when it’s you? That silence is style  \nNo closure, no end, no true release  \nYou call it growth — I call it peace deceased \n\n------------------------------------------------------------\n\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\nGhostin’ ain’t grown — it’s grief delayed.\n(No message means you left your weight unpaid.) \n\n\n------------------------------------------------------------\n\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\nYou say you found peace in that quiet fade\nBut real ones speak — they don’t evade\nOne message? Cost you nothin’, still\nYou left the bond unpaid — that’s the deal\n\nYou cleaned your exit, made it neat\nToo sharp, too silent for all that heat\nIf I meant somethin’, I’d hear it still\nBut ghosts don’t speak — they just vanish at will\n\n------------------------------------------------------------\n\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\nGhostin’ ain’t soft — it’s fear in silk  \nYou dressed the cut in coward’s guilt  \nIf this was peace, it wouldn’t ache  \nIt wouldn’t leave a path so fake  \n\nNot here to beg, not throw blame  \nJust sayin’ — silence screams your name  \nYou left like we was fiction played  \nBut truth don’t vanish — it just stays unpaid  \n\n------------------------------------------------------------\n\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\nYou could’ve said one line.  \nOne breath.  \nInstead, you let the past drown in silence.  \nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.  \n"
-      ],
-      "color": "#232",
-      "bgcolor": "#353"
-    },
-    {
       "id": 1,
       "type": "KIE_Suno_Music_Basic",
       "pos": [
-        10688,
-        5632
+        10704,
+        5488
       ],
       "size": [
         400,
-        350
+        390
       ],
       "flags": {},
       "order": 4,
@@ -237,31 +70,46 @@
       ],
       "outputs": [
         {
-          "name": "audio",
+          "name": "audio_1",
           "type": "AUDIO",
           "links": [
             5
           ]
         },
         {
-          "name": "data",
-          "type": "STRING",
+          "name": "audio_2",
+          "type": "AUDIO",
           "links": [
-            6
+            16
           ]
         },
         {
-          "name": "image",
+          "name": "data",
+          "type": "STRING",
+          "links": [
+            13
+          ]
+        },
+        {
+          "name": "image_1",
           "type": "IMAGE",
           "links": [
-            11
+            14
+          ]
+        },
+        {
+          "name": "image_2",
+          "type": "IMAGE",
+          "links": [
+            15
           ]
         }
       ],
       "properties": {
-        "aux_id": "gateway/ComfyUI-Kie-API",
+        "cnr_id": "comfyui-kie-api",
         "ver": "ff2e2adc341f71a94e8a6471d51a9eaa8ca2d501",
-        "Node name for S&R": "KIE_Suno_Music_Basic"
+        "Node name for S&R": "KIE_Suno_Music_Basic",
+        "aux_id": "gateway/ComfyUI-Kie-API"
       },
       "widgets_values": [
         "",
@@ -278,64 +126,58 @@
       "bgcolor": "#653"
     },
     {
-      "id": 4,
-      "type": "PrimitiveStringMultiline",
+      "id": 6,
+      "type": "PreviewAudio",
       "pos": [
-        9952,
-        5712
+        11216,
+        5264
       ],
       "size": [
-        512,
-        208
+        336,
+        88
       ],
       "flags": {},
-      "order": 3,
+      "order": 6,
       "mode": 0,
-      "inputs": [],
-      "outputs": [
+      "inputs": [
         {
-          "name": "STRING",
-          "type": "STRING",
-          "links": [
-            3,
-            4
-          ]
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 5
         }
       ],
-      "title": "Style",
+      "outputs": [],
+      "title": "Suno Track 1",
       "properties": {
         "cnr_id": "comfy-core",
         "ver": "0.11.1",
-        "Node name for S&R": "PrimitiveStringMultiline"
+        "Node name for S&R": "PreviewAudio"
       },
-      "widgets_values": [
-        "Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops."
-      ],
-      "color": "#332922",
-      "bgcolor": "#593930"
+      "widgets_values": []
     },
     {
-      "id": 11,
+      "id": 13,
       "type": "PreviewImage",
       "pos": [
-        11696,
-        5648
+        11248,
+        5888
       ],
       "size": [
         288,
         272
       ],
       "flags": {},
-      "order": 8,
+      "order": 10,
       "mode": 0,
       "inputs": [
         {
           "name": "images",
           "type": "IMAGE",
-          "link": 11
+          "link": 15
         }
       ],
       "outputs": [],
+      "title": "Suno Cover Image 2",
       "properties": {
         "cnr_id": "comfy-core",
         "ver": "0.11.1",
@@ -344,15 +186,265 @@
       "widgets_values": []
     },
     {
+      "id": 14,
+      "type": "PreviewAudio",
+      "pos": [
+        11216,
+        5408
+      ],
+      "size": [
+        336,
+        88
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 16
+        }
+      ],
+      "outputs": [],
+      "title": "Suno Track 2",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 11,
+      "type": "PreviewImage",
+      "pos": [
+        11248,
+        5552
+      ],
+      "size": [
+        288,
+        272
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 14
+        }
+      ],
+      "outputs": [],
+      "title": "Suno Cover Image 1",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        11616,
+        5360
+      ],
+      "size": [
+        416,
+        656
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 13
+        }
+      ],
+      "outputs": [],
+      "title": "Raw Data",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "{\n  \"taskId\": \"1305fc3661ac190d05e95b11bdeb24a4\",\n  \"parentMusicId\": \"\",\n  \"param\": {\n    \"callBackUrl\": \"https://example.com/kie-suno-callback\",\n    \"customMode\": true,\n    \"instrumental\": false,\n    \"model\": \"V5\",\n    \"negativeTags\": \"female vocals\",\n    \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n    \"style\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n    \"title\": \"Ghosted\",\n    \"vocalGender\": \"m\"\n  },\n  \"response\": {\n    \"taskId\": \"1305fc3661ac190d05e95b11bdeb24a4\",\n    \"sunoData\": [\n      {\n        \"id\": \"868004c8-4c3b-4103-b663-3a016495bbb7\",\n        \"audioUrl\": \"https://musicfile.kie.ai/ODY4MDA0YzgtNGMzYi00MTAzLWI2NjMtM2EwMTY0OTViYmI3.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/868004c8-4c3b-4103-b663-3a016495bbb7.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/ODY4MDA0YzgtNGMzYi00MTAzLWI2NjMtM2EwMTY0OTViYmI3\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/868004c8-4c3b-4103-b663-3a016495bbb7.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/ODY4MDA0YzgtNGMzYi00MTAzLWI2NjMtM2EwMTY0OTViYmI3.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_868004c8-4c3b-4103-b663-3a016495bbb7.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n        \"createTime\": 1770115656488,\n        \"duration\": 189.72\n      },\n      {\n        \"id\": \"bbef5799-2410-473a-8022-92955fda97ca\",\n        \"audioUrl\": \"https://musicfile.kie.ai/YmJlZjU3OTktMjQxMC00NzNhLTgwMjItOTI5NTVmZGE5N2Nh.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/bbef5799-2410-473a-8022-92955fda97ca.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/YmJlZjU3OTktMjQxMC00NzNhLTgwMjItOTI5NTVmZGE5N2Nh\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/bbef5799-2410-473a-8022-92955fda97ca.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/YmJlZjU3OTktMjQxMC00NzNhLTgwMjItOTI5NTVmZGE5N2Nh.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_bbef5799-2410-473a-8022-92955fda97ca.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n        \"createTime\": 1770115656488,\n        \"duration\": 178.88\n      }\n    ]\n  },\n  \"status\": \"SUCCESS\",\n  \"type\": \"chirp-crow\",\n  \"operationType\": \"generate\",\n  \"errorCode\": null,\n  \"errorMessage\": null,\n  \"createTime\": 1770115559000\n}"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "PrimitiveString",
+      "pos": [
+        9952,
+        5280
+      ],
+      "size": [
+        512,
+        64
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            7,
+            8
+          ]
+        }
+      ],
+      "title": "Title",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PrimitiveString"
+      },
+      "widgets_values": [
+        "Ghosted"
+      ],
+      "color": "#223",
+      "bgcolor": "#335"
+    },
+    {
+      "id": 16,
+      "type": "PreviewImage",
+      "pos": [
+        11232,
+        6928
+      ],
+      "size": [
+        288,
+        272
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 21
+        }
+      ],
+      "outputs": [],
+      "title": "Suno Cover Image 2",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 17,
+      "type": "PreviewAudio",
+      "pos": [
+        11200,
+        6448
+      ],
+      "size": [
+        336,
+        88
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 18
+        }
+      ],
+      "outputs": [],
+      "title": "Suno Track 2",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 18,
+      "type": "PreviewImage",
+      "pos": [
+        11232,
+        6592
+      ],
+      "size": [
+        288,
+        272
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 20
+        }
+      ],
+      "outputs": [],
+      "title": "Suno Cover Image 1",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 15,
+      "type": "PreviewAudio",
+      "pos": [
+        11200,
+        6304
+      ],
+      "size": [
+        336,
+        88
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 17
+        }
+      ],
+      "outputs": [],
+      "title": "Suno Track 1",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PreviewAudio"
+      },
+      "widgets_values": []
+    },
+    {
       "id": 2,
       "type": "KIE_Suno_Music_Advanced",
       "pos": [
-        10688,
-        6048
+        10704,
+        6352
       ],
       "size": [
         400,
-        422
+        462
       ],
       "flags": {},
       "order": 5,
@@ -385,31 +477,46 @@
       ],
       "outputs": [
         {
-          "name": "audio",
+          "name": "audio_1",
           "type": "AUDIO",
           "links": [
-            9
+            17
+          ]
+        },
+        {
+          "name": "audio_2",
+          "type": "AUDIO",
+          "links": [
+            18
           ]
         },
         {
           "name": "data",
           "type": "STRING",
           "links": [
-            10
+            19
           ]
         },
         {
-          "name": "image",
+          "name": "image_1",
           "type": "IMAGE",
           "links": [
-            12
+            20
+          ]
+        },
+        {
+          "name": "image_2",
+          "type": "IMAGE",
+          "links": [
+            21
           ]
         }
       ],
       "properties": {
-        "aux_id": "gateway/ComfyUI-Kie-API",
+        "cnr_id": "comfyui-kie-api",
         "ver": "ff2e2adc341f71a94e8a6471d51a9eaa8ca2d501",
-        "Node name for S&R": "KIE_Suno_Music_Advanced"
+        "Node name for S&R": "KIE_Suno_Music_Advanced",
+        "aux_id": "gateway/ComfyUI-Kie-API"
       },
       "widgets_values": [
         "",
@@ -429,62 +536,111 @@
       "bgcolor": "#653"
     },
     {
-      "id": 12,
-      "type": "PreviewImage",
+      "id": 19,
+      "type": "Display Any (rgthree)",
       "pos": [
-        11696,
-        6096
+        11600,
+        6384
       ],
       "size": [
-        288,
-        272
+        416,
+        656
       ],
       "flags": {},
-      "order": 11,
+      "order": 13,
       "mode": 4,
       "inputs": [
         {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 12
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 19
         }
       ],
       "outputs": [],
+      "title": "Raw Data",
       "properties": {
-        "cnr_id": "comfy-core",
-        "ver": "0.11.1",
-        "Node name for S&R": "PreviewImage"
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
       },
-      "widgets_values": []
+      "widgets_values": [
+        "{\n  \"taskId\": \"1305fc3661ac190d05e95b11bdeb24a4\",\n  \"parentMusicId\": \"\",\n  \"param\": {\n    \"callBackUrl\": \"https://example.com/kie-suno-callback\",\n    \"customMode\": true,\n    \"instrumental\": false,\n    \"model\": \"V5\",\n    \"negativeTags\": \"female vocals\",\n    \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n    \"style\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n    \"title\": \"Ghosted\",\n    \"vocalGender\": \"m\"\n  },\n  \"response\": {\n    \"taskId\": \"1305fc3661ac190d05e95b11bdeb24a4\",\n    \"sunoData\": [\n      {\n        \"id\": \"868004c8-4c3b-4103-b663-3a016495bbb7\",\n        \"audioUrl\": \"https://musicfile.kie.ai/ODY4MDA0YzgtNGMzYi00MTAzLWI2NjMtM2EwMTY0OTViYmI3.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/868004c8-4c3b-4103-b663-3a016495bbb7.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/ODY4MDA0YzgtNGMzYi00MTAzLWI2NjMtM2EwMTY0OTViYmI3\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/868004c8-4c3b-4103-b663-3a016495bbb7.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/ODY4MDA0YzgtNGMzYi00MTAzLWI2NjMtM2EwMTY0OTViYmI3.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_868004c8-4c3b-4103-b663-3a016495bbb7.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n        \"createTime\": 1770115656488,\n        \"duration\": 189.72\n      },\n      {\n        \"id\": \"bbef5799-2410-473a-8022-92955fda97ca\",\n        \"audioUrl\": \"https://musicfile.kie.ai/YmJlZjU3OTktMjQxMC00NzNhLTgwMjItOTI5NTVmZGE5N2Nh.mp3\",\n        \"sourceAudioUrl\": \"https://cdn1.suno.ai/bbef5799-2410-473a-8022-92955fda97ca.mp3\",\n        \"streamAudioUrl\": \"https://musicfile.kie.ai/YmJlZjU3OTktMjQxMC00NzNhLTgwMjItOTI5NTVmZGE5N2Nh\",\n        \"sourceStreamAudioUrl\": \"https://cdn1.suno.ai/bbef5799-2410-473a-8022-92955fda97ca.mp3\",\n        \"imageUrl\": \"https://musicfile.kie.ai/YmJlZjU3OTktMjQxMC00NzNhLTgwMjItOTI5NTVmZGE5N2Nh.jpeg\",\n        \"sourceImageUrl\": \"https://cdn2.suno.ai/image_bbef5799-2410-473a-8022-92955fda97ca.jpeg\",\n        \"prompt\": \"[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\\nNot hate.  [Dry, quiet, almost whispered]\\nNot silence.  [Short delay tail]\\nJust gone.\\nGhosting — the most coward move.\\nIf you wouldn’t want it done to you,\\nDon’t do it to the ones who stood through your storms.\\nLet’s talk facts. \\n\\n------------------------------------------------------------\\n\\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\\nTwo years deep on reckless roads\\nNine years wild — no calm, just code\\nWe clashed — no medals in that war\\nBoth dropped lines we still abhor\\nBut we came back — scarred, not fake\\nNot perfect love, just what truth makes\\n\\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nNo pride in pain, no flex in scars  \\nBut we bled truth in foreign bars  \\nDust to dance, silence to screams  \\nThat bond was forged beyond the seams  \\n\\nBut now you ghost — clean, no breath  \\nLike all that weight just met its death  \\nNo word, no close, no final say  \\nJust gone… and I replay \\n\\n------------------------------------------------------------\\n\\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\\nYou dipped quiet — like memory don’t scream louder than words.\\nSilence ain’t peace — it’s just guilt with no guts.\\n\\n\\n------------------------------------------------------------\\n\\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\\nNow you’re home — fam, friends, lovers, safe face  \\nNew feed, new days, my memory erased  \\nDo they know who stood through fire?  \\nOr am I just a name you retired?  \\n\\nWe weren’t clean, but we were real  \\nMessy love, forged in steel  \\nNow I’m ghosted like I ain’t bled  \\nLike the last two years snapped with one thread  \\n\\nIf I did that, you’d call it foul  \\nBut when it’s you? That silence is style  \\nNo closure, no end, no true release  \\nYou call it growth — I call it peace deceased \\n\\n------------------------------------------------------------\\n\\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\\nGhostin’ ain’t grown — it’s grief delayed.\\n(No message means you left your weight unpaid.) \\n\\n\\n------------------------------------------------------------\\n\\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\\nYou say you found peace in that quiet fade\\nBut real ones speak — they don’t evade\\nOne message? Cost you nothin’, still\\nYou left the bond unpaid — that’s the deal\\n\\nYou cleaned your exit, made it neat\\nToo sharp, too silent for all that heat\\nIf I meant somethin’, I’d hear it still\\nBut ghosts don’t speak — they just vanish at will\\n\\n------------------------------------------------------------\\n\\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\\nGhostin’ ain’t soft — it’s fear in silk  \\nYou dressed the cut in coward’s guilt  \\nIf this was peace, it wouldn’t ache  \\nIt wouldn’t leave a path so fake  \\n\\nNot here to beg, not throw blame  \\nJust sayin’ — silence screams your name  \\nYou left like we was fiction played  \\nBut truth don’t vanish — it just stays unpaid  \\n\\n------------------------------------------------------------\\n\\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\\nYou could’ve said one line.  \\nOne breath.  \\nInstead, you let the past drown in silence.  \\nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.\",\n        \"modelName\": \"chirp-crow\",\n        \"title\": \"Ghosted\",\n        \"tags\": \"Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Tight Compression, Sub-Heavy Half-Time Drops, Distorted Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops.\",\n        \"createTime\": 1770115656488,\n        \"duration\": 178.88\n      }\n    ]\n  },\n  \"status\": \"SUCCESS\",\n  \"type\": \"chirp-crow\",\n  \"operationType\": \"generate\",\n  \"errorCode\": null,\n  \"errorMessage\": null,\n  \"createTime\": 1770115559000\n}"
+      ]
     },
     {
-      "id": 6,
-      "type": "PreviewAudio",
+      "id": 3,
+      "type": "PrimitiveStringMultiline",
       "pos": [
-        11184,
-        5536
+        9952,
+        5664
       ],
       "size": [
-        336,
-        88
+        512,
+        496
       ],
       "flags": {},
-      "order": 6,
+      "order": 2,
       "mode": 0,
-      "inputs": [
+      "inputs": [],
+      "outputs": [
         {
-          "name": "audio",
-          "type": "AUDIO",
-          "link": 5
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            1,
+            2
+          ]
         }
       ],
-      "outputs": [],
+      "title": "Lyrics",
       "properties": {
         "cnr_id": "comfy-core",
         "ver": "0.11.1",
-        "Node name for S&R": "PreviewAudio"
+        "Node name for S&R": "PrimitiveStringMultiline"
       },
-      "widgets_values": []
+      "widgets_values": [
+        "[Intro – Spoken Word, Low-Passed Drone, Rising Sub-Swell, Cold Street Ambience, Close-Mic Male Voice]\nNot hate.  [Dry, quiet, almost whispered]\nNot silence.  [Short delay tail]\nJust gone.\nGhosting — the most coward move.\nIf you wouldn’t want it done to you,\nDon’t do it to the ones who stood through your storms.\nLet’s talk facts. \n\n------------------------------------------------------------\n\n[Verse 1 – Cold Grit Flow, Tight Compression, Minimal Drum Layer, Forward Vocal Mix]\nTwo years deep on reckless roads\nNine years wild — no calm, just code\nWe clashed — no medals in that war\nBoth dropped lines we still abhor\nBut we came back — scarred, not fake\nNot perfect love, just what truth makes\n\n[DROP 1 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\nNo pride in pain, no flex in scars  \nBut we bled truth in foreign bars  \nDust to dance, silence to screams  \nThat bond was forged beyond the seams  \n\nBut now you ghost — clean, no breath  \nLike all that weight just met its death  \nNo word, no close, no final say  \nJust gone… and I replay \n\n------------------------------------------------------------\n\n[DROP 2 – Beat Cut, Sub-Bass Explosion, Distorted Reverb, Aggressive Male Shout]\nYou dipped quiet — like memory don’t scream louder than words.\nSilence ain’t peace — it’s just guilt with no guts.\n\n\n------------------------------------------------------------\n\n[Verse 2 – Double-Time Flow, Sharp Cadence, Industrial Drum Drive, Dry Mix]\nNow you’re home — fam, friends, lovers, safe face  \nNew feed, new days, my memory erased  \nDo they know who stood through fire?  \nOr am I just a name you retired?  \n\nWe weren’t clean, but we were real  \nMessy love, forged in steel  \nNow I’m ghosted like I ain’t bled  \nLike the last two years snapped with one thread  \n\nIf I did that, you’d call it foul  \nBut when it’s you? That silence is style  \nNo closure, no end, no true release  \nYou call it growth — I call it peace deceased \n\n------------------------------------------------------------\n\n[DROP 3 – Half-Time Switch, Sub Growl, Glitch FX, Beat Deconstruction, Low-Male Ad-libs]\nGhostin’ ain’t grown — it’s grief delayed.\n(No message means you left your weight unpaid.) \n\n\n------------------------------------------------------------\n\n[Verse 3 – Mid Flow, Reflective Tone, Snare Build, Low-End Drive, Dry Lead Vocal]\nYou say you found peace in that quiet fade\nBut real ones speak — they don’t evade\nOne message? Cost you nothin’, still\nYou left the bond unpaid — that’s the deal\n\nYou cleaned your exit, made it neat\nToo sharp, too silent for all that heat\nIf I meant somethin’, I’d hear it still\nBut ghosts don’t speak — they just vanish at will\n\n------------------------------------------------------------\n\n[Verse 4 – Final Verse, Harsh Delivery, Full Drum Return, Saturated Bass, Distorted Male Vocal]\nGhostin’ ain’t soft — it’s fear in silk  \nYou dressed the cut in coward’s guilt  \nIf this was peace, it wouldn’t ache  \nIt wouldn’t leave a path so fake  \n\nNot here to beg, not throw blame  \nJust sayin’ — silence screams your name  \nYou left like we was fiction played  \nBut truth don’t vanish — it just stays unpaid  \n\n------------------------------------------------------------\n\n[Outro – Spoken Word, Radio Static, Low-Pass Fade, Male Whisper Layer]\nYou could’ve said one line.  \nOne breath.  \nInstead, you let the past drown in silence.  \nGhostin’ ain’t the end — it’s just the exit without the courage to stay real.  \n"
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 4,
+      "type": "PrimitiveStringMultiline",
+      "pos": [
+        9952,
+        5424
+      ],
+      "size": [
+        512,
+        160
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            3,
+            4
+          ]
+        }
+      ],
+      "title": "Style",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.11.1",
+        "Node name for S&R": "PrimitiveStringMultiline"
+      },
+      "widgets_values": [
+        "Dark UK Grime, 140 BPM, Deep Male British Voice, Raw Aggressive Delivery, Sub-Heavy Half-Time Drops, Lo-Fi Texture, Harsh Emotional Theme of Ghosted Friendship, harsh UK Grim Style, heavy bass drops, complex layers"
+      ],
+      "color": "#332922",
+      "bgcolor": "#593930"
     }
   ],
   "links": [
@@ -529,14 +685,6 @@
       "AUDIO"
     ],
     [
-      6,
-      1,
-      1,
-      7,
-      0,
-      "STRING"
-    ],
-    [
       7,
       8,
       0,
@@ -553,34 +701,74 @@
       "STRING"
     ],
     [
-      9,
-      2,
-      0,
-      9,
-      0,
-      "AUDIO"
-    ],
-    [
-      10,
-      2,
+      13,
       1,
-      10,
+      2,
+      7,
       0,
       "STRING"
     ],
     [
-      11,
+      14,
       1,
-      2,
+      3,
       11,
       0,
       "IMAGE"
     ],
     [
-      12,
+      15,
+      1,
+      4,
+      13,
+      0,
+      "IMAGE"
+    ],
+    [
+      16,
+      1,
+      1,
+      14,
+      0,
+      "AUDIO"
+    ],
+    [
+      17,
+      2,
+      0,
+      15,
+      0,
+      "AUDIO"
+    ],
+    [
+      18,
+      2,
+      1,
+      17,
+      0,
+      "AUDIO"
+    ],
+    [
+      19,
       2,
       2,
-      12,
+      19,
+      0,
+      "STRING"
+    ],
+    [
+      20,
+      2,
+      3,
+      18,
+      0,
+      "IMAGE"
+    ],
+    [
+      21,
+      2,
+      4,
+      16,
       0,
       "IMAGE"
     ]
@@ -591,9 +779,9 @@
       "title": "Suno Nodes",
       "bounding": [
         9888,
-        5408,
-        2192,
-        1184
+        5120,
+        2336,
+        2208
       ],
       "color": "#3f789e",
       "font_size": 24,
@@ -604,10 +792,10 @@
   "extra": {
     "workflowRendererVersion": "LG",
     "ds": {
-      "scale": 0.42241080689568894,
+      "scale": 0.3555347251036856,
       "offset": [
-        -8641.39936792056,
-        -5055.27009603461
+        -8590.293661509062,
+        -4835.518712700256
       ]
     },
     "frontendVersion": "1.37.11",
