@@ -71,7 +71,7 @@ def _parse_multi_prompt_text(shots_text: str) -> list[dict[str, Any]]:
         if not shot_label:
             raise _validation_error(f"Missing shot label on line {idx}.")
 
-        duration_match = re.match(r"^(\\d+)(?:\\s*seconds?)?$", duration_str, flags=re.IGNORECASE)
+        duration_match = re.match(r"^(\d+)(?:\s*seconds?)?$", duration_str, flags=re.IGNORECASE)
         if not duration_match:
             raise _validation_error(
                 f"Invalid shot duration '{duration_str}' on line {idx}. "
