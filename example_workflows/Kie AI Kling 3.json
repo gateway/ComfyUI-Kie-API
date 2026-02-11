@@ -1,0 +1,2325 @@
+{
+  "id": "755a7b04-624e-45aa-b5c4-8dd11792780b",
+  "revision": 0,
+  "last_node_id": 94,
+  "last_link_id": 124,
+  "nodes": [
+    {
+      "id": 28,
+      "type": "KIE_GetRemainingCredits",
+      "pos": [
+        -1840,
+        -16
+      ],
+      "size": [
+        272,
+        78
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "data",
+          "type": "STRING",
+          "links": [
+            34
+          ]
+        },
+        {
+          "name": "credits_remaining",
+          "type": "INT",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "bedb0146ae05737b6faa3a7d93bf8589f1551945",
+        "Node name for S&R": "KIE_GetRemainingCredits"
+      },
+      "widgets_values": [
+        true
+      ]
+    },
+    {
+      "id": 32,
+      "type": "MarkdownNote",
+      "pos": [
+        -1776,
+        1120
+      ],
+      "size": [
+        330,
+        210
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Nano Banana Pro",
+      "properties": {},
+      "widgets_values": [
+        "Google Nano Banana Pro delivers sharper 2K imagery, intelligent 4K scaling.\n\n**Playground Link:** [https://kie.ai/nano-banana-pro](https://kie.ai/nano-banana-pro)\n\n- Aspect Ratio: 9:16 etc\n- Resolution 1K, 2K, 4K\n\nOutput format: png or jpg\n\n**Pricing (May change):**\n- 1K/2K 18 credits (~$0.09) \n- 4K 24 credits (~$0.12)\n\nLatest pricing can be found here [https://kie.ai/pricing](https://kie.ai)"
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 6,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        864,
+        816
+      ],
+      "size": [
+        432,
+        224
+      ],
+      "flags": {},
+      "order": 26,
+      "mode": 4,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 50
+        }
+      ],
+      "outputs": [],
+      "title": "Validation Data",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "VALID: Kling 3.0 preflight checks passed.\nNo createTask call was made.\nMode: std\nMulti-shots: False\nDuration sent: 8s\nFrame inputs resolved: 2\nAspect ratio in payload: 9:16\nElements provided: 0\nSound enabled: True"
+      ]
+    },
+    {
+      "id": 45,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        880,
+        2224
+      ],
+      "size": [
+        432,
+        224
+      ],
+      "flags": {},
+      "order": 23,
+      "mode": 4,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 54
+        }
+      ],
+      "outputs": [],
+      "title": "Validation Data",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "VALID: Kling 3.0 preflight checks passed.\nNo createTask call was made.\nMode: std\nMulti-shots: False\nDuration sent: 10s\nFrame inputs resolved: 1\nAspect ratio in payload: 9:16\nElements provided: 0\nSound enabled: True"
+      ]
+    },
+    {
+      "id": 46,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        896,
+        2512
+      ],
+      "size": [
+        400,
+        320
+      ],
+      "flags": {},
+      "order": 22,
+      "mode": 4,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 55
+        }
+      ],
+      "outputs": [],
+      "title": "JSON Output",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "{\n  \"model\": \"kling-3.0/video\",\n  \"input\": {\n    \"mode\": \"std\",\n    \"multi_shots\": false,\n    \"prompt\": \"Use the provided image as a visual anchor.\\nPreserve facial identity, skin texture, hairstyle, body proportions, and lighting.\\n\\nA bright tropical beach with soft waves and palm trees in the background.\\nWarm sunlight reflects off the sand.\\nLight ocean breeze moves her hair.\\n\\nA young woman lies comfortably on the sand, facing the camera.\\nA cold can rests beside her.\\n\\nThe camera begins in a relaxed medium close-up, slightly handheld, like a casual vlog.\\n\\nShe shifts slightly closer to the camera and smiles.\\n\\nShe reaches for the can and lifts it, looking at it briefly.\\n\\n[Woman, relaxed upbeat voice]:\\n“Honestly, this tech moves so fast… it’s wild trying to keep up sometimes. Shout out to Steve for making me come alive!”\\n\\nShe brings the can to her lips and takes a quick drink.\\n\\nCondensation glistens in the sunlight.\\n\\nShe lowers it, smiles at the camera, and laughs softly.\\n\\nThe camera gently pushes in.\\nOcean ambience plays quietly.\\n\\nNatural pacing.\\nAuthentic social-media creator style.\\n\",\n    \"sound\": true,\n    \"duration\": \"10\",\n    \"image_urls\": [\n      \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770815021068-of3be47x2zn.png\"\n    ],\n    \"aspect_ratio\": \"9:16\"\n  }\n}"
+      ]
+    },
+    {
+      "id": 52,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        1584,
+        3744
+      ],
+      "size": [
+        432,
+        224
+      ],
+      "flags": {},
+      "order": 40,
+      "mode": 4,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 64
+        }
+      ],
+      "outputs": [],
+      "title": "Validation Data",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "VALID: Kling 3.0 preflight checks passed.\nNo createTask call was made.\nMode: std\nMulti-shots: True\nDuration sent: 12s\nFrame inputs resolved: 1\nAspect ratio in payload: 9:16\nElements provided: 2\nShot count: 3\nElement names: element_kling, element_sadi"
+      ]
+    },
+    {
+      "id": 42,
+      "type": "KIE_Kling3_Video",
+      "pos": [
+        1568,
+        336
+      ],
+      "size": [
+        448,
+        480
+      ],
+      "flags": {},
+      "order": 24,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "element",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "elements",
+          "shape": 7,
+          "type": "KIE_ELEMENTS",
+          "link": null
+        },
+        {
+          "name": "kling_data",
+          "shape": 7,
+          "type": "KIE_KLING3_REQUEST",
+          "link": 51
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            52
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "d587567b9a4f12d06a716d69da36979308a5a749",
+        "Node name for S&R": "KIE_Kling3_Video"
+      },
+      "widgets_values": [
+        "std",
+        "9:16",
+        "8",
+        false,
+        "",
+        "",
+        true,
+        true
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 10,
+      "type": "LoadImage",
+      "pos": [
+        560,
+        3216
+      ],
+      "size": [
+        240,
+        464
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            99
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "can.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 82,
+      "type": "LoadImage",
+      "pos": [
+        560,
+        3744
+      ],
+      "size": [
+        240,
+        464
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            100
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "can.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 83,
+      "type": "ImageBatchMulti",
+      "pos": [
+        896,
+        3328
+      ],
+      "size": [
+        210,
+        102
+      ],
+      "flags": {},
+      "order": 15,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "image_1",
+          "type": "IMAGE",
+          "link": 99
+        },
+        {
+          "name": "image_2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 100
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            101
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kjnodes",
+        "ver": "e8b70f28be7fd71ee72c3848cfa09e1a89e3061b",
+        "Node name for S&R": "ImageBatchMulti"
+      },
+      "widgets_values": [
+        2,
+        null
+      ]
+    },
+    {
+      "id": 59,
+      "type": "KIE_Kling3_Video",
+      "pos": [
+        2544,
+        3280
+      ],
+      "size": [
+        448,
+        480
+      ],
+      "flags": {},
+      "order": 38,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "element",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "elements",
+          "shape": 7,
+          "type": "KIE_ELEMENTS",
+          "link": null
+        },
+        {
+          "name": "kling_data",
+          "shape": 7,
+          "type": "KIE_KLING3_REQUEST",
+          "link": 73
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            68
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "d587567b9a4f12d06a716d69da36979308a5a749",
+        "Node name for S&R": "KIE_Kling3_Video"
+      },
+      "widgets_values": [
+        "std",
+        "9:16",
+        "10",
+        true,
+        "",
+        "",
+        true,
+        true
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 73,
+      "type": "Fast Groups Bypasser (rgthree)",
+      "pos": [
+        -2144,
+        928
+      ],
+      "size": [
+        247.2955078125,
+        274
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "OPT_CONNECTION",
+          "type": "*",
+          "links": null
+        }
+      ],
+      "properties": {
+        "matchColors": "",
+        "matchTitle": "",
+        "showNav": true,
+        "showAllGraphs": true,
+        "sort": "position",
+        "customSortAlphabet": "",
+        "toggleRestriction": "default"
+      }
+    },
+    {
+      "id": 44,
+      "type": "LoadImage",
+      "pos": [
+        560,
+        1648
+      ],
+      "size": [
+        222.798828125,
+        314.0000000000001
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            56
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "First Frame",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "pasted/image (224).png",
+        "image"
+      ]
+    },
+    {
+      "id": 50,
+      "type": "KIE_Kling3_Video",
+      "pos": [
+        1632,
+        1680
+      ],
+      "size": [
+        448,
+        480
+      ],
+      "flags": {},
+      "order": 21,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "element",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "elements",
+          "shape": 7,
+          "type": "KIE_ELEMENTS",
+          "link": null
+        },
+        {
+          "name": "kling_data",
+          "shape": 7,
+          "type": "KIE_KLING3_REQUEST",
+          "link": 63
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            58
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "d587567b9a4f12d06a716d69da36979308a5a749",
+        "Node name for S&R": "KIE_Kling3_Video"
+      },
+      "widgets_values": [
+        "std",
+        "9:16",
+        "10",
+        false,
+        "",
+        "",
+        true,
+        true
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 47,
+      "type": "KIE_Kling3_Preflight",
+      "pos": [
+        880,
+        1712
+      ],
+      "size": [
+        448,
+        448
+      ],
+      "flags": {},
+      "order": 16,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 56
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "element",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "elements",
+          "shape": 7,
+          "type": "KIE_ELEMENTS",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "kling_data",
+          "type": "KIE_KLING3_REQUEST",
+          "links": [
+            63
+          ]
+        },
+        {
+          "name": "payload_json",
+          "type": "STRING",
+          "links": [
+            55
+          ]
+        },
+        {
+          "name": "notes",
+          "type": "STRING",
+          "links": [
+            54
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "bedb0146ae05737b6faa3a7d93bf8589f1551945",
+        "Node name for S&R": "KIE_Kling3_Preflight"
+      },
+      "widgets_values": [
+        "std",
+        "9:16",
+        "10",
+        false,
+        "Use the provided image as a visual anchor.\nPreserve facial identity, skin texture, hairstyle, body proportions, and lighting.\n\nA bright tropical beach with soft waves and palm trees in the background.\nWarm sunlight reflects off the sand.\nLight ocean breeze moves her hair.\n\nA young woman lies comfortably on the sand, facing the camera.\nA cold can rests beside her.\n\nThe camera begins in a relaxed medium close-up, slightly handheld, like a casual vlog.\n\nShe shifts slightly closer to the camera and smiles.\n\nShe reaches for the can and lifts it, looking at it briefly.\n\n[Woman, relaxed upbeat voice]:\n“Honestly, this tech moves so fast… it’s wild trying to keep up sometimes. Shout out to Steve for making me come alive!”\n\nShe brings the can to her lips and takes a quick drink.\n\nCondensation glistens in the sunlight.\n\nShe lowers it, smiles at the camera, and laughs softly.\n\nThe camera gently pushes in.\nOcean ambience plays quietly.\n\nNatural pacing.\nAuthentic social-media creator style.\n",
+        "",
+        true,
+        true
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 48,
+      "type": "SaveVideo",
+      "pos": [
+        2208,
+        1680
+      ],
+      "size": [
+        496,
+        544
+      ],
+      "flags": {},
+      "order": 29,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 58
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/ComfyUI",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 35,
+      "type": "ImageBatchMulti",
+      "pos": [
+        -1392,
+        496
+      ],
+      "size": [
+        210,
+        122
+      ],
+      "flags": {},
+      "order": 18,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "image_1",
+          "type": "IMAGE",
+          "link": 38
+        },
+        {
+          "name": "image_2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 37
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            39,
+            111
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kjnodes",
+        "ver": "e8b70f28be7fd71ee72c3848cfa09e1a89e3061b",
+        "Node name for S&R": "ImageBatchMulti"
+      },
+      "widgets_values": [
+        2,
+        null
+      ]
+    },
+    {
+      "id": 89,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        -1008,
+        1104
+      ],
+      "size": [
+        416,
+        208
+      ],
+      "flags": {},
+      "order": 32,
+      "mode": 0,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 114
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "{\n  \"choices\": [],\n  \"created\": 1770806155,\n  \"credits_consumed\": 0.42,\n  \"id\": \"chatcmpl-20260211183546859970480Wq9mxFHC\",\n  \"model\": \"gemini-2.5-flash\",\n  \"object\": \"chat.completion.chunk\",\n  \"system_fingerprint\": \"\",\n  \"usage\": {\n    \"completion_tokens\": 2685,\n    \"completion_tokens_details\": {\n      \"audio_tokens\": 0,\n      \"reasoning_tokens\": 2433,\n      \"text_tokens\": 0\n    },\n    \"prompt_tokens\": 1202,\n    \"total_tokens\": 3887\n  }\n}"
+      ]
+    },
+    {
+      "id": 56,
+      "type": "SaveVideo",
+      "pos": [
+        3152,
+        3280
+      ],
+      "size": [
+        576,
+        544
+      ],
+      "flags": {},
+      "order": 41,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 68
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/ComfyUI",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 26,
+      "type": "SaveVideo",
+      "pos": [
+        2160,
+        336
+      ],
+      "size": [
+        544,
+        512
+      ],
+      "flags": {},
+      "order": 30,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 52
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/ComfyUI",
+        "auto",
+        "auto"
+      ]
+    },
+    {
+      "id": 30,
+      "type": "PreviewImage",
+      "pos": [
+        16,
+        448
+      ],
+      "size": [
+        375,
+        540
+      ],
+      "flags": {},
+      "order": 34,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 35
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.5.1",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 7,
+      "type": "LoadImage",
+      "pos": [
+        512,
+        640
+      ],
+      "size": [
+        222.798828125,
+        314.00000000000006
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            47
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "Last Frame",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "ComfyUI_temp_timyk_00004_.png [temp]",
+        "image"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "LoadImage",
+      "pos": [
+        512,
+        272
+      ],
+      "size": [
+        222.798828125,
+        314
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            46
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "First Frame",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "ComfyUI_temp_timyk_00002_.png [temp]",
+        "image"
+      ]
+    },
+    {
+      "id": 36,
+      "type": "LoadImage",
+      "pos": [
+        -1776,
+        336
+      ],
+      "size": [
+        282.798828125,
+        314.0000000000001
+      ],
+      "flags": {},
+      "order": 8,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            38
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "Face Inforcer",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.5.1",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "pasted/image (225).png",
+        "image"
+      ]
+    },
+    {
+      "id": 33,
+      "type": "KIE_NanoBananaPro_Image",
+      "pos": [
+        -544,
+        432
+      ],
+      "size": [
+        510,
+        510
+      ],
+      "flags": {},
+      "order": 31,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 39
+        },
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "widget": {
+            "name": "prompt"
+          },
+          "link": 122
+        }
+      ],
+      "outputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "links": [
+            35,
+            117
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "f76f69886f7a62b22cda62d8dd51fe2b3822cc21",
+        "Node name for S&R": "KIE_NanoBananaPro_Image",
+        "aux_id": "gateway/ComfyUI-Kie-API"
+      },
+      "widgets_values": [
+        "{\n  \"refs\": {\n    \"face_ref\": \"image1\",\n    \"body_ref\": \"image2\"\n  },\n  \"identity\": {\n    \"face\": \"match face_ref exactly (freckles, eyes, nose, lips, jawline, expression)\",\n    \"body\": \"use body_ref proportions and pose energy\",\n    \"skin\": \"photoreal pores, natural texture, sweat/dirt, no airbrushed look\"\n  },\n  \"scene\": {\n    \"setting\": \"dystopian cyberpunk abandoned industrial building, blade runner vibe\",\n    \"details\": \"cracked concrete, broken windows, neon spill light, fog/haze, exposed cables, broken terminals and tech debris, wet floor reflections\",\n    \"action\": \"hand-to-hand kung fu standoff then fight beats, three armored men surround her in a loose circle, no weapons, fists raised\",\n    \"continuity\": \"same woman + same 3 men + same room layout across all cells\"\n  },\n  \"output\": {\n    \"format\": \"2x2 grid\",\n    \"style\": \"cinematic photoreal\",\n    \"camera_rule\": \"keep her face large and readable in every cell (no far wide shots)\",\n    \"cells\": {\n      \"top_left\": \"medium close-up standoff: chest-up on her, two men left/right in frame, one man just behind; shes making eye contact with the man on her left - clear eye-lines and eye contact\",\n      \"top_right\": \"side medium shot: she squares off with the nearest man, both staring at each other, fists up, tense stillness before impact\",\n      \"bottom_left\": \"tight medium close combat: block/counter at close range, her face sharp, opponent face visible, gritty sweat/dust\",\n      \"bottom_right\": \"closer high angle (not distant): slight overhead, waist-up on her, three men knocked down around her, tech debris and blood on the ground, she breathes hard and looks calm\"\n    }\n  }\n}\n\n",
+        "16:9",
+        "4K",
+        "png",
+        true
+      ],
+      "color": "#432",
+      "bgcolor": "#653"
+    },
+    {
+      "id": 91,
+      "type": "PreviewImage",
+      "pos": [
+        -144,
+        1072
+      ],
+      "size": [
+        512,
+        320
+      ],
+      "flags": {},
+      "order": 37,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 118
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "PreviewImage"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 31,
+      "type": "LoadImage",
+      "pos": [
+        -1776,
+        720
+      ],
+      "size": [
+        282.798828125,
+        314.0000000000001
+      ],
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            37
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "Scene",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.5.1",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "ComfyUI_temp_rrnsu_00012_.png",
+        "image"
+      ]
+    },
+    {
+      "id": 38,
+      "type": "KIE_Gemini3Pro_LLM",
+      "pos": [
+        -1008,
+        576
+      ],
+      "size": [
+        400,
+        464.00000000000006
+      ],
+      "flags": {},
+      "order": 27,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 111
+        },
+        {
+          "name": "video",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        },
+        {
+          "name": "audio",
+          "shape": 7,
+          "type": "AUDIO",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": [
+            122
+          ]
+        },
+        {
+          "name": "reasoning",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "data",
+          "type": "STRING",
+          "links": [
+            114
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "bedb0146ae05737b6faa3a7d93bf8589f1551945",
+        "Node name for S&R": "KIE_Gemini3Pro_LLM"
+      },
+      "widgets_values": [
+        "gemini-2.5-flash",
+        "Analyze the provided reference images carefully.\n\nImage Reference 1 contains the woman’s face and facial identity.\nImage Reference 2 contains the woman’s body, posture, proportions, and outfit.\n\nWhen generating the final prompt:\n\n- Apply the exact facial structure, skin tone, eye shape, nose, lips, and expression from Image Reference 1.\n- Apply the body shape, height, proportions, pose, and clothing from Image Reference 2.\n- Merge both references into one consistent character.\n- Do not alter identity, ethnicity, or facial features.\n- Do not beautify, stylize, or modify proportions.\n\nPreserve realistic human skin texture:\nvisible pores, fine lines, natural highlights, subtle imperfections.\nNo plastic skin.\nNo airbrushed look.\nNo artificial smoothing.\n\nUse both references as ground truth anchors, image ref 2 is only used for the actual body shape not the clothing.\n\n---\n\nGenerate a detailed Nano Banana image prompt featuring:\n\nA dystopian sci-fi city environment inspired by Blade Runner.\nNeon lights, rain, fog, holographic signs, reflective streets.\nIndustrial architecture and cyberpunk atmosphere.\n\nThe woman stands in the center of the scene.\nShe is surrounded by several futuristic warriors in tactical armor yoga outfit style clothing.\nThey are preparing for combat.\nTension fills the air.\n\nCinematic lighting.\nMoody shadows.\nHigh dynamic range.\nVolumetric light through rain and smoke.\n\nThe woman appears calm, focused, and battle-ready.\n\nCamera:\nMedium-wide cinematic shot.\nSlight low angle.\nShallow depth of field.\nSubject in sharp focus.\n\nLighting:\nNeon rim light.\nSoft ambient glow.\nRealistic reflections on skin and clothing.\n\nStyle:\nPhotorealistic.\nHigh detail.\n8k quality.\nProfessional cinematic photography.\n\n---\n\nOutput only the final Nano Banana prompt.\nDo not include analysis or explanations.\nDo not describe the references.\nDo not mention “image reference” in the final prompt.\n",
+        "user",
+        true,
+        true,
+        "high",
+        false,
+        "",
+        "",
+        true
+      ]
+    },
+    {
+      "id": 39,
+      "type": "KIE_SystemPrompt_Selector",
+      "pos": [
+        -1456,
+        800
+      ],
+      "size": [
+        400,
+        200
+      ],
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "bedb0146ae05737b6faa3a7d93bf8589f1551945",
+        "Node name for S&R": "KIE_SystemPrompt_Selector"
+      },
+      "widgets_values": [
+        "2x2 grid with json output\n\nA dystopian sci-fi abandoned industrial building inspired by Blade Runner.\nCracked concrete walls, broken windows, flickering neon signs, holographic debris, exposed cables, damaged machinery, steam vents, glowing screens, rain leaking through ceiling gaps.\n\nBroken technology, wires, and ruined terminals scattered on the floor.\nDust, smoke, and light beams in the air.\n\nLighting is moody and cinematic:\nneon rim lights,\ncold blue and orange highlights,\nvolumetric fog,\ndeep shadows.\n\nEnvironment remains identical in all frames.",
+        "images: Grid Visual Director (Real Camera - Influencer Style)"
+      ]
+    },
+    {
+      "id": 41,
+      "type": "KIE_Kling3_Preflight",
+      "pos": [
+        864,
+        304
+      ],
+      "size": [
+        448,
+        448
+      ],
+      "flags": {},
+      "order": 17,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 46
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 47
+        },
+        {
+          "name": "element",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "elements",
+          "shape": 7,
+          "type": "KIE_ELEMENTS",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "kling_data",
+          "type": "KIE_KLING3_REQUEST",
+          "links": [
+            51
+          ]
+        },
+        {
+          "name": "payload_json",
+          "type": "STRING",
+          "links": [
+            49
+          ]
+        },
+        {
+          "name": "notes",
+          "type": "STRING",
+          "links": [
+            50
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "bedb0146ae05737b6faa3a7d93bf8589f1551945",
+        "Node name for S&R": "KIE_Kling3_Preflight"
+      },
+      "widgets_values": [
+        "std",
+        "9:16",
+        "8",
+        false,
+        "Use the provided opening and closing images as visual anchors.\nPreserve the woman’s identity, clothing, and environment throughout.\n\nAn abandoned concrete building filled with dust and broken windows.\nSunlight cuts through the air in thin beams.\nThe floor is covered in debris and shattered glass.\n\nA woman in a black tank top and black tactical pants stands in the center of the room, breathing steadily facing off with one man in the room.\n\nThe camera begins in a wide shot, circling the group.\nTension builds in the silence.\n\nOne attacker suddenly charges.\nThe woman blocks his strike and counters with a sharp elbow.\nShe spins, dodges, and moves between the others with precision.\n\nThe camera shifts between tight close-ups and fast tracking shots, following her movement.\nPunches land.\nBodies crash into walls.\nDust rises with every impact.\n\nShe ducks under a swing, grabs an opponent, and throws him hard to the ground.\nAnother attacker rushes from behind.\nShe pivots and delivers a powerful kick.\n\nBreathing grows heavier.\nFootsteps echo.\nMusic slowly intensifies.\n\nThe camera briefly slows as she lands the final strike.\nThe last man collapses.\n\nSilence returns.\n\nThe camera slowly pushes in as all three men lie unconscious around her.\nShe stands in the center, bruised and exhausted, but calm.\n\nHer eyes lift toward the camera.\nA faint confident smile appears.\n",
+        "",
+        true,
+        true
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 5,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        880,
+        1104
+      ],
+      "size": [
+        400,
+        320
+      ],
+      "flags": {},
+      "order": 25,
+      "mode": 4,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 49
+        }
+      ],
+      "outputs": [],
+      "title": "JSON Output",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "{\n  \"model\": \"kling-3.0/video\",\n  \"input\": {\n    \"mode\": \"std\",\n    \"multi_shots\": false,\n    \"prompt\": \"Use the provided opening and closing images as visual anchors.\\nPreserve the woman’s identity, clothing, and environment throughout.\\n\\nAn abandoned concrete building filled with dust and broken windows.\\nSunlight cuts through the air in thin beams.\\nThe floor is covered in debris and shattered glass.\\n\\nA woman in a black tank top and black tactical pants stands in the center of the room, breathing steadily facing off with one man in the room.\\n\\nThe camera begins in a wide shot, circling the group.\\nTension builds in the silence.\\n\\nOne attacker suddenly charges.\\nThe woman blocks his strike and counters with a sharp elbow.\\nShe spins, dodges, and moves between the others with precision.\\n\\nThe camera shifts between tight close-ups and fast tracking shots, following her movement.\\nPunches land.\\nBodies crash into walls.\\nDust rises with every impact.\\n\\nShe ducks under a swing, grabs an opponent, and throws him hard to the ground.\\nAnother attacker rushes from behind.\\nShe pivots and delivers a powerful kick.\\n\\nBreathing grows heavier.\\nFootsteps echo.\\nMusic slowly intensifies.\\n\\nThe camera briefly slows as she lands the final strike.\\nThe last man collapses.\\n\\nSilence returns.\\n\\nThe camera slowly pushes in as all three men lie unconscious around her.\\nShe stands in the center, bruised and exhausted, but calm.\\n\\nHer eyes lift toward the camera.\\nA faint confident smile appears.\\n\",\n    \"sound\": true,\n    \"duration\": \"8\",\n    \"image_urls\": [\n      \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770814294735-8ola0b40mws.png\",\n      \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770814297921-cspbs92v4l4.png\"\n    ],\n    \"aspect_ratio\": \"9:16\"\n  }\n}"
+      ]
+    },
+    {
+      "id": 29,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        -1472,
+        -16
+      ],
+      "size": [
+        224,
+        144
+      ],
+      "flags": {},
+      "order": 14,
+      "mode": 0,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 34
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "{\n  \"code\": 200,\n  \"msg\": \"success\",\n  \"data\": 568.62\n}"
+      ]
+    },
+    {
+      "id": 86,
+      "type": "KIE_KlingElementsBatch",
+      "pos": [
+        1312,
+        3568
+      ],
+      "size": [
+        204.577734375,
+        186
+      ],
+      "flags": {},
+      "order": 33,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "element_1",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": 104
+        },
+        {
+          "name": "element_2",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": 105
+        },
+        {
+          "name": "element_3",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "element_4",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "element_5",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "element_6",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "element_7",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "element_8",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "element_9",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "elements",
+          "type": "KIE_ELEMENTS",
+          "links": [
+            124
+          ]
+        },
+        {
+          "name": "data",
+          "type": "STRING",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "7016f383650aecec5d74dafeacb62deb233253d4",
+        "Node name for S&R": "KIE_KlingElementsBatch"
+      },
+      "widgets_values": []
+    },
+    {
+      "id": 85,
+      "type": "ImageBatchMulti",
+      "pos": [
+        976,
+        3872
+      ],
+      "size": [
+        210,
+        102
+      ],
+      "flags": {},
+      "order": 19,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "image_1",
+          "type": "IMAGE",
+          "link": 102
+        },
+        {
+          "name": "image_2",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 103
+        }
+      ],
+      "outputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "links": [
+            107
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kjnodes",
+        "ver": "e8b70f28be7fd71ee72c3848cfa09e1a89e3061b",
+        "Node name for S&R": "ImageBatchMulti"
+      },
+      "widgets_values": [
+        2,
+        null
+      ]
+    },
+    {
+      "id": 90,
+      "type": "KIE_GridSlice",
+      "pos": [
+        -416,
+        1040
+      ],
+      "size": [
+        210,
+        178
+      ],
+      "flags": {},
+      "order": 35,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "image",
+          "type": "IMAGE",
+          "link": 117
+        }
+      ],
+      "outputs": [
+        {
+          "name": "tiles",
+          "type": "IMAGE",
+          "links": [
+            118
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "a76a70305ba52e1062052a9c14ea959822788e10",
+        "Node name for S&R": "KIE_GridSlice"
+      },
+      "widgets_values": [
+        "2x2",
+        0,
+        0,
+        "row-major",
+        "first",
+        true
+      ]
+    },
+    {
+      "id": 75,
+      "type": "KIE_KlingElements",
+      "pos": [
+        1264,
+        3856
+      ],
+      "size": [
+        288,
+        192
+      ],
+      "flags": {},
+      "order": 28,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 107
+        },
+        {
+          "name": "video",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "element",
+          "type": "KIE_ELEMENT",
+          "links": [
+            105
+          ]
+        },
+        {
+          "name": "data",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "e1749f3cfa5618bb70c41de5a683b126dabf47e7",
+        "Node name for S&R": "KIE_KlingElements"
+      },
+      "widgets_values": [
+        "element_sadi",
+        "22 year old sexy woman, dark hair, blue eyes and pale skin,  concise physical identity only ",
+        true
+      ]
+    },
+    {
+      "id": 8,
+      "type": "KIE_KlingElements",
+      "pos": [
+        960,
+        3568
+      ],
+      "size": [
+        288,
+        192
+      ],
+      "flags": {},
+      "order": 20,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "images",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 101
+        },
+        {
+          "name": "video",
+          "shape": 7,
+          "type": "VIDEO",
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "name": "element",
+          "type": "KIE_ELEMENT",
+          "links": [
+            104
+          ]
+        },
+        {
+          "name": "data",
+          "type": "STRING",
+          "links": []
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "e1749f3cfa5618bb70c41de5a683b126dabf47e7",
+        "Node name for S&R": "KIE_KlingElements"
+      },
+      "widgets_values": [
+        "element_kling",
+        "aluminum beverage can, white-and-green label, 330ml, realistic reflections",
+        true
+      ]
+    },
+    {
+      "id": 74,
+      "type": "LoadImage",
+      "pos": [
+        855,
+        4140
+      ],
+      "size": [
+        240,
+        464
+      ],
+      "flags": {},
+      "order": 11,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            102
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "sadi-banana-face-1.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 84,
+      "type": "LoadImage",
+      "pos": [
+        1168,
+        4160
+      ],
+      "size": [
+        240,
+        464
+      ],
+      "flags": {},
+      "order": 12,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            103
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "sadi-alley-2-1.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 54,
+      "type": "LoadImage",
+      "pos": [
+        1232,
+        3184
+      ],
+      "size": [
+        222.798828125,
+        314.0000000000001
+      ],
+      "flags": {},
+      "order": 13,
+      "mode": 4,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            66
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "title": "First Frame",
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.13.0",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "sadi-banana-body-12.jpg",
+        "image"
+      ]
+    },
+    {
+      "id": 55,
+      "type": "KIE_Kling3_Preflight",
+      "pos": [
+        1584,
+        3232
+      ],
+      "size": [
+        448,
+        448
+      ],
+      "flags": {},
+      "order": 36,
+      "mode": 4,
+      "inputs": [
+        {
+          "name": "first_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": 66
+        },
+        {
+          "name": "last_frame",
+          "shape": 7,
+          "type": "IMAGE",
+          "link": null
+        },
+        {
+          "name": "element",
+          "shape": 7,
+          "type": "KIE_ELEMENT",
+          "link": null
+        },
+        {
+          "name": "elements",
+          "shape": 7,
+          "type": "KIE_ELEMENTS",
+          "link": 124
+        }
+      ],
+      "outputs": [
+        {
+          "name": "kling_data",
+          "type": "KIE_KLING3_REQUEST",
+          "links": [
+            73
+          ]
+        },
+        {
+          "name": "payload_json",
+          "type": "STRING",
+          "links": [
+            65
+          ]
+        },
+        {
+          "name": "notes",
+          "type": "STRING",
+          "links": [
+            64
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "bedb0146ae05737b6faa3a7d93bf8589f1551945",
+        "Node name for S&R": "KIE_Kling3_Preflight"
+      },
+      "widgets_values": [
+        "std",
+        "9:16",
+        "12",
+        true,
+        "",
+        "shot 1 | 4 | Wide Thailand beach shot. @element_sadi lies on the sand facing camera. She slowly pushes herself up to a seated position. A cold @element_kling can rests beside her hand. She notices it and smiles. Sunlight highlights her face. Camera gently pushes in.\n\nshot 2 | 4 | Medium close-up from the front. @element_sadi picks up the @element_kling can and holds it toward the camera, showing the label clearly. Condensation beads on the surface. She smiles playfully. Light ocean breeze moves her hair. Shallow depth of field.\n\nshot 3 | 4 | Medium shot facing @element_sadi  She brings the @element_kling can to her lips and takes a small sip. She lowers it and looks directly into the lens. [warm relaxed voice]: “There’s nothing like sitting on a beach in Thailand with a drink like this.” She laughs softly. Camera holds steady.\n",
+        true,
+        true
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 53,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        1600,
+        4032
+      ],
+      "size": [
+        400,
+        320
+      ],
+      "flags": {},
+      "order": 39,
+      "mode": 4,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 65
+        }
+      ],
+      "outputs": [],
+      "title": "JSON Output",
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "8ff50e4521881eca1fe26aec9615fc9362474931",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "{\n  \"model\": \"kling-3.0/video\",\n  \"input\": {\n    \"mode\": \"std\",\n    \"multi_shots\": true,\n    \"sound\": true,\n    \"multi_prompt\": [\n      {\n        \"prompt\": \"Wide Thailand beach shot. @element_sadi lies on the sand facing camera. She slowly pushes herself up to a seated position. A cold @element_kling can rests beside her hand. She notices it and smiles. Sunlight highlights her face. Camera gently pushes in.\",\n        \"duration\": 4\n      },\n      {\n        \"prompt\": \"Medium close-up from the front. @element_sadi picks up the @element_kling can and holds it toward the camera, showing the label clearly. Condensation beads on the surface. She smiles playfully. Light ocean breeze moves her hair. Shallow depth of field.\",\n        \"duration\": 4\n      },\n      {\n        \"prompt\": \"Medium shot facing @element_sadi  She brings the @element_kling can to her lips and takes a small sip. She lowers it and looks directly into the lens. [warm relaxed voice]: “There’s nothing like sitting on a beach in Thailand with a drink like this.” She laughs softly. Camera holds steady.\",\n        \"duration\": 4\n      }\n    ],\n    \"duration\": \"12\",\n    \"image_urls\": [\n      \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770823717638-lk7352f79vf.png\"\n    ],\n    \"aspect_ratio\": \"9:16\",\n    \"kling_elements\": [\n      {\n        \"name\": \"element_kling\",\n        \"description\": \"aluminum beverage can, white-and-green label, 330ml, realistic reflections\",\n        \"element_input_urls\": [\n          \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770823713282-z6ijd7ap66c.png\",\n          \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770823715379-fnp1geom01.png\"\n        ]\n      },\n      {\n        \"name\": \"element_sadi\",\n        \"description\": \"22 year old sexy woman, dark hair, blue eyes and pale skin,  concise physical identity only\",\n        \"element_input_urls\": [\n          \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770823709492-fwf27isy609.png\",\n          \"https://tempfile.redpandaai.co/kieai/183531/images/user-uploads/1770823711775-xp0c5mgq15j.png\"\n        ]\n      }\n    ]\n  }\n}"
+      ]
+    }
+  ],
+  "links": [
+    [
+      34,
+      28,
+      0,
+      29,
+      0,
+      "STRING"
+    ],
+    [
+      35,
+      33,
+      0,
+      30,
+      0,
+      "IMAGE"
+    ],
+    [
+      37,
+      31,
+      0,
+      35,
+      1,
+      "IMAGE"
+    ],
+    [
+      38,
+      36,
+      0,
+      35,
+      0,
+      "IMAGE"
+    ],
+    [
+      39,
+      35,
+      0,
+      33,
+      0,
+      "IMAGE"
+    ],
+    [
+      46,
+      4,
+      0,
+      41,
+      0,
+      "IMAGE"
+    ],
+    [
+      47,
+      7,
+      0,
+      41,
+      1,
+      "IMAGE"
+    ],
+    [
+      49,
+      41,
+      1,
+      5,
+      0,
+      "STRING"
+    ],
+    [
+      50,
+      41,
+      2,
+      6,
+      0,
+      "STRING"
+    ],
+    [
+      51,
+      41,
+      0,
+      42,
+      4,
+      "KIE_KLING3_REQUEST"
+    ],
+    [
+      52,
+      42,
+      0,
+      26,
+      0,
+      "VIDEO"
+    ],
+    [
+      54,
+      47,
+      2,
+      45,
+      0,
+      "STRING"
+    ],
+    [
+      55,
+      47,
+      1,
+      46,
+      0,
+      "STRING"
+    ],
+    [
+      56,
+      44,
+      0,
+      47,
+      0,
+      "IMAGE"
+    ],
+    [
+      58,
+      50,
+      0,
+      48,
+      0,
+      "VIDEO"
+    ],
+    [
+      63,
+      47,
+      0,
+      50,
+      4,
+      "KIE_KLING3_REQUEST"
+    ],
+    [
+      64,
+      55,
+      2,
+      52,
+      0,
+      "STRING"
+    ],
+    [
+      65,
+      55,
+      1,
+      53,
+      0,
+      "STRING"
+    ],
+    [
+      66,
+      54,
+      0,
+      55,
+      0,
+      "IMAGE"
+    ],
+    [
+      68,
+      59,
+      0,
+      56,
+      0,
+      "VIDEO"
+    ],
+    [
+      73,
+      55,
+      0,
+      59,
+      4,
+      "KIE_KLING3_REQUEST"
+    ],
+    [
+      99,
+      10,
+      0,
+      83,
+      0,
+      "IMAGE"
+    ],
+    [
+      100,
+      82,
+      0,
+      83,
+      1,
+      "IMAGE"
+    ],
+    [
+      101,
+      83,
+      0,
+      8,
+      0,
+      "IMAGE"
+    ],
+    [
+      102,
+      74,
+      0,
+      85,
+      0,
+      "IMAGE"
+    ],
+    [
+      103,
+      84,
+      0,
+      85,
+      1,
+      "IMAGE"
+    ],
+    [
+      104,
+      8,
+      0,
+      86,
+      0,
+      "KIE_ELEMENT"
+    ],
+    [
+      105,
+      75,
+      0,
+      86,
+      1,
+      "KIE_ELEMENT"
+    ],
+    [
+      107,
+      85,
+      0,
+      75,
+      0,
+      "IMAGE"
+    ],
+    [
+      111,
+      35,
+      0,
+      38,
+      0,
+      "IMAGE"
+    ],
+    [
+      114,
+      38,
+      2,
+      89,
+      0,
+      "STRING"
+    ],
+    [
+      117,
+      33,
+      0,
+      90,
+      0,
+      "IMAGE"
+    ],
+    [
+      118,
+      90,
+      0,
+      91,
+      0,
+      "IMAGE"
+    ],
+    [
+      122,
+      38,
+      0,
+      33,
+      1,
+      "STRING"
+    ],
+    [
+      124,
+      86,
+      0,
+      55,
+      3,
+      "KIE_ELEMENTS"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Nano Banana Pro",
+      "bounding": [
+        -1860,
+        165,
+        2288,
+        1248
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 2,
+      "title": "Check Available Credits",
+      "bounding": [
+        -1875,
+        -90,
+        688,
+        240
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 3,
+      "title": "Kling 3 Preflight Check - FFLF",
+      "bounding": [
+        480,
+        165,
+        928,
+        1280
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 4,
+      "title": "Kling 3.0 FFLF Test",
+      "bounding": [
+        1440,
+        180,
+        1568,
+        1280
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 5,
+      "title": "Kling Preflight Check - Image to Video",
+      "bounding": [
+        465,
+        1500,
+        976,
+        1520
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 6,
+      "title": "Kling 3 Image 2 Video",
+      "bounding": [
+        1500,
+        1530,
+        1296,
+        1504
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 7,
+      "title": "Kling Preflight Elements",
+      "bounding": [
+        525,
+        3105,
+        1888,
+        1520
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    },
+    {
+      "id": 8,
+      "title": "Kling 3 Elements Test",
+      "bounding": [
+        2460,
+        3105,
+        1584,
+        1504
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "workflowRendererVersion": "LG",
+    "ds": {
+      "scale": 0.355106002293074,
+      "offset": [
+        2793.929553676974,
+        328.4810279981712
+      ]
+    },
+    "frontendVersion": "1.37.11",
+    "VHS_latentpreview": true,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
