@@ -6,6 +6,16 @@ This node requires a wired STRING input for `json_text`. It does not provide a m
 
 ---
 
+## Inputs
+
+- `json_text` (STRING, required): Wired JSON text from an upstream node.
+- `max_items` (INT, optional): Maximum prompts to return (1..9).
+- `strict` (BOOLEAN, optional): Fail hard when parse fails or prompts are missing.
+- `default_prompt` (STRING, optional): Fallback when strict mode is off.
+- `debug` (BOOLEAN, optional): Enable parser diagnostics in console.
+
+---
+
 ## Example JSON inputs
 
 Array format:
