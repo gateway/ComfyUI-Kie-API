@@ -12,8 +12,8 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
 - `multi_shots` (BOOLEAN): enables multi-shot mode
 - `prompt` (STRING): single-shot prompt
 - `shots_text` (STRING, optional): multi-shot lines:
-  - `duration | prompt`
-  - or `label | duration | prompt`
+  - `shot_label | duration | prompt`
+  - duration accepts `4` or `4 seconds`
 - `first_frame` (IMAGE, optional): start frame
 - `last_frame` (IMAGE, optional): end frame (single-shot only)
 - `sound` (BOOLEAN, optional): single-shot only
@@ -37,12 +37,12 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
 - Single-shot (`multi_shots=false`): use `prompt`.
 - Multi-shot (`multi_shots=true`): use `shots_text` only.
 - `shots_text` format:
-  - `duration | prompt`
-  - or `label | duration | prompt`
+  - `shot_label | duration | prompt`
+  - duration accepts `4` or `4 seconds`
 - Example:
-  - `shot1 | 4 | A woman exits a spaceship with @dog`
-  - `shot2 | 3 | Medium tracking shot of @dog running`
-  - `shot3 | 3 | Emotional close-up of @dog and @old_woman`
+  - `shot 1 | 4 seconds | A woman exits a spaceship with @dog`
+  - `shot 2 | 3 seconds | Medium tracking shot of @dog running`
+  - `shot 3 | 3 seconds | Emotional close-up of @dog and @old_woman`
 
 ## Element Naming and References
 - Define elements upstream with `KIE Kling Elements`.

@@ -775,9 +775,8 @@ Inputs:
 - multi_shots: enable multi-shot mode
 - prompt: Used in single-shot mode
 - shots_text: Used in multi-shot mode, format:
-  duration | prompt
-  or
-  label | duration | prompt
+  shot_label | duration | prompt
+  duration can be like: 4 or 4 seconds
 - first_frame: Optional start frame image
 - last_frame: Optional end frame image (single-shot only)
 - sound: Single-shot only
@@ -796,9 +795,10 @@ Outputs:
 - VIDEO: ComfyUI video output compatible with SaveVideo
 """
     SHOTS_TEXT_PLACEHOLDER = (
-        "shot1 | 4 | Wide cinematic opening with @element_name\n"
-        "shot2 | 3 | Medium tracking shot with @element_name\n"
-        "shot3 | 3 | Close-up emotional finale with @element_name"
+        "multi-prompt section:\n"
+        "shot 1 | 4 seconds | Wide cinematic opening with @element_name\n"
+        "shot 2 | 3 seconds | Medium tracking shot with @element_name\n"
+        "shot 3 | 3 seconds | Close-up emotional finale with @element_name"
     )
 
     @classmethod
@@ -908,9 +908,10 @@ Outputs:
 - STRING: notes
 """
     SHOTS_TEXT_PLACEHOLDER = (
-        "shot1 | 4 | Wide cinematic opening with @element_name\n"
-        "shot2 | 3 | Medium tracking shot with @element_name\n"
-        "shot3 | 3 | Close-up emotional finale with @element_name"
+        "multi-prompt section:\n"
+        "shot 1 | 4 seconds | Wide cinematic opening with @element_name\n"
+        "shot 2 | 3 seconds | Medium tracking shot with @element_name\n"
+        "shot 3 | 3 seconds | Close-up emotional finale with @element_name"
     )
 
     @classmethod

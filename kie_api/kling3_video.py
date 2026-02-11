@@ -58,21 +58,26 @@ def _parse_multi_prompt_text(shots_text: str) -> list[dict[str, Any]]:
     shots: list[dict[str, Any]] = []
     for idx, line in enumerate(lines, start=1):
         parts = [part.strip() for part in line.split("|")]
-        if len(parts) == 2:
-            duration_str, prompt = parts
-        elif len(parts) >= 3:
-            duration_str, prompt = parts[1], "|".join(parts[2:]).strip()
-        else:
+        if len(parts) < 3:
             raise _validation_error(
                 f"Invalid shots_text format on line {idx}. "
-                "Use 'duration | prompt' or 'label | duration | prompt'. "
-                "Example: '3 | A dog runs through fog' or 'shot1 | 3 | A dog runs through fog'."
+                "Use 'shot_label | duration | prompt'. "
+                "Example: 'shot 1 | 3 seconds | A dog runs through fog'."
             )
+        shot_label = parts[0]
+        duration_str = parts[1]
+        prompt = "|".join(parts[2:]).strip()
 
-        try:
-            duration = int(duration_str)
-        except ValueError as exc:
-            raise _validation_error(f"Invalid shot duration '{duration_str}' on line {idx}.") from exc
+        if not shot_label:
+            raise _validation_error(f"Missing shot label on line {idx}.")
+
+        duration_match = re.match(r"^(\\d+)(?:\\s*seconds?)?$", duration_str, flags=re.IGNORECASE)
+        if not duration_match:
+            raise _validation_error(
+                f"Invalid shot duration '{duration_str}' on line {idx}. "
+                "Use values like '4' or '4 seconds'."
+            )
+        duration = int(duration_match.group(1))
 
         if duration < MULTI_SHOT_MIN or duration > MULTI_SHOT_MAX:
             raise _validation_error(

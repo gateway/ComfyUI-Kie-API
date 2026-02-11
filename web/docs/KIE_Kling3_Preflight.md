@@ -20,6 +20,7 @@ Validate Kling 3.0 inputs and build the exact payload JSON without submitting a 
 ## Notes
 - This node still uploads required input media to produce valid URLs in payload.
 - In multi-shot mode, duration is auto-calculated from shot durations.
+- Multi-shot `shots_text` must use: `shot_label | duration | prompt` (duration supports `4` or `4 seconds`).
 - `notes` returns a `VALID` summary when checks pass, including:
   - mode, single/multi-shot status, resolved duration
   - frame count and aspect-ratio handling
