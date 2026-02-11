@@ -16,7 +16,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
   - duration accepts `4` or `4 seconds`
 - `first_frame` (IMAGE, optional): start frame
 - `last_frame` (IMAGE, optional): end frame (single-shot only)
-- `sound` (BOOLEAN, optional): single-shot only
+- `sound` (BOOLEAN, optional): single-shot toggle; multi-shot is forced on
 - `element` (KIE_ELEMENT, optional): one element
 - `elements` (KIE_ELEMENTS, optional): batched elements
 - `kling_data` (KIE_KLING3_REQUEST, optional): prebuilt validated payload from preflight; when connected, this overrides direct field inputs
@@ -25,8 +25,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
 ## Rules
 - `multi_shots=true`:
   - `last_frame` is invalid
-  - `sound` is invalid
-  - payload sends `sound: false`
+  - payload sends `sound: true` (endpoint requirement)
   - shot durations are summed automatically and sent as the final payload duration
 - `aspect_ratio` is always sent in payload.
 - `@element_name` references in prompt(s) must match provided elements.
@@ -63,7 +62,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
 - Multi-shot with last frame connected:
   - Invalid
 - Multi-shot with sound enabled:
-  - Invalid
+  - Valid (and currently required by endpoint)
 - Prompt references `@element` but elements missing:
   - Invalid
 - Prompt references `@element` but first frame missing:

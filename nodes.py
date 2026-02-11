@@ -779,14 +779,14 @@ Inputs:
   duration can be like: 4 or 4 seconds
 - first_frame: Optional start frame image
 - last_frame: Optional end frame image (single-shot only)
-- sound: Single-shot only
+- sound: Single-shot toggle; multi-shot is enforced to on
 - element: Optional single KIE_ELEMENT
 - elements: Optional KIE_ELEMENTS batch
 - kling_data: Optional payload object from preflight (overrides direct inputs)
 - log: Console logging on/off
 
 Rules:
-- multi_shots=true: last_frame is invalid, sound is invalid
+- multi_shots=true: last_frame is invalid, sound is forced on for endpoint compatibility
 - multi_shots=true: duration is computed from summed shot durations
 - aspect_ratio is always sent in the payload
 - @element references in prompt(s) must match provided element names

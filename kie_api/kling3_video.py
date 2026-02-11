@@ -200,9 +200,6 @@ def _build_kling3_payload(
     if duration not in DURATION_OPTIONS:
         raise _validation_error("Invalid duration. Use 3-15 seconds.")
 
-    if multi_shots and sound:
-        raise _validation_error("sound=true is not allowed when multi_shots=true. Set sound=false.")
-
     api_key = _load_api_key()
     frame_urls: list[str] = []
 
@@ -236,8 +233,10 @@ def _build_kling3_payload(
         payload_input["prompt"] = prompt
         payload_input["sound"] = bool(sound)
     else:
-        # KIE expects the sound field to be present; multi-shot requires it to be false.
-        payload_input["sound"] = False
+        # Endpoint currently requires sound enabled for multi-shot submissions.
+        if not sound:
+            _log(log, "multi_shots enabled: overriding sound=false to sound=true per endpoint requirement.")
+        payload_input["sound"] = True
         multi_prompt = _parse_multi_prompt_text(shots_text)
         total_duration = sum(int(item["duration"]) for item in multi_prompt)
         if total_duration < 3 or total_duration > 15:
@@ -404,11 +403,16 @@ def run_kling3_video_from_request(
     if not isinstance(payload_input, dict):
         raise _validation_error("request payload must include an input object.")
     # Backward compatibility for older preflight payloads saved before `sound`
-    # was always included.
+    # was always included and for payloads with stale multi-shot sound settings.
     if "sound" not in payload_input:
         payload = dict(payload)
         payload_input = dict(payload_input)
-        payload_input["sound"] = False if bool(payload_input.get("multi_shots")) else True
+        payload_input["sound"] = True
+        payload["input"] = payload_input
+    elif bool(payload_input.get("multi_shots")) and not bool(payload_input.get("sound")):
+        payload = dict(payload)
+        payload_input = dict(payload_input)
+        payload_input["sound"] = True
         payload["input"] = payload_input
 
     _log(log, "Creating Kling 3.0 video task...")
