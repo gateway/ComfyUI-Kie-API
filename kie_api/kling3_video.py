@@ -65,7 +65,8 @@ def _parse_multi_prompt_text(shots_text: str) -> list[dict[str, Any]]:
         else:
             raise _validation_error(
                 f"Invalid shots_text format on line {idx}. "
-                "Use 'duration | prompt' or 'label | duration | prompt'."
+                "Use 'duration | prompt' or 'label | duration | prompt'. "
+                "Example: '3 | A dog runs through fog' or 'shot1 | 3 | A dog runs through fog'."
             )
 
         try:
@@ -250,21 +251,27 @@ def _build_kling3_payload(
     if len(frame_urls) < 2:
         payload_input["aspect_ratio"] = aspect_ratio
 
+    referenced = _extract_referenced_elements(prompt)
+    if multi_shots:
+        for shot in payload_input.get("multi_prompt", []):
+            referenced |= _extract_referenced_elements(str(shot.get("prompt") or ""))
+
     if elements:
         if len(elements) > ELEMENT_BATCH_MAX:
             raise _validation_error(f"At most {ELEMENT_BATCH_MAX} elements are supported in this node.")
         payload_input["kling_elements"] = elements
 
         available = {str(item.get("name") or "").strip() for item in elements}
-        referenced = _extract_referenced_elements(prompt)
-        if multi_shots:
-            for shot in payload_input.get("multi_prompt", []):
-                referenced |= _extract_referenced_elements(str(shot.get("prompt") or ""))
         missing = sorted(ref for ref in referenced if ref not in available)
         if missing:
             raise _validation_error(
                 "Prompt references unknown @elements: " + ", ".join(f"@{name}" for name in missing)
             )
+    elif referenced:
+        raise _validation_error(
+            "Prompt contains @element references but no elements were provided. "
+            "Add KIE Kling Elements + KIE Kling Elements Batch inputs."
+        )
 
     payload = {"model": MODEL_NAME, "input": payload_input}
     return payload, resolved_duration
