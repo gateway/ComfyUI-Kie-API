@@ -236,6 +236,8 @@ def _build_kling3_payload(
         payload_input["prompt"] = prompt
         payload_input["sound"] = bool(sound)
     else:
+        # KIE expects the sound field to be present; multi-shot requires it to be false.
+        payload_input["sound"] = False
         multi_prompt = _parse_multi_prompt_text(shots_text)
         total_duration = sum(int(item["duration"]) for item in multi_prompt)
         if total_duration < 3 or total_duration > 15:
@@ -401,6 +403,13 @@ def run_kling3_video_from_request(
     payload_input = payload.get("input")
     if not isinstance(payload_input, dict):
         raise _validation_error("request payload must include an input object.")
+    # Backward compatibility for older preflight payloads saved before `sound`
+    # was always included.
+    if "sound" not in payload_input:
+        payload = dict(payload)
+        payload_input = dict(payload_input)
+        payload_input["sound"] = False if bool(payload_input.get("multi_shots")) else True
+        payload["input"] = payload_input
 
     _log(log, "Creating Kling 3.0 video task...")
     start_time = time.time()

@@ -26,6 +26,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
 - `multi_shots=true`:
   - `last_frame` is invalid
   - `sound` is invalid
+  - payload sends `sound: false`
   - shot durations are summed automatically and sent as the final payload duration
 - `aspect_ratio` is always sent in payload.
 - `@element_name` references in prompt(s) must match provided elements.
