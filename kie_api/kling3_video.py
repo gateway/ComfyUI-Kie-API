@@ -374,9 +374,33 @@ def run_kling3_video(
         elements=elements,
         log=log,
     )
+    return run_kling3_video_from_request(
+        payload=payload,
+        poll_interval_s=poll_interval_s,
+        timeout_s=timeout_s,
+        log=log,
+    )
+
+
+def run_kling3_video_from_request(
+    *,
+    payload: dict[str, Any],
+    poll_interval_s: float,
+    timeout_s: int,
+    log: bool,
+) -> Any:
+    """Submit a prebuilt Kling 3.0 createTask payload and return VIDEO output."""
+    if not isinstance(payload, dict):
+        raise _validation_error("request payload must be an object.")
+    if payload.get("model") != MODEL_NAME:
+        raise _validation_error(f"request payload model must be '{MODEL_NAME}'.")
+    payload_input = payload.get("input")
+    if not isinstance(payload_input, dict):
+        raise _validation_error("request payload must include an input object.")
 
     _log(log, "Creating Kling 3.0 video task...")
     start_time = time.time()
+    api_key = _load_api_key()
     task_id, create_response_text = _create_task(api_key, payload)
     _log(log, f"createTask response (elapsed={time.time() - start_time:.1f}s): {create_response_text}")
     _log(log, f"Task created with ID {task_id}. Polling for completion...")

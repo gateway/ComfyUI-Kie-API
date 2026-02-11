@@ -51,6 +51,7 @@ from .kie_api.kling3_video import (
     merge_kling3_elements,
     preflight_kling3_payload,
     run_kling3_video,
+    run_kling3_video_from_request,
 )
 from .kie_api.suno_music import MODEL_OPTIONS as SUNO_MODEL_OPTIONS, run_suno_generate
 from .kie_api.gemini3_pro_llm import (
@@ -782,6 +783,7 @@ Inputs:
 - sound: Single-shot only
 - element: Optional single KIE_ELEMENT
 - elements: Optional KIE_ELEMENTS batch
+- payload_data: Optional payload object from preflight (overrides direct inputs)
 - log: Console logging on/off
 
 Rules:
@@ -816,6 +818,8 @@ Outputs:
                 "sound": ("BOOLEAN", {"default": True}),
                 "element": ("KIE_ELEMENT",),
                 "elements": ("KIE_ELEMENTS",),
+                "payload_data": ("KIE_KLING3_REQUEST",),
+                "request": ("KIE_KLING3_REQUEST",),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -838,10 +842,22 @@ Outputs:
         sound: bool = True,
         element: dict | None = None,
         elements: list[dict] | None = None,
+        payload_data: dict | None = None,
+        request: dict | None = None,
         log: bool = True,
         poll_interval_s: float = 10.0,
         timeout_s: int = 1000,
     ):
+        chained_payload = payload_data if payload_data is not None else request
+        if chained_payload is not None:
+            video_output = run_kling3_video_from_request(
+                payload=chained_payload,
+                poll_interval_s=poll_interval_s,
+                timeout_s=timeout_s,
+                log=log,
+            )
+            return (video_output,)
+
         merged_elements: list[dict] | None = None
         if elements is not None:
             if not isinstance(elements, list):
@@ -887,6 +903,7 @@ Inputs:
 - Same as KIE Kling 3.0 (Video)
 
 Outputs:
+- KIE_KLING3_REQUEST: validated payload object for chaining into KIE Kling 3.0 (Video)
 - STRING: payload_json (exact payload that would be sent to createTask)
 - STRING: notes
 """
@@ -917,8 +934,8 @@ Outputs:
             },
         }
 
-    RETURN_TYPES = ("STRING", "STRING")
-    RETURN_NAMES = ("payload_json", "notes")
+    RETURN_TYPES = ("KIE_KLING3_REQUEST", "STRING", "STRING")
+    RETURN_NAMES = ("payload_data", "payload_json", "notes")
     FUNCTION = "preflight"
     CATEGORY = "kie/helpers"
 
@@ -995,7 +1012,7 @@ Outputs:
             notes_lines.append("Element names: " + ", ".join(element_names))
 
         notes = "\n".join(notes_lines)
-        return (json.dumps(payload, indent=2, ensure_ascii=False), notes)
+        return (payload, json.dumps(payload, indent=2, ensure_ascii=False), notes)
 
 
 class KIE_Flux2_I2I:

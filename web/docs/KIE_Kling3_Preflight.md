@@ -13,6 +13,7 @@ Validate Kling 3.0 inputs and build the exact payload JSON without submitting a 
 - Same inputs as `KIE Kling 3.0 (Video)`.
 
 ## Outputs
+- `payload_data` (KIE_KLING3_REQUEST): validated payload object for direct chaining into `KIE Kling 3.0 (Video)`.
 - `payload_json` (STRING): exact request payload after validation and upload URL resolution.
 - `notes` (STRING): validation summary with detected settings and status.
 
