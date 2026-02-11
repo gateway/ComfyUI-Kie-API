@@ -173,7 +173,7 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 - 2026-01-30: Added Gemini 3 Pro LLM node (phase 1, experimental).
 - 2026-01-30: Gemini 3 Pro LLM updated with role dropdown and media inputs (phase 1.5).
 - 2026-01-30: Gemini 3 Pro LLM updated with audio input support.
-- 2026-02-03: Suno Music nodes now return two songs and two cover images.
+- 2026-02-01: Added Suno Music nodes (Basic and Advanced), returning two songs and two cover images.
 - 2026-02-11: Added Kling 3.0 video node and helper nodes for Kling elements + element batching.
 - 2026-02-11: Added Kling 3.0 preflight node to validate and preview request payloads before generation.
 - 2026-02-11: Standardized Kling 3 preflight/task chaining on `kling_data`.
