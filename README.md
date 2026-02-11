@@ -21,6 +21,43 @@ If you find the nodes useful and are already planning to use **Kie.ai**, using t
 
 Node-specific documentation is available in `web/docs`.
 
+## Documentation Hub
+
+Use this section as the main entry point after install.
+
+- Full docs index: [`web/docs/README.md`](web/docs/README.md)
+- Example workflows:
+  - [`Kie-AI-Nodes.json`](Kie-AI-Nodes.json)
+  - [`Kie-AI-Banana-Pro-Grid.json`](Kie-AI-Banana-Pro-Grid.json)
+
+### Kling 3.0 (Recommended Reading Order)
+- 1. [`web/docs/KIE_Kling_Elements.md`](web/docs/KIE_Kling_Elements.md)
+- 2. [`web/docs/KIE_Kling_Elements_Batch.md`](web/docs/KIE_Kling_Elements_Batch.md)
+- 3. [`web/docs/KIE_Kling3_Preflight.md`](web/docs/KIE_Kling3_Preflight.md)
+- 4. [`web/docs/KIE_Kling3_Video.md`](web/docs/KIE_Kling3_Video.md)
+
+### Core Node Docs
+- Nano Banana Pro: [`web/docs/KIE_NanoBananaPro_Image.md`](web/docs/KIE_NanoBananaPro_Image.md)
+- Flux 2 I2I: [`web/docs/KIE_Flux2_I2I.md`](web/docs/KIE_Flux2_I2I.md)
+- Seedream 4.5 Text-to-Image: [`web/docs/KIE_Seedream45_TextToImage.md`](web/docs/KIE_Seedream45_TextToImage.md)
+- Seedream 4.5 Edit: [`web/docs/KIE_Seedream45_Edit.md`](web/docs/KIE_Seedream45_Edit.md)
+- Gemini LLM: [`web/docs/KIE_Gemini3Pro_LLM.md`](web/docs/KIE_Gemini3Pro_LLM.md)
+- Suno Basic: [`web/docs/KIE_Suno_Music_Basic.md`](web/docs/KIE_Suno_Music_Basic.md)
+- Suno Advanced: [`web/docs/KIE_Suno_Music_Advanced.md`](web/docs/KIE_Suno_Music_Advanced.md)
+
+### Video Node Docs
+- Kling 2.5 I2V Pro: [`web/docs/KIE_Kling25_I2V_Pro.md`](web/docs/KIE_Kling25_I2V_Pro.md)
+- Kling 2.6 I2V: [`web/docs/KIE_Kling26_I2V.md`](web/docs/KIE_Kling26_I2V.md)
+- Kling 2.6 Motion I2V: [`web/docs/KIE_Kling26Motion_I2V.md`](web/docs/KIE_Kling26Motion_I2V.md)
+- Kling 2.6 T2V: [`web/docs/kie_kling26_t2v.md`](web/docs/kie_kling26_t2v.md)
+- Seedance V1 Pro Fast I2V: [`web/docs/KIE_SeedanceV1Pro_Fast_I2V.md`](web/docs/KIE_SeedanceV1Pro_Fast_I2V.md)
+
+### Helper Node Docs
+- Get Remaining Credits: [`web/docs/KIE_GetRemainingCredits.md`](web/docs/KIE_GetRemainingCredits.md)
+- GridSlice: [`web/docs/KIE_GridSlice.md`](web/docs/KIE_GridSlice.md)
+- Prompt Grid JSON Parser: [`web/docs/kie_prompt_grid.md`](web/docs/kie_prompt_grid.md)
+- System Prompt Selector: [`web/docs/KIE_SystemPrompt_Selector.md`](web/docs/KIE_SystemPrompt_Selector.md)
+
 ## API Key Setup
 
 To use these nodes, you must provide your own Kie.ai API key.
@@ -164,6 +201,7 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 - 2026-02-03: Suno Music nodes now return two songs and two cover images.
 - 2026-02-11: Added Kling 3.0 video node and helper nodes for Kling elements + element batching.
 - 2026-02-11: Added Kling 3.0 preflight node to validate and preview request payloads before generation.
+- 2026-02-11: Added direct documentation hub links in README for faster onboarding and usage lookup.
 
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).
