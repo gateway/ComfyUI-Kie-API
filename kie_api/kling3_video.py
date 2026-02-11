@@ -28,15 +28,19 @@ ELEMENT_IMAGE_MAX = 4
 ELEMENT_BATCH_MAX = 9
 
 
+def _validation_error(message: str) -> RuntimeError:
+    return RuntimeError(f"Kling 3.0 validation error: {message}")
+
+
 def _validate_batch_image(images: torch.Tensor | None, label: str) -> torch.Tensor:
     if images is None:
-        raise RuntimeError(f"{label} input is required.")
+        raise _validation_error(f"{label} input is required.")
     if not isinstance(images, torch.Tensor):
-        raise RuntimeError(f"{label} input must be a tensor batch.")
+        raise _validation_error(f"{label} input must be a tensor batch.")
     if images.dim() != 4 or images.shape[-1] != 3:
-        raise RuntimeError(f"{label} input must have shape [B, H, W, 3].")
+        raise _validation_error(f"{label} input must have shape [B, H, W, 3].")
     if images.shape[0] < 1:
-        raise RuntimeError(f"{label} input batch is empty.")
+        raise _validation_error(f"{label} input batch is empty.")
     return images
 
 
@@ -49,7 +53,7 @@ def _extract_referenced_elements(text: str) -> set[str]:
 def _parse_multi_prompt_text(shots_text: str) -> list[dict[str, Any]]:
     lines = [line.strip() for line in (shots_text or "").splitlines() if line.strip()]
     if not lines:
-        raise RuntimeError("multi_shots is enabled but shots_text is empty.")
+        raise _validation_error("multi_shots is enabled but shots_text is empty.")
 
     shots: list[dict[str, Any]] = []
     for idx, line in enumerate(lines, start=1):
@@ -59,7 +63,7 @@ def _parse_multi_prompt_text(shots_text: str) -> list[dict[str, Any]]:
         elif len(parts) >= 3:
             duration_str, prompt = parts[1], "|".join(parts[2:]).strip()
         else:
-            raise RuntimeError(
+            raise _validation_error(
                 f"Invalid shots_text format on line {idx}. "
                 "Use 'duration | prompt' or 'label | duration | prompt'."
             )
@@ -67,10 +71,10 @@ def _parse_multi_prompt_text(shots_text: str) -> list[dict[str, Any]]:
         try:
             duration = int(duration_str)
         except ValueError as exc:
-            raise RuntimeError(f"Invalid shot duration '{duration_str}' on line {idx}.") from exc
+            raise _validation_error(f"Invalid shot duration '{duration_str}' on line {idx}.") from exc
 
         if duration < MULTI_SHOT_MIN or duration > MULTI_SHOT_MAX:
-            raise RuntimeError(
+            raise _validation_error(
                 f"Shot duration on line {idx} must be between {MULTI_SHOT_MIN} and {MULTI_SHOT_MAX} seconds."
             )
 
@@ -91,16 +95,18 @@ def build_kling3_element(
     """Build one Kling element with uploaded URLs for image or video."""
     element_name = (name or "").strip()
     if not element_name:
-        raise RuntimeError("Element name is required.")
+        raise _validation_error("Element name is required.")
     if not re.match(r"^[a-zA-Z0-9_\\-]+$", element_name):
-        raise RuntimeError("Element name may only contain letters, numbers, underscore, or hyphen.")
+        raise _validation_error("Element name may only contain letters, numbers, underscore, or hyphen.")
 
     has_images = images is not None
     has_video = video is not None
     if has_images and has_video:
-        raise RuntimeError("Element cannot contain both images and video. Use one media type per element.")
+        raise _validation_error(
+            "Element cannot contain both images and video. Connect one media type per element."
+        )
     if not has_images and not has_video:
-        raise RuntimeError("Element requires either images or video.")
+        raise _validation_error("Element requires either images or video.")
 
     api_key = _load_api_key()
     description_text = (description or "").strip()
@@ -109,7 +115,7 @@ def build_kling3_element(
         image_batch = _validate_batch_image(images, "images")
         image_count = image_batch.shape[0]
         if image_count < ELEMENT_IMAGE_MIN or image_count > ELEMENT_IMAGE_MAX:
-            raise RuntimeError(
+            raise _validation_error(
                 f"Element images must contain {ELEMENT_IMAGE_MIN}-{ELEMENT_IMAGE_MAX} images; got {image_count}."
             )
 
@@ -147,18 +153,18 @@ def merge_kling3_elements(*elements: Any) -> list[dict[str, Any]]:
         if item is None:
             continue
         if not isinstance(item, dict):
-            raise RuntimeError("Element batch inputs must be KIE_ELEMENT payload objects.")
+            raise _validation_error("Element batch inputs must be KIE_ELEMENT payload objects.")
 
         name = str(item.get("name") or "").strip()
         if not name:
-            raise RuntimeError("Element payload missing name.")
+            raise _validation_error("Element payload missing name.")
         if name in seen_names:
-            raise RuntimeError(f"Duplicate element name '{name}' in elements batch.")
+            raise _validation_error(f"Duplicate element name '{name}' in elements batch.")
         seen_names.add(name)
         merged.append(item)
 
     if len(merged) > ELEMENT_BATCH_MAX:
-        raise RuntimeError(f"Element batch supports up to {ELEMENT_BATCH_MAX} elements.")
+        raise _validation_error(f"Element batch supports up to {ELEMENT_BATCH_MAX} elements.")
     return merged
 
 
@@ -182,14 +188,14 @@ def _build_kling3_payload(
         (payload, resolved_duration)
     """
     if mode not in MODE_OPTIONS:
-        raise RuntimeError("Invalid mode. Use the pinned enum options.")
+        raise _validation_error("Invalid mode. Use one of: std, pro.")
     if aspect_ratio not in ASPECT_RATIO_OPTIONS:
-        raise RuntimeError("Invalid aspect_ratio. Use the pinned enum options.")
+        raise _validation_error("Invalid aspect_ratio. Use one of: 1:1, 9:16, 16:9.")
     if duration not in DURATION_OPTIONS:
-        raise RuntimeError("Invalid duration. Use 3-15 seconds.")
+        raise _validation_error("Invalid duration. Use 3-15 seconds.")
 
     if multi_shots and sound:
-        raise RuntimeError("sound is only supported in single-shot mode.")
+        raise _validation_error("sound=true is not allowed when multi_shots=true. Set sound=false.")
 
     api_key = _load_api_key()
     frame_urls: list[str] = []
@@ -205,7 +211,7 @@ def _build_kling3_payload(
 
     if last_frame is not None:
         if multi_shots:
-            raise RuntimeError("last_frame is not allowed when multi_shots is enabled.")
+            raise _validation_error("last_frame is not allowed when multi_shots=true.")
         last_batch = _validate_batch_image(last_frame, "last_frame")
         if last_batch.shape[0] > 1:
             _log(log, f"More than 1 last_frame image provided ({last_batch.shape[0]}); using the first.")
@@ -222,12 +228,12 @@ def _build_kling3_payload(
     if not multi_shots:
         _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
         payload_input["prompt"] = prompt
-        payload_input["sound"] = sound
+        payload_input["sound"] = bool(sound)
     else:
         multi_prompt = _parse_multi_prompt_text(shots_text)
         total_duration = sum(int(item["duration"]) for item in multi_prompt)
         if total_duration < 3 or total_duration > 15:
-            raise RuntimeError("Total multi-shot duration must be between 3 and 15 seconds.")
+            raise _validation_error("Total multi-shot duration must be between 3 and 15 seconds.")
         if int(duration) != total_duration:
             _log(
                 log,
@@ -246,7 +252,7 @@ def _build_kling3_payload(
 
     if elements:
         if len(elements) > ELEMENT_BATCH_MAX:
-            raise RuntimeError(f"At most {ELEMENT_BATCH_MAX} elements are supported in this node.")
+            raise _validation_error(f"At most {ELEMENT_BATCH_MAX} elements are supported in this node.")
         payload_input["kling_elements"] = elements
 
         available = {str(item.get("name") or "").strip() for item in elements}
@@ -256,7 +262,7 @@ def _build_kling3_payload(
                 referenced |= _extract_referenced_elements(str(shot.get("prompt") or ""))
         missing = sorted(ref for ref in referenced if ref not in available)
         if missing:
-            raise RuntimeError(
+            raise _validation_error(
                 "Prompt references unknown @elements: " + ", ".join(f"@{name}" for name in missing)
             )
 
