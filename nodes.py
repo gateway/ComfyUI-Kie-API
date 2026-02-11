@@ -923,7 +923,7 @@ Outputs:
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "shots_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
+                "multi_shot_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
                 "first_frame": ("IMAGE",),
                 "last_frame": ("IMAGE",),
                 "sound": ("BOOLEAN", {"default": True}),
