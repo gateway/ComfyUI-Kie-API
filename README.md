@@ -179,6 +179,7 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 - 2026-02-11: Standardized Kling 3 preflight/task chaining on `kling_data`.
 - 2026-02-11: Updated Kling 3 payload compatibility (aspect ratio + multi-shot sound handling).
 - 2026-02-11: Cleaned up README structure and added docs index coverage for all public nodes.
+- 2026-02-11: Increased default async video polling timeout from 1000s to 2000s.
 
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).
@@ -187,7 +188,7 @@ Kie.ai is a unified API and model marketplace for image, video, and audio genera
 Kie.ai uses a credit-based model for requests. There is no subscription requirement, and pay-as-you-go usage is supported.
 
 ## Debugging and job visibility
-You can review request history and results at [https://kie.ai/logs](https://kie.ai/logs). Some models can take longer to finish; the default timeout has been increased to reduce false failures.
+You can review request history and results at [https://kie.ai/logs](https://kie.ai/logs). Some models can take longer to finish; the default async timeout is set to 2000s to reduce false failures.
 
 ## Sponsorship / Development
 

@@ -20,7 +20,7 @@ from .log import _log
 
 CREATE_TASK_URL = "https://api.kie.ai/api/v1/jobs/createTask"
 RECORD_INFO_URL = "https://api.kie.ai/api/v1/jobs/recordInfo"
-DEFAULT_TIMEOUT_S = 1000
+DEFAULT_TIMEOUT_S = 2000
 
 
 def _create_task(api_key: str, payload: dict[str, Any]) -> tuple[str, str]:

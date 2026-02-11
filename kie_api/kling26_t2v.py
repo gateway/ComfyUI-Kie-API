@@ -79,7 +79,7 @@ def run_kling26_t2v(
     aspect_ratio: str = "9:16",
     duration: str = "5",
     poll_interval_s: float = 10.0,
-    timeout_s: int = 1000,
+    timeout_s: int = 2000,
     log: bool = True,
 ) -> dict:
     """Backward-compatible alias for existing imports."""
