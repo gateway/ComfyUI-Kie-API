@@ -19,7 +19,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
 - `sound` (BOOLEAN, optional): single-shot only
 - `element` (KIE_ELEMENT, optional): one element
 - `elements` (KIE_ELEMENTS, optional): batched elements
-- `payload_data` (KIE_KLING3_REQUEST, optional): prebuilt validated payload from preflight; when connected, this overrides direct field inputs
+- `kling_data` (KIE_KLING3_REQUEST, optional): prebuilt validated payload from preflight; when connected, this overrides direct field inputs
 - `log` (BOOLEAN, optional)
 
 ## Rules

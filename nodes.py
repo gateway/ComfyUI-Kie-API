@@ -782,7 +782,7 @@ Inputs:
 - sound: Single-shot only
 - element: Optional single KIE_ELEMENT
 - elements: Optional KIE_ELEMENTS batch
-- payload_data: Optional payload object from preflight (overrides direct inputs)
+- kling_data: Optional payload object from preflight (overrides direct inputs)
 - log: Console logging on/off
 
 Rules:
@@ -818,8 +818,7 @@ Outputs:
                 "sound": ("BOOLEAN", {"default": True}),
                 "element": ("KIE_ELEMENT",),
                 "elements": ("KIE_ELEMENTS",),
-                "payload_data": ("KIE_KLING3_REQUEST",),
-                "request": ("KIE_KLING3_REQUEST",),
+                "kling_data": ("KIE_KLING3_REQUEST",),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -842,13 +841,12 @@ Outputs:
         sound: bool = True,
         element: dict | None = None,
         elements: list[dict] | None = None,
-        payload_data: dict | None = None,
-        request: dict | None = None,
+        kling_data: dict | None = None,
         log: bool = True,
         poll_interval_s: float = 10.0,
         timeout_s: int = 1000,
     ):
-        chained_payload = payload_data if payload_data is not None else request
+        chained_payload = kling_data
         if chained_payload is not None:
             video_output = run_kling3_video_from_request(
                 payload=chained_payload,
@@ -936,7 +934,7 @@ Outputs:
         }
 
     RETURN_TYPES = ("KIE_KLING3_REQUEST", "STRING", "STRING")
-    RETURN_NAMES = ("payload_data", "payload_json", "notes")
+    RETURN_NAMES = ("kling_data", "payload_json", "notes")
     FUNCTION = "preflight"
     CATEGORY = "kie/helpers"
 

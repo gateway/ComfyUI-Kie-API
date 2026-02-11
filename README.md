@@ -64,6 +64,7 @@ This node pack currently includes the following nodes:
   - Supports single-shot or multi-shot generation.
   - Supports optional first/last frame control and named element references.
   - In multi-shot mode, total duration is computed from shot durations (max 15s).
+  - Optional `kling_data` input allows direct execution from preflight-validated payloads.
   - **Experimental / development status:** not production-ready yet.
 - **Seedance V1 Pro (Fast) Image-to-Video**  
   Fast image-to-video generation optimized for quick iteration.
@@ -102,6 +103,7 @@ This node pack currently includes the following nodes:
   - Build named Kling elements (image/video) and batch them for Kling 3.0 prompts using `@element_name`.
 - **Kling 3.0 Preflight**
   - Validates/uploads inputs and returns exact createTask payload JSON without running generation.
+  - Outputs `kling_data` for direct chaining into `Kling 3.0 (Video)`.
   - Recommended before using Kling 3.0 generation while the node is in development.
 
 Each node has its own documentation page under `web/docs/` with detailed inputs, outputs, and usage examples.
