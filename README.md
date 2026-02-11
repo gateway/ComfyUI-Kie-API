@@ -60,6 +60,11 @@ This node pack currently includes the following nodes:
 - **Kling 2.6 Motion-Control Image-to-Video**
   - Image-to-video generation with additional motion control parameters.
   - Designed for more directed camera and motion behavior.
+- **Kling 3.0 (Video)**
+  - Supports single-shot or multi-shot generation.
+  - Supports optional first/last frame control and named element references.
+  - In multi-shot mode, total duration is computed from shot durations (max 15s).
+  - **Experimental / development status:** not production-ready yet.
 - **Seedance V1 Pro (Fast) Image-to-Video**  
   Fast image-to-video generation optimized for quick iteration.
 - **Seedance 1.5 Pro Image-to-Video, Text-to-Video**  
@@ -93,6 +98,11 @@ This node pack currently includes the following nodes:
 - **System Prompt Selector**
   - Combines a user prompt with a system prompt template from `prompts/`.
   - See [prompts/README.md](prompts/README.md) for creating new templates.
+- **Kling Elements + Kling Elements Batch**
+  - Build named Kling elements (image/video) and batch them for Kling 3.0 prompts using `@element_name`.
+- **Kling 3.0 Preflight**
+  - Validates/uploads inputs and returns exact createTask payload JSON without running generation.
+  - Recommended before using Kling 3.0 generation while the node is in development.
 
 Each node has its own documentation page under `web/docs/` with detailed inputs, outputs, and usage examples.
 
@@ -150,6 +160,8 @@ Feel free to adapt, simplify, or remix them to fit your own pipelines.
 - 2026-01-30: Gemini 3 Pro LLM updated with role dropdown and media inputs (phase 1.5).
 - 2026-01-30: Gemini 3 Pro LLM updated with audio input support.
 - 2026-02-03: Suno Music nodes now return two songs and two cover images.
+- 2026-02-11: Added Kling 3.0 video node and helper nodes for Kling elements + element batching.
+- 2026-02-11: Added Kling 3.0 preflight node to validate and preview request payloads before generation.
 
 ## About Kie.ai
 Kie.ai is a unified API and model marketplace for image, video, and audio generation. This project is community-maintained and not affiliated with Kie.ai. Learn more at [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42).

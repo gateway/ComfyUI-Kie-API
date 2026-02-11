@@ -5,8 +5,6 @@ Provides tensor-only helpers so nodes remain thin wrappers.
 
 import torch
 
-from .nanobanana import _log
-
 
 VALID_GRIDS = {
     "2x2": (2, 2),
@@ -33,7 +31,7 @@ def slice_grid_tensor(
         gutter_px: Pixels removed between tiles inside the grid.
         order: "row-major" or "column-major".
         process_batch: "first" or "all".
-        log: Enable verbose logging via shared logger.
+        log: Reserved for compatibility with existing node signature.
 
     Returns:
         Tensor of tiles stacked on batch dimension.
@@ -96,20 +94,11 @@ def slice_grid_tensor(
                 for r in range(rows):
                     add_tile(r, c)
 
-        if log:
-            _log(
-                log,
-                f"Sliced image into {rows}x{cols} tiles of size {tile_h}x{tile_w} "
-                f"(outer_crop_px={outer_crop_px}, gutter_px={gutter_px}, order={order})",
-            )
-
         return tiles
 
     all_tiles: list[torch.Tensor] = []
-    for idx, img in enumerate(targets):
+    for img in targets:
         tiles = slice_single(img)
         all_tiles.extend(tiles)
-        if log and process_batch == "all":
-            _log(log, f"Processed image {idx + 1}/{len(targets)}.")
 
     return torch.stack(all_tiles, dim=0)

@@ -18,8 +18,8 @@ Generate a short video clip from a text prompt using the Kling 2.6 text-to-video
 - **duration**
   Output length in seconds: 5 or 10.
 
-- **poll_interval_s / timeout_s / log**
-  Advanced controls for polling and logging.
+- **log**
+  Enable console logging.
 
 ---
 
@@ -41,3 +41,4 @@ Prompt:
 
 - Aspect ratio and duration must match the allowed enums.
 - Sound increases generation cost and may affect runtime.
+- This node uses internal defaults for polling/retries/timeouts (not exposed in the UI).

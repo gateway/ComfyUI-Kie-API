@@ -1,3 +1,4 @@
+import json
 import os
 import time
 
@@ -41,6 +42,15 @@ from .kie_api.kling26_t2v import (
     ASPECT_RATIO_OPTIONS as KLING26_T2V_ASPECT_RATIO_OPTIONS,
     DURATION_OPTIONS as KLING26_T2V_DURATION_OPTIONS,
     run_kling26_t2v_video,
+)
+from .kie_api.kling3_video import (
+    ASPECT_RATIO_OPTIONS as KLING3_ASPECT_RATIO_OPTIONS,
+    DURATION_OPTIONS as KLING3_DURATION_OPTIONS,
+    MODE_OPTIONS as KLING3_MODE_OPTIONS,
+    build_kling3_element,
+    merge_kling3_elements,
+    preflight_kling3_payload,
+    run_kling3_video,
 )
 from .kie_api.suno_music import MODEL_OPTIONS as SUNO_MODEL_OPTIONS, run_suno_generate
 from .kie_api.gemini3_pro_llm import (
@@ -629,6 +639,328 @@ Outputs:
                 time.sleep(backoff)
 
 
+class KIE_KlingElements:
+    HELP = """
+KIE Kling Elements
+
+Build one named Kling element from either images (2-4) or one video.
+
+Inputs:
+- name: Element name used by @name in prompts
+- description: Optional element description
+- images: Optional image batch input (2-4 images)
+- video: Optional video input (single clip)
+- log: Console logging on/off
+
+Rules:
+- Provide exactly one media type: images or video
+- Do not connect both images and video to the same element node
+
+Outputs:
+- KIE_ELEMENT: Element payload for Kling 3.0
+- STRING: JSON preview of the element payload
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "name": ("STRING", {"default": "element_name"}),
+            },
+            "optional": {
+                "description": ("STRING", {"default": ""}),
+                "images": ("IMAGE",),
+                "video": ("VIDEO",),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("KIE_ELEMENT", "STRING")
+    RETURN_NAMES = ("element", "data")
+    FUNCTION = "build"
+    CATEGORY = "kie/helpers"
+
+    def build(
+        self,
+        name: str,
+        description: str = "",
+        images: torch.Tensor | None = None,
+        video: object | None = None,
+        log: bool = True,
+    ):
+        element_payload = build_kling3_element(
+            name=name,
+            description=description,
+            images=images,
+            video=video,
+            log=log,
+        )
+        return (element_payload, json.dumps(element_payload, indent=2, ensure_ascii=False))
+
+
+class KIE_KlingElementsBatch:
+    HELP = """
+KIE Kling Elements Batch
+
+Collect up to 9 KIE_ELEMENT payloads into a single KIE_ELEMENTS batch.
+
+Inputs:
+- element_1..element_9: Optional KIE_ELEMENT inputs
+
+Outputs:
+- KIE_ELEMENTS: Batched elements payload
+- STRING: JSON preview of batched elements
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "optional": {
+                "element_1": ("KIE_ELEMENT",),
+                "element_2": ("KIE_ELEMENT",),
+                "element_3": ("KIE_ELEMENT",),
+                "element_4": ("KIE_ELEMENT",),
+                "element_5": ("KIE_ELEMENT",),
+                "element_6": ("KIE_ELEMENT",),
+                "element_7": ("KIE_ELEMENT",),
+                "element_8": ("KIE_ELEMENT",),
+                "element_9": ("KIE_ELEMENT",),
+            }
+        }
+
+    RETURN_TYPES = ("KIE_ELEMENTS", "STRING")
+    RETURN_NAMES = ("elements", "data")
+    FUNCTION = "batch"
+    CATEGORY = "kie/helpers"
+
+    def batch(
+        self,
+        element_1: dict | None = None,
+        element_2: dict | None = None,
+        element_3: dict | None = None,
+        element_4: dict | None = None,
+        element_5: dict | None = None,
+        element_6: dict | None = None,
+        element_7: dict | None = None,
+        element_8: dict | None = None,
+        element_9: dict | None = None,
+    ):
+        elements = merge_kling3_elements(
+            element_1,
+            element_2,
+            element_3,
+            element_4,
+            element_5,
+            element_6,
+            element_7,
+            element_8,
+            element_9,
+        )
+        if not elements:
+            raise RuntimeError("Kling Elements Batch requires at least one element.")
+        return (elements, json.dumps(elements, indent=2, ensure_ascii=False))
+
+
+class KIE_Kling3_Video:
+    HELP = """
+KIE Kling 3.0 (Video)
+
+Generate video with Kling 3.0 using single-shot or multi-shot prompts.
+
+Inputs:
+- mode: std or pro
+- aspect_ratio: 1:1, 9:16, 16:9
+- duration: 3..15 seconds
+- multi_shots: enable multi-shot mode
+- prompt: Used in single-shot mode
+- shots_text: Used in multi-shot mode, format:
+  duration | prompt
+  or
+  label | duration | prompt
+- first_frame: Optional start frame image
+- last_frame: Optional end frame image (single-shot only)
+- sound: Single-shot only
+- element: Optional single KIE_ELEMENT
+- elements: Optional KIE_ELEMENTS batch
+- log: Console logging on/off
+
+Rules:
+- multi_shots=true: last_frame is invalid, sound is invalid
+- multi_shots=true: duration is computed from summed shot durations
+- If first_frame + last_frame are both used, aspect_ratio is omitted automatically
+- @element references in prompt(s) must match provided element names
+
+Outputs:
+- VIDEO: ComfyUI video output compatible with SaveVideo
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "mode": ("COMBO", {"options": KLING3_MODE_OPTIONS, "default": "std"}),
+                "aspect_ratio": ("COMBO", {"options": KLING3_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "duration": ("COMBO", {"options": KLING3_DURATION_OPTIONS, "default": "5"}),
+                "multi_shots": ("BOOLEAN", {"default": False}),
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "shots_text": ("STRING", {"multiline": True, "default": ""}),
+                "first_frame": ("IMAGE",),
+                "last_frame": ("IMAGE",),
+                "sound": ("BOOLEAN", {"default": True}),
+                "element": ("KIE_ELEMENT",),
+                "elements": ("KIE_ELEMENTS",),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        mode: str,
+        aspect_ratio: str,
+        duration: str,
+        multi_shots: bool,
+        prompt: str,
+        shots_text: str = "",
+        first_frame: torch.Tensor | None = None,
+        last_frame: torch.Tensor | None = None,
+        sound: bool = True,
+        element: dict | None = None,
+        elements: list[dict] | None = None,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 1000,
+    ):
+        merged_elements: list[dict] | None = None
+        if elements is not None:
+            if not isinstance(elements, list):
+                raise RuntimeError("elements input must be a KIE_ELEMENTS payload list.")
+            merged_elements = list(elements)
+        if element is not None:
+            if not isinstance(element, dict):
+                raise RuntimeError("element input must be a KIE_ELEMENT payload object.")
+            if merged_elements is None:
+                merged_elements = []
+            merged_elements.append(element)
+        if merged_elements is not None:
+            merged_elements = merge_kling3_elements(*merged_elements)
+
+        video_output = run_kling3_video(
+            mode=mode,
+            aspect_ratio=aspect_ratio,
+            duration=duration,
+            multi_shots=multi_shots,
+            sound=sound,
+            prompt=prompt,
+            shots_text=shots_text,
+            first_frame=first_frame,
+            last_frame=last_frame,
+            elements=merged_elements,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (video_output,)
+
+
+class KIE_Kling3_Preflight:
+    HELP = """
+KIE Kling 3.0 Preflight
+
+Validate Kling 3.0 inputs, upload media, and build the exact createTask payload JSON
+without submitting a generation task.
+
+Use this node to verify wiring/format before spending generation credits.
+
+Inputs:
+- Same as KIE Kling 3.0 (Video)
+
+Outputs:
+- STRING: payload_json (exact payload that would be sent to createTask)
+- STRING: notes
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "mode": ("COMBO", {"options": KLING3_MODE_OPTIONS, "default": "std"}),
+                "aspect_ratio": ("COMBO", {"options": KLING3_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "duration": ("COMBO", {"options": KLING3_DURATION_OPTIONS, "default": "5"}),
+                "multi_shots": ("BOOLEAN", {"default": False}),
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "shots_text": ("STRING", {"multiline": True, "default": ""}),
+                "first_frame": ("IMAGE",),
+                "last_frame": ("IMAGE",),
+                "sound": ("BOOLEAN", {"default": True}),
+                "element": ("KIE_ELEMENT",),
+                "elements": ("KIE_ELEMENTS",),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING", "STRING")
+    RETURN_NAMES = ("payload_json", "notes")
+    FUNCTION = "preflight"
+    CATEGORY = "kie/helpers"
+
+    def preflight(
+        self,
+        mode: str,
+        aspect_ratio: str,
+        duration: str,
+        multi_shots: bool,
+        prompt: str,
+        shots_text: str = "",
+        first_frame: torch.Tensor | None = None,
+        last_frame: torch.Tensor | None = None,
+        sound: bool = True,
+        element: dict | None = None,
+        elements: list[dict] | None = None,
+        log: bool = True,
+    ):
+        merged_elements: list[dict] | None = None
+        if elements is not None:
+            if not isinstance(elements, list):
+                raise RuntimeError("elements input must be a KIE_ELEMENTS payload list.")
+            merged_elements = list(elements)
+        if element is not None:
+            if not isinstance(element, dict):
+                raise RuntimeError("element input must be a KIE_ELEMENT payload object.")
+            if merged_elements is None:
+                merged_elements = []
+            merged_elements.append(element)
+        if merged_elements is not None:
+            merged_elements = merge_kling3_elements(*merged_elements)
+
+        payload = preflight_kling3_payload(
+            mode=mode,
+            aspect_ratio=aspect_ratio,
+            duration=duration,
+            multi_shots=multi_shots,
+            sound=sound,
+            prompt=prompt,
+            shots_text=shots_text,
+            first_frame=first_frame,
+            last_frame=last_frame,
+            elements=merged_elements,
+            log=log,
+        )
+        notes = (
+            "Preflight only: payload built after validation/uploads. "
+            "No createTask call was made."
+        )
+        return (json.dumps(payload, indent=2, ensure_ascii=False), notes)
+
+
 class KIE_Flux2_I2I:
     HELP = """
 KIE Flux 2 (Image-to-Image)
@@ -1189,6 +1521,10 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
     "KIE_Kling26_T2V": KIE_Kling26_T2V,
     "KIE_Kling26Motion_I2V": KIE_Kling26Motion_I2V,
+    "KIE_KlingElements": KIE_KlingElements,
+    "KIE_KlingElementsBatch": KIE_KlingElementsBatch,
+    "KIE_Kling3_Video": KIE_Kling3_Video,
+    "KIE_Kling3_Preflight": KIE_Kling3_Preflight,
     "KIE_Flux2_I2I": KIE_Flux2_I2I,
     "KIE_Gemini3Pro_LLM": KIE_Gemini3Pro_LLM,
     "KIE_Suno_Music_Basic": KIE_Suno_Music_Basic,
@@ -1208,6 +1544,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling26_I2V": "KIE Kling 2.6 (I2V)",
     "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",
     "KIE_Kling26Motion_I2V": "KIE Kling 2.6 Motion-Control (I2V)",
+    "KIE_KlingElements": "KIE Kling Elements",
+    "KIE_KlingElementsBatch": "KIE Kling Elements Batch",
+    "KIE_Kling3_Video": "KIE Kling 3.0 (Video)",
+    "KIE_Kling3_Preflight": "KIE Kling 3.0 Preflight",
     "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
     "KIE_Gemini3Pro_LLM": "KIE Gemini (LLM) [Experimental]",
     "KIE_Suno_Music_Basic": "KIE Suno Music (Basic)",

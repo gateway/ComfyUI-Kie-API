@@ -313,10 +313,17 @@ def run_suno_generate(
         _log(log, f"Suno audio URL 2: {audio_url_2}")
 
     try:
-        audio_bytes_1 = requests.get(audio_url_1, timeout=180).content
-        audio_bytes_2 = requests.get(audio_url_2, timeout=180).content
+        response_1 = requests.get(audio_url_1, timeout=180)
+        response_2 = requests.get(audio_url_2, timeout=180)
     except requests.RequestException as exc:
         raise RuntimeError(f"Failed to download audio: {exc}") from exc
+    if response_1.status_code != 200:
+        raise RuntimeError(f"Failed to download audio 1 (status code {response_1.status_code}).")
+    if response_2.status_code != 200:
+        raise RuntimeError(f"Failed to download audio 2 (status code {response_2.status_code}).")
+
+    audio_bytes_1 = response_1.content
+    audio_bytes_2 = response_2.content
 
     audio_output_1 = _audio_bytes_to_comfy_audio(audio_bytes_1, "audio_1.mp3")
     audio_output_2 = _audio_bytes_to_comfy_audio(audio_bytes_2, "audio_2.mp3")
