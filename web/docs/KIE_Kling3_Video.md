@@ -3,6 +3,7 @@
 Generate Kling 3.0 videos in single-shot or multi-shot mode.
 
 > Status: Experimental (development pass). Not production-ready yet.
+> Credit Warning: Kling 3.0 can consume significant credits. Use `KIE Kling 3.0 Preflight` first.
 
 ## Inputs
 - `mode` (COMBO): `std` or `pro`
@@ -27,7 +28,46 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
   - shot durations are summed automatically and sent as the final payload duration
 - If both start and end frames are provided, aspect ratio is auto-adapted from frames.
 - `@element_name` references in prompt(s) must match provided elements.
+- If prompts use `@element_name`, connect `first_frame` (KIE requires image_urls for element-referenced prompts).
+- If no frames and no elements are used, the node runs as text-to-video.
 - Multi-shot total duration must stay within `3..15` seconds.
+
+## Prompt vs Multi-Prompt
+- Single-shot (`multi_shots=false`): use `prompt`.
+- Multi-shot (`multi_shots=true`): use `shots_text` only.
+- `shots_text` format:
+  - `duration | prompt`
+  - or `label | duration | prompt`
+- Example:
+  - `shot1 | 4 | A woman exits a spaceship with @dog`
+  - `shot2 | 3 | Medium tracking shot of @dog running`
+  - `shot3 | 3 | Emotional close-up of @dog and @old_woman`
+
+## Element Naming and References
+- Define elements upstream with `KIE Kling Elements`.
+- Batch them with `KIE Kling Elements Batch`.
+- Reference in prompt with `@element_name`.
+- Allowed element names: letters, numbers, `_`, `-` only.
+- Spaces in element names are invalid.
+
+## Scenario Matrix
+- Single-shot with first frame only:
+  - Valid
+- Single-shot with first + last frame:
+  - Valid
+  - `aspect_ratio` omitted in payload (auto-adapt from frames)
+- Multi-shot with first frame only:
+  - Valid
+- Multi-shot with last frame connected:
+  - Invalid
+- Multi-shot with sound enabled:
+  - Invalid
+- Prompt references `@element` but elements missing:
+  - Invalid
+- Prompt references `@element` but first frame missing:
+  - Invalid
+- No frames, no elements:
+  - Valid text-to-video
 
 ## Cost note
 - Kling 3.0 usage cost is tied to generated duration.

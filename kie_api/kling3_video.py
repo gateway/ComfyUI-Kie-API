@@ -256,6 +256,12 @@ def _build_kling3_payload(
         for shot in payload_input.get("multi_prompt", []):
             referenced |= _extract_referenced_elements(str(shot.get("prompt") or ""))
 
+    if referenced and not frame_urls:
+        raise _validation_error(
+            "Prompt uses @element references but no first_frame/image_urls were provided. "
+            "Connect first_frame when using elements."
+        )
+
     if elements:
         if len(elements) > ELEMENT_BATCH_MAX:
             raise _validation_error(f"At most {ELEMENT_BATCH_MAX} elements are supported in this node.")

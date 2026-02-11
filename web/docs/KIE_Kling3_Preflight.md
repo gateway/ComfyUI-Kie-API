@@ -14,8 +14,13 @@ Validate Kling 3.0 inputs and build the exact payload JSON without submitting a 
 
 ## Outputs
 - `payload_json` (STRING): exact request payload after validation and upload URL resolution.
-- `notes` (STRING): confirms this node does not call `createTask`.
+- `notes` (STRING): validation summary with detected settings and status.
 
 ## Notes
 - This node still uploads required input media to produce valid URLs in payload.
 - In multi-shot mode, duration is auto-calculated from shot durations.
+- `notes` returns a `VALID` summary when checks pass, including:
+  - mode, single/multi-shot status, resolved duration
+  - frame count and aspect-ratio handling
+  - element count and names
+  - shot count (multi-shot) or sound status (single-shot)

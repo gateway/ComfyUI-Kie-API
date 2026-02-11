@@ -793,6 +793,11 @@ Rules:
 Outputs:
 - VIDEO: ComfyUI video output compatible with SaveVideo
 """
+    SHOTS_TEXT_PLACEHOLDER = (
+        "shot1 | 4 | Wide cinematic opening with @element_name\n"
+        "shot2 | 3 | Medium tracking shot with @element_name\n"
+        "shot3 | 3 | Close-up emotional finale with @element_name"
+    )
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -805,7 +810,7 @@ Outputs:
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "shots_text": ("STRING", {"multiline": True, "default": ""}),
+                "shots_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
                 "first_frame": ("IMAGE",),
                 "last_frame": ("IMAGE",),
                 "sound": ("BOOLEAN", {"default": True}),
@@ -885,6 +890,11 @@ Outputs:
 - STRING: payload_json (exact payload that would be sent to createTask)
 - STRING: notes
 """
+    SHOTS_TEXT_PLACEHOLDER = (
+        "shot1 | 4 | Wide cinematic opening with @element_name\n"
+        "shot2 | 3 | Medium tracking shot with @element_name\n"
+        "shot3 | 3 | Close-up emotional finale with @element_name"
+    )
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -897,7 +907,7 @@ Outputs:
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "shots_text": ("STRING", {"multiline": True, "default": ""}),
+                "shots_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
                 "first_frame": ("IMAGE",),
                 "last_frame": ("IMAGE",),
                 "sound": ("BOOLEAN", {"default": True}),
@@ -954,10 +964,37 @@ Outputs:
             elements=merged_elements,
             log=log,
         )
-        notes = (
-            "Preflight only: payload built after validation/uploads. "
-            "No createTask call was made."
-        )
+        payload_input = payload.get("input", {})
+        image_urls = payload_input.get("image_urls") or []
+        has_aspect_ratio = "aspect_ratio" in payload_input
+        element_items = payload_input.get("kling_elements") or []
+        element_names = [
+            str(item.get("name")).strip()
+            for item in element_items
+            if isinstance(item, dict) and item.get("name")
+        ]
+
+        notes_lines = [
+            "VALID: Kling 3.0 preflight checks passed.",
+            "No createTask call was made.",
+            f"Mode: {payload_input.get('mode')}",
+            f"Multi-shots: {payload_input.get('multi_shots')}",
+            f"Duration sent: {payload_input.get('duration')}s",
+            f"Frame inputs resolved: {len(image_urls)}",
+            f"Aspect ratio in payload: {'yes' if has_aspect_ratio else 'no (auto from start/end frames)'}",
+            f"Elements provided: {len(element_items)}",
+        ]
+
+        if payload_input.get("multi_shots"):
+            shot_count = len(payload_input.get("multi_prompt") or [])
+            notes_lines.append(f"Shot count: {shot_count}")
+        else:
+            notes_lines.append(f"Sound enabled: {bool(payload_input.get('sound', False))}")
+
+        if element_names:
+            notes_lines.append("Element names: " + ", ".join(element_names))
+
+        notes = "\n".join(notes_lines)
         return (json.dumps(payload, indent=2, ensure_ascii=False), notes)
 
 
