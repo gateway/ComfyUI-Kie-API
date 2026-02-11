@@ -27,7 +27,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
   - `last_frame` is invalid
   - `sound` is invalid
   - shot durations are summed automatically and sent as the final payload duration
-- If both start and end frames are provided, aspect ratio is auto-adapted from frames.
+- `aspect_ratio` is always sent in payload.
 - `@element_name` references in prompt(s) must match provided elements.
 - If prompts use `@element_name`, connect `first_frame` (KIE requires image_urls for element-referenced prompts).
 - If no frames and no elements are used, the node runs as text-to-video.
@@ -56,7 +56,7 @@ Generate Kling 3.0 videos in single-shot or multi-shot mode.
   - Valid
 - Single-shot with first + last frame:
   - Valid
-  - `aspect_ratio` omitted in payload (auto-adapt from frames)
+  - `aspect_ratio` still sent in payload
 - Multi-shot with first frame only:
   - Valid
 - Multi-shot with last frame connected:

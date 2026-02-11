@@ -252,9 +252,8 @@ def _build_kling3_payload(
     if frame_urls:
         payload_input["image_urls"] = frame_urls
 
-    # aspect_ratio must be omitted when both start/end frames are used.
-    if len(frame_urls) < 2:
-        payload_input["aspect_ratio"] = aspect_ratio
+    # Always include aspect_ratio; Kling 3.0 createTask may require this field.
+    payload_input["aspect_ratio"] = aspect_ratio
 
     referenced = _extract_referenced_elements(prompt)
     if multi_shots:

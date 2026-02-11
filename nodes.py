@@ -788,7 +788,7 @@ Inputs:
 Rules:
 - multi_shots=true: last_frame is invalid, sound is invalid
 - multi_shots=true: duration is computed from summed shot durations
-- If first_frame + last_frame are both used, aspect_ratio is omitted automatically
+- aspect_ratio is always sent in the payload
 - @element references in prompt(s) must match provided element names
 
 Outputs:
@@ -982,7 +982,6 @@ Outputs:
         )
         payload_input = payload.get("input", {})
         image_urls = payload_input.get("image_urls") or []
-        has_aspect_ratio = "aspect_ratio" in payload_input
         element_items = payload_input.get("kling_elements") or []
         element_names = [
             str(item.get("name")).strip()
@@ -997,7 +996,7 @@ Outputs:
             f"Multi-shots: {payload_input.get('multi_shots')}",
             f"Duration sent: {payload_input.get('duration')}s",
             f"Frame inputs resolved: {len(image_urls)}",
-            f"Aspect ratio in payload: {'yes' if has_aspect_ratio else 'no (auto from start/end frames)'}",
+            f"Aspect ratio in payload: {payload_input.get('aspect_ratio')}",
             f"Elements provided: {len(element_items)}",
         ]
 
