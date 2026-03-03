@@ -166,27 +166,40 @@ def run_nanobanana_image_job(
                 if upload_count > 0:
                     _log(log, f"Uploading {upload_count} images...")
 
-                for idx in range(upload_count):
+                def _upload_single_image(idx: int, img_tensor: torch.Tensor, key: str) -> tuple[int, str]:
                     try:
-                        png_bytes = _image_tensor_to_png_bytes(images[idx])
-                        url = _upload_image(api_key, png_bytes)
-                        image_urls.append(url)
+                        png_bytes = _image_tensor_to_png_bytes(img_tensor)
+                        url = _upload_image(key, png_bytes)
                         _log(log, f"Image {idx + 1} upload success: {_truncate_url(url)}")
+                        return idx, url
                     except Exception as exc:
                         _log(log, f"Image {idx + 1} upload failed: {exc}")
                         raise
 
-            input_payload = {
-                "prompt": prompt,
-                "aspect_ratio": aspect_ratio,
-                "resolution": resolution,
-                "output_format": output_format,
-                "image_input": image_urls,
-            }
+                if upload_count > 0:
+                    import concurrent.futures
+
+                    results: list[str | None] = [None] * upload_count
+                    with concurrent.futures.ThreadPoolExecutor(max_workers=upload_count) as executor:
+                        futures = {
+                            executor.submit(_upload_single_image, idx, images[idx], api_key): idx
+                            for idx in range(upload_count)
+                        }
+                        for future in concurrent.futures.as_completed(futures):
+                            idx, url = future.result()
+                            results[idx] = url
+
+                    image_urls.extend([r for r in results if r is not None])
 
             payload = {
                 "model": MODEL_NAME,
-                "input": input_payload,
+                "input": {
+                    "prompt": prompt,
+                    "aspect_ratio": aspect_ratio,
+                    "resolution": resolution,
+                    "output_format": output_format,
+                    "image_input": image_urls,
+                },
             }
 
             _log(log, "Creating Nano Banana Pro task...")
