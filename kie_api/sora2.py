@@ -28,7 +28,7 @@ def _run_sora2_video(
     timeout_s: int = 2000,
     log: bool = True,
 ) -> dict:
-    _validate_prompt(prompt, max_length=2500)
+    _validate_prompt(prompt, max_length=4096)
     if aspect_ratio not in ["portrait", "landscape"]:
         raise RuntimeError("Invalid aspect_ratio. Must be 'portrait' or 'landscape'.")
     if n_frames not in ["10", "15"]:
