@@ -1,5 +1,6 @@
 """Gemini 3 Pro chat completions helper."""
 
+import concurrent.futures
 import json
 from typing import Any
 
@@ -132,11 +133,21 @@ def run_gemini3_pro_chat(
             total_images = images.shape[0]
             if total_images > 0:
                 _log(log, f"Uploading {total_images} image(s) for {model}...")
-            for idx in range(total_images):
-                png_bytes = _image_tensor_to_png_bytes(images[idx])
-                url = _upload_image(api_key, png_bytes)
-                image_urls.append(url)
-                _log(log, f"Image {idx + 1} upload success: {_truncate_url(url)}")
+
+                def _process_image(idx: int) -> tuple[int, str]:
+                    png_bytes = _image_tensor_to_png_bytes(images[idx])
+                    url = _upload_image(api_key, png_bytes)
+                    _log(log, f"Image {idx + 1} upload success: {_truncate_url(url)}")
+                    return idx, url
+
+                results = [None] * total_images
+                with concurrent.futures.ThreadPoolExecutor() as executor:
+                    futures = [executor.submit(_process_image, i) for i in range(total_images)]
+                    for future in concurrent.futures.as_completed(futures):
+                        idx, url = future.result()
+                        results[idx] = url
+
+                image_urls.extend(results)
 
         if video is not None:
             video_bytes, source = _coerce_video_to_mp4_bytes(video)
