@@ -1641,6 +1641,499 @@ Outputs:
         return (combined,)
 
 
+# Sora 2 API
+from .kie_api.sora2 import (
+    run_sora2_t2v,
+    run_sora2_t2v_stable,
+    run_sora2_i2v,
+    run_sora2_i2v_stable,
+    run_sora2_characters_pro,
+    run_sora_watermark_remover,
+)
+
+SORA2_ASPECT_RATIO_OPTIONS = ["portrait", "landscape"]
+SORA2_N_FRAMES_OPTIONS = ["10", "15"]
+SORA2_UPLOAD_METHOD_OPTIONS = ["s3", "oss"]
+
+class KIE_Sora2_TextToVideo:
+    HELP = """
+KIE Sora 2 (Text to Video)
+
+Generate a short video clip from a prompt using Sora 2.
+
+Inputs:
+- prompt: Text prompt (required)
+- aspect_ratio: portrait or landscape
+- n_frames: 10 or 15
+- remove_watermark: Remove watermark from generated video
+- upload_method: s3 or oss
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "aspect_ratio": ("COMBO", {"options": SORA2_ASPECT_RATIO_OPTIONS, "default": "portrait"}),
+                "n_frames": ("COMBO", {"options": SORA2_N_FRAMES_OPTIONS, "default": "10"}),
+                "remove_watermark": ("BOOLEAN", {"default": False}),
+                "upload_method": ("COMBO", {"options": SORA2_UPLOAD_METHOD_OPTIONS, "default": "s3"}),
+            },
+            "optional": {
+                "poll_interval_s": ("FLOAT", {"default": 10.0, "min": 1.0, "max": 60.0, "step": 1.0}),
+                "timeout_s": ("INT", {"default": 2000, "min": 30, "max": 10000, "step": 10}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 60.0, "step": 1.0}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "portrait",
+        n_frames: str = "10",
+        remove_watermark: bool = False,
+        upload_method: str = "s3",
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+        log: bool = True,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_sora2_t2v(
+                    prompt=prompt,
+                    aspect_ratio=aspect_ratio,
+                    n_frames=n_frames,
+                    remove_watermark=remove_watermark,
+                    upload_method=upload_method,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
+class KIE_Sora2_TextToVideoStable:
+    HELP = """
+KIE Sora 2 (Text to Video Stable)
+
+Generate a short video clip from a prompt using Sora 2 (stable endpoint).
+
+Inputs:
+- prompt: Text prompt (required)
+- aspect_ratio: portrait or landscape
+- n_frames: 10 or 15
+- upload_method: s3 or oss
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "aspect_ratio": ("COMBO", {"options": SORA2_ASPECT_RATIO_OPTIONS, "default": "portrait"}),
+                "n_frames": ("COMBO", {"options": SORA2_N_FRAMES_OPTIONS, "default": "10"}),
+                "upload_method": ("COMBO", {"options": SORA2_UPLOAD_METHOD_OPTIONS, "default": "s3"}),
+            },
+            "optional": {
+                "poll_interval_s": ("FLOAT", {"default": 10.0, "min": 1.0, "max": 60.0, "step": 1.0}),
+                "timeout_s": ("INT", {"default": 2000, "min": 30, "max": 10000, "step": 10}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 60.0, "step": 1.0}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "portrait",
+        n_frames: str = "10",
+        upload_method: str = "s3",
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+        log: bool = True,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_sora2_t2v_stable(
+                    prompt=prompt,
+                    aspect_ratio=aspect_ratio,
+                    n_frames=n_frames,
+                    upload_method=upload_method,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+class KIE_Sora2_ImageToVideo:
+    HELP = """
+KIE Sora 2 (Image to Video)
+
+Generate a short video clip from an image and a prompt using Sora 2.
+
+Inputs:
+- image: Source image batch (first image used)
+- prompt: Text prompt (required)
+- aspect_ratio: portrait or landscape
+- n_frames: 10 or 15
+- remove_watermark: Remove watermark from generated video
+- upload_method: s3 or oss
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+                "prompt": ("STRING", {"multiline": True}),
+                "aspect_ratio": ("COMBO", {"options": SORA2_ASPECT_RATIO_OPTIONS, "default": "portrait"}),
+                "n_frames": ("COMBO", {"options": SORA2_N_FRAMES_OPTIONS, "default": "10"}),
+                "remove_watermark": ("BOOLEAN", {"default": False}),
+                "upload_method": ("COMBO", {"options": SORA2_UPLOAD_METHOD_OPTIONS, "default": "s3"}),
+            },
+            "optional": {
+                "poll_interval_s": ("FLOAT", {"default": 10.0, "min": 1.0, "max": 60.0, "step": 1.0}),
+                "timeout_s": ("INT", {"default": 2000, "min": 30, "max": 10000, "step": 10}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 60.0, "step": 1.0}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        image: torch.Tensor,
+        prompt: str,
+        aspect_ratio: str = "portrait",
+        n_frames: str = "10",
+        remove_watermark: bool = False,
+        upload_method: str = "s3",
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+        log: bool = True,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_sora2_i2v(
+                    prompt=prompt,
+                    images=image,
+                    aspect_ratio=aspect_ratio,
+                    n_frames=n_frames,
+                    remove_watermark=remove_watermark,
+                    upload_method=upload_method,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
+class KIE_Sora2_ImageToVideoStable:
+    HELP = """
+KIE Sora 2 (Image to Video Stable)
+
+Generate a short video clip from an image and a prompt using Sora 2 (stable endpoint).
+
+Inputs:
+- image: Source image batch (first image used)
+- prompt: Text prompt (required)
+- aspect_ratio: portrait or landscape
+- n_frames: 10 or 15
+- upload_method: s3 or oss
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+                "prompt": ("STRING", {"multiline": True}),
+                "aspect_ratio": ("COMBO", {"options": SORA2_ASPECT_RATIO_OPTIONS, "default": "portrait"}),
+                "n_frames": ("COMBO", {"options": SORA2_N_FRAMES_OPTIONS, "default": "10"}),
+                "upload_method": ("COMBO", {"options": SORA2_UPLOAD_METHOD_OPTIONS, "default": "s3"}),
+            },
+            "optional": {
+                "poll_interval_s": ("FLOAT", {"default": 10.0, "min": 1.0, "max": 60.0, "step": 1.0}),
+                "timeout_s": ("INT", {"default": 2000, "min": 30, "max": 10000, "step": 10}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 60.0, "step": 1.0}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        image: torch.Tensor,
+        prompt: str,
+        aspect_ratio: str = "portrait",
+        n_frames: str = "10",
+        upload_method: str = "s3",
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+        log: bool = True,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_sora2_i2v_stable(
+                    prompt=prompt,
+                    images=image,
+                    aspect_ratio=aspect_ratio,
+                    n_frames=n_frames,
+                    upload_method=upload_method,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+class KIE_Sora2_CharactersPro:
+    HELP = """
+KIE Sora 2 (Characters Pro)
+
+Extracts a reusable character from an existing Sora 2 video and registers it as a named @handle.
+
+Inputs:
+- origin_task_id: taskId of a previously generated Sora 2 video (required)
+- start_time: Clip start in seconds (required)
+- end_time: Clip end in seconds. Selected segment must be 1-4 seconds long. (required)
+- character_user_name: Globally unique handle for your character. (optional)
+- character_prompt: Short line describing stable traits. (required)
+- safety_instruction: Content boundaries. (optional)
+
+Outputs:
+- character_handle: The @username for use in downstream prompts
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "origin_task_id": ("STRING", {}),
+                "start_time": ("FLOAT", {"default": 0.0, "min": 0.0, "step": 0.1}),
+                "end_time": ("FLOAT", {"default": 4.0, "min": 1.0, "step": 0.1}),
+                "character_prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "character_user_name": ("STRING", {"default": ""}),
+                "safety_instruction": ("STRING", {"multiline": True, "default": ""}),
+                "poll_interval_s": ("FLOAT", {"default": 10.0, "min": 1.0, "max": 60.0, "step": 1.0}),
+                "timeout_s": ("INT", {"default": 2000, "min": 30, "max": 10000, "step": 10}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 60.0, "step": 1.0}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("character_handle",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        origin_task_id: str,
+        start_time: float,
+        end_time: float,
+        character_prompt: str,
+        character_user_name: str = "",
+        safety_instruction: str = "",
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+        log: bool = True,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                handle = run_sora2_characters_pro(
+                    origin_task_id=origin_task_id,
+                    start_time_s=start_time,
+                    end_time_s=end_time,
+                    character_prompt=character_prompt,
+                    character_user_name=character_user_name if character_user_name else None,
+                    safety_instruction=safety_instruction if safety_instruction else None,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (handle,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+class KIE_Sora2_WatermarkRemover:
+    HELP = """
+KIE Sora 2 (Watermark Remover)
+
+Removes watermarks from a publicly accessible Sora 2 video URL.
+
+Inputs:
+- video_url: Publicly accessible URL from sora.chatgpt.com (required)
+- upload_method: s3 or oss
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "video_url": ("STRING", {}),
+                "upload_method": ("COMBO", {"options": SORA2_UPLOAD_METHOD_OPTIONS, "default": "s3"}),
+            },
+            "optional": {
+                "poll_interval_s": ("FLOAT", {"default": 10.0, "min": 1.0, "max": 60.0, "step": 1.0}),
+                "timeout_s": ("INT", {"default": 2000, "min": 30, "max": 10000, "step": 10}),
+                "retry_on_fail": ("BOOLEAN", {"default": True}),
+                "max_retries": ("INT", {"default": 2, "min": 0, "max": 10, "step": 1}),
+                "retry_backoff_s": ("FLOAT", {"default": 3.0, "min": 0.0, "max": 60.0, "step": 1.0}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        video_url: str,
+        upload_method: str = "s3",
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+        log: bool = True,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_sora_watermark_remover(
+                    video_url=video_url,
+                    upload_method=upload_method,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
 NODE_CLASS_MAPPINGS = {
     "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
@@ -1664,6 +2157,12 @@ NODE_CLASS_MAPPINGS = {
     "KIE_GridSlice": KIE_GridSlice,
     "KIEParsePromptGridJSON": KIEParsePromptGridJSON,
     "KIE_SystemPrompt_Selector": KIE_SystemPrompt_Selector,
+    "KIE_Sora2_TextToVideo": KIE_Sora2_TextToVideo,
+    "KIE_Sora2_ImageToVideo": KIE_Sora2_ImageToVideo,
+    "KIE_Sora2_TextToVideoStable": KIE_Sora2_TextToVideoStable,
+    "KIE_Sora2_ImageToVideoStable": KIE_Sora2_ImageToVideoStable,
+    "KIE_Sora2_CharactersPro": KIE_Sora2_CharactersPro,
+    "KIE_Sora2_WatermarkRemover": KIE_Sora2_WatermarkRemover,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
@@ -1688,4 +2187,10 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GridSlice": "KIE Grid Slice",
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
     "KIE_SystemPrompt_Selector": "KIE System Prompt Selector",
+    "KIE_Sora2_TextToVideo": "KIE Sora 2 Text-To-Video",
+    "KIE_Sora2_ImageToVideo": "KIE Sora 2 Image-To-Video",
+    "KIE_Sora2_TextToVideoStable": "KIE Sora 2 Text-To-Video Stable",
+    "KIE_Sora2_ImageToVideoStable": "KIE Sora 2 Image-To-Video Stable",
+    "KIE_Sora2_CharactersPro": "KIE Sora 2 Characters Pro",
+    "KIE_Sora2_WatermarkRemover": "KIE Sora 2 Watermark Remover",
 }

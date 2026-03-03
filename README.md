@@ -189,6 +189,7 @@ This workflow is focused on direct comparison between **Nano Banana Pro** and **
 This is useful for quickly evaluating model preference by prompt type, fidelity, and cost/performance tradeoffs.
 
 ## Changelog
+- 2026-03-03: Added Sora 2 API nodes (Text-To-Video, Image-To-Video, Characters Pro, Watermark Remover). Bumped version to 0.2.0.
 - 2026-02-28: Added new example workflow `KIE-AI-Banana-Pro-Banana-Pro.json` to repository docs.
 - 2026-02-28: Documentation clarified Nano Banana Pro (up to 8 images) and Nano Banana 2 (up to 14 images + optional Google web search). Bumped version to 0.1.8.
 - 2026-02-28: Updated Nano Banana Pro + Nano Banana 2 payload behavior to always send `image_input` (empty list when no images are connected).
