@@ -124,7 +124,6 @@ def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debu
         inspector_lines.append(f"first_brace_index={raw.find('{')}")
         inspector_lines.append(f"first_bracket_index={raw.find('[')}")
         inspector_lines.append(f"ordinals_prefix={[ord(c) for c in raw[:30]]}")
-        print("[KIE Parse Prompt Grid JSON Input]", " ".join(inspector_lines))
         debug_lines.append(f"input_type={type(text).__name__}")
         debug_lines.append(f"normalized_length={len(raw)}")
         if flattened:
