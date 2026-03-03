@@ -137,11 +137,6 @@ def parse_prompts_json(text: Any, max_items: int = 9, strict: bool = False, debu
         except json.JSONDecodeError:
             extracted = _extract_first_json(cleaned)
             if extracted is not None:
-                if debug:
-                    print(
-                        "[KIE Parse Prompt Grid JSON Extracted]",
-                        f"extracted_repr_prefix={repr(extracted[:200])}",
-                    )
                 try:
                     payload = json.loads(extracted)
                 except json.JSONDecodeError:
