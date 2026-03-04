@@ -72,6 +72,19 @@ from .kie_api.flux2_i2i import (
     RESOLUTION_OPTIONS as FLUX2_RESOLUTION_OPTIONS,
     run_flux2_i2i,
 )
+from .kie_api.grok_imagine_t2v import (
+    ASPECT_RATIO_OPTIONS as GROK_T2V_ASPECT_RATIO_OPTIONS,
+    DURATION_OPTIONS as GROK_T2V_DURATION_OPTIONS,
+    MODE_OPTIONS as GROK_T2V_MODE_OPTIONS,
+    RESOLUTION_OPTIONS as GROK_T2V_RESOLUTION_OPTIONS,
+    run_grok_imagine_t2v_video,
+)
+from .kie_api.grok_imagine_i2v import (
+    DURATION_OPTIONS as GROK_I2V_DURATION_OPTIONS,
+    MODE_OPTIONS as GROK_I2V_MODE_OPTIONS,
+    RESOLUTION_OPTIONS as GROK_I2V_RESOLUTION_OPTIONS,
+    run_grok_imagine_i2v_video,
+)
 from .kie_api.prompt_lists import parse_prompts_json
 from .kie_api.grid import slice_grid_tensor
 from .kie_api.http import TransientKieError
@@ -146,6 +159,7 @@ Outputs:
 Notes:
 - If your key is missing/invalid, this node errors.
 """
+
     @classmethod
     def INPUT_TYPES(cls):
         return {"required": {"log": ("BOOLEAN", {"default": True})}}
@@ -182,15 +196,25 @@ Inputs:
 Outputs:
 - IMAGE: ComfyUI image tensor (BHWC float32 0–1)
 """
+
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {"prompt": ("STRING", {"multiline": True})},
             "optional": {
                 "images": ("IMAGE",),
-                "aspect_ratio": ("COMBO", {"options": ASPECT_RATIO_OPTIONS, "default": "auto"}),
-                "resolution": ("COMBO", {"options": RESOLUTION_OPTIONS, "default": "1K"}),
-                "output_format": ("COMBO", {"options": OUTPUT_FORMAT_OPTIONS, "default": "png"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": ASPECT_RATIO_OPTIONS, "default": "auto"},
+                ),
+                "resolution": (
+                    "COMBO",
+                    {"options": RESOLUTION_OPTIONS, "default": "1K"},
+                ),
+                "output_format": (
+                    "COMBO",
+                    {"options": OUTPUT_FORMAT_OPTIONS, "default": "png"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -259,9 +283,18 @@ Outputs:
             "optional": {
                 "images": ("IMAGE",),
                 "google_search": ("BOOLEAN", {"default": False}),
-                "aspect_ratio": ("COMBO", {"options": NANOBANANA2_ASPECT_RATIO_OPTIONS, "default": "auto"}),
-                "resolution": ("COMBO", {"options": NANOBANANA2_RESOLUTION_OPTIONS, "default": "1K"}),
-                "output_format": ("COMBO", {"options": NANOBANANA2_OUTPUT_FORMAT_OPTIONS, "default": "jpg"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": NANOBANANA2_ASPECT_RATIO_OPTIONS, "default": "auto"},
+                ),
+                "resolution": (
+                    "COMBO",
+                    {"options": NANOBANANA2_RESOLUTION_OPTIONS, "default": "1K"},
+                ),
+                "output_format": (
+                    "COMBO",
+                    {"options": NANOBANANA2_OUTPUT_FORMAT_OPTIONS, "default": "jpg"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -325,8 +358,14 @@ Outputs:
                 "prompt": ("STRING", {"multiline": True}),
             },
             "optional": {
-                "aspect_ratio": ("COMBO", {"options": SEEDREAM_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "quality": ("COMBO", {"options": SEEDREAM_QUALITY_OPTIONS, "default": "basic"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": SEEDREAM_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "quality": (
+                    "COMBO",
+                    {"options": SEEDREAM_QUALITY_OPTIONS, "default": "basic"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -380,8 +419,14 @@ Outputs:
                 "images": ("IMAGE",),
             },
             "optional": {
-                "aspect_ratio": ("COMBO", {"options": SEEDREAM_EDIT_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "quality": ("COMBO", {"options": SEEDREAM_EDIT_QUALITY_OPTIONS, "default": "basic"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": SEEDREAM_EDIT_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "quality": (
+                    "COMBO",
+                    {"options": SEEDREAM_EDIT_QUALITY_OPTIONS, "default": "basic"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -443,8 +488,14 @@ Outputs:
             "optional": {
                 "last_frame": ("IMAGE",),
                 "negative_prompt": ("STRING", {"multiline": True, "default": ""}),
-                "duration": ("COMBO", {"options": KLING25_DURATION_OPTIONS, "default": "5"}),
-                "cfg_scale": ("FLOAT", {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.1}),
+                "duration": (
+                    "COMBO",
+                    {"options": KLING25_DURATION_OPTIONS, "default": "5"},
+                ),
+                "cfg_scale": (
+                    "FLOAT",
+                    {"default": 0.5, "min": 0.0, "max": 1.0, "step": 0.1},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -489,7 +540,9 @@ Outputs:
             except TransientKieError:
                 if not retry_on_fail or attempt >= attempts:
                     raise
-                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                _log(
+                    log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s"
+                )
                 time.sleep(backoff)
 
 
@@ -519,7 +572,10 @@ Outputs:
                 "images": ("IMAGE",),
             },
             "optional": {
-                "duration": ("COMBO", {"options": KLING26_DURATION_OPTIONS, "default": "5"}),
+                "duration": (
+                    "COMBO",
+                    {"options": KLING26_DURATION_OPTIONS, "default": "5"},
+                ),
                 "sound": ("BOOLEAN", {"default": False}),
                 "log": ("BOOLEAN", {"default": True}),
             },
@@ -562,7 +618,9 @@ Outputs:
             except TransientKieError:
                 if not retry_on_fail or attempt >= attempts:
                     raise
-                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                _log(
+                    log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s"
+                )
                 time.sleep(backoff)
 
 
@@ -592,8 +650,14 @@ Outputs:
             },
             "optional": {
                 "sound": ("BOOLEAN", {"default": False}),
-                "aspect_ratio": ("COMBO", {"options": KLING26_T2V_ASPECT_RATIO_OPTIONS, "default": "9:16"}),
-                "duration": ("COMBO", {"options": KLING26_T2V_DURATION_OPTIONS, "default": "5"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": KLING26_T2V_ASPECT_RATIO_OPTIONS, "default": "9:16"},
+                ),
+                "duration": (
+                    "COMBO",
+                    {"options": KLING26_T2V_DURATION_OPTIONS, "default": "5"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -635,7 +699,9 @@ Outputs:
             except TransientKieError:
                 if not retry_on_fail or attempt >= attempts:
                     raise
-                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                _log(
+                    log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s"
+                )
                 time.sleep(backoff)
 
 
@@ -669,9 +735,15 @@ Outputs:
             "optional": {
                 "character_orientation": (
                     "COMBO",
-                    {"options": KLING26MOTION_CHARACTER_ORIENTATION_OPTIONS, "default": "video"},
+                    {
+                        "options": KLING26MOTION_CHARACTER_ORIENTATION_OPTIONS,
+                        "default": "video",
+                    },
                 ),
-                "mode": ("COMBO", {"options": KLING26MOTION_MODE_OPTIONS, "default": "720p"}),
+                "mode": (
+                    "COMBO",
+                    {"options": KLING26MOTION_MODE_OPTIONS, "default": "720p"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -715,7 +787,9 @@ Outputs:
             except TransientKieError:
                 if not retry_on_fail or attempt >= attempts:
                     raise
-                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                _log(
+                    log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s"
+                )
                 time.sleep(backoff)
 
 
@@ -775,7 +849,10 @@ Outputs:
             video=video,
             log=log,
         )
-        return (element_payload, json.dumps(element_payload, indent=2, ensure_ascii=False))
+        return (
+            element_payload,
+            json.dumps(element_payload, indent=2, ensure_ascii=False),
+        )
 
 
 class KIE_KlingElementsBatch:
@@ -885,13 +962,22 @@ Outputs:
         return {
             "required": {
                 "mode": ("COMBO", {"options": KLING3_MODE_OPTIONS, "default": "std"}),
-                "aspect_ratio": ("COMBO", {"options": KLING3_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "duration": ("COMBO", {"options": KLING3_DURATION_OPTIONS, "default": "5"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": KLING3_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "duration": (
+                    "COMBO",
+                    {"options": KLING3_DURATION_OPTIONS, "default": "5"},
+                ),
                 "multi_shots": ("BOOLEAN", {"default": False}),
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "shots_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
+                "shots_text": (
+                    "STRING",
+                    {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER},
+                ),
                 "first_frame": ("IMAGE",),
                 "last_frame": ("IMAGE",),
                 "sound": ("BOOLEAN", {"default": True}),
@@ -938,11 +1024,15 @@ Outputs:
         merged_elements: list[dict] | None = None
         if elements is not None:
             if not isinstance(elements, list):
-                raise RuntimeError("elements input must be a KIE_ELEMENTS payload list.")
+                raise RuntimeError(
+                    "elements input must be a KIE_ELEMENTS payload list."
+                )
             merged_elements = list(elements)
         if element is not None:
             if not isinstance(element, dict):
-                raise RuntimeError("element input must be a KIE_ELEMENT payload object.")
+                raise RuntimeError(
+                    "element input must be a KIE_ELEMENT payload object."
+                )
             if merged_elements is None:
                 merged_elements = []
             merged_elements.append(element)
@@ -996,13 +1086,22 @@ Outputs:
         return {
             "required": {
                 "mode": ("COMBO", {"options": KLING3_MODE_OPTIONS, "default": "std"}),
-                "aspect_ratio": ("COMBO", {"options": KLING3_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "duration": ("COMBO", {"options": KLING3_DURATION_OPTIONS, "default": "5"}),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": KLING3_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "duration": (
+                    "COMBO",
+                    {"options": KLING3_DURATION_OPTIONS, "default": "5"},
+                ),
                 "multi_shots": ("BOOLEAN", {"default": False}),
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "multi_shot_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
+                "multi_shot_text": (
+                    "STRING",
+                    {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER},
+                ),
                 "first_frame": ("IMAGE",),
                 "last_frame": ("IMAGE",),
                 "sound": ("BOOLEAN", {"default": True}),
@@ -1035,11 +1134,15 @@ Outputs:
         merged_elements: list[dict] | None = None
         if elements is not None:
             if not isinstance(elements, list):
-                raise RuntimeError("elements input must be a KIE_ELEMENTS payload list.")
+                raise RuntimeError(
+                    "elements input must be a KIE_ELEMENTS payload list."
+                )
             merged_elements = list(elements)
         if element is not None:
             if not isinstance(element, dict):
-                raise RuntimeError("element input must be a KIE_ELEMENT payload object.")
+                raise RuntimeError(
+                    "element input must be a KIE_ELEMENT payload object."
+                )
             if merged_elements is None:
                 merged_elements = []
             merged_elements.append(element)
@@ -1083,7 +1186,9 @@ Outputs:
             shot_count = len(payload_input.get("multi_prompt") or [])
             notes_lines.append(f"Shot count: {shot_count}")
         else:
-            notes_lines.append(f"Sound enabled: {bool(payload_input.get('sound', False))}")
+            notes_lines.append(
+                f"Sound enabled: {bool(payload_input.get('sound', False))}"
+            )
 
         if element_names:
             notes_lines.append("Element names: " + ", ".join(element_names))
@@ -1116,9 +1221,21 @@ Outputs:
             "required": {
                 "images": ("IMAGE",),
                 "prompt": ("STRING", {"multiline": True}),
-                "model": ("COMBO", {"options": FLUX2_MODEL_OPTIONS, "default": "flux-2/pro-image-to-image"}),
-                "aspect_ratio": ("COMBO", {"options": FLUX2_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "resolution": ("COMBO", {"options": FLUX2_RESOLUTION_OPTIONS, "default": "1K"}),
+                "model": (
+                    "COMBO",
+                    {
+                        "options": FLUX2_MODEL_OPTIONS,
+                        "default": "flux-2/pro-image-to-image",
+                    },
+                ),
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": FLUX2_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "resolution": (
+                    "COMBO",
+                    {"options": FLUX2_RESOLUTION_OPTIONS, "default": "1K"},
+                ),
             },
             "optional": {
                 "log": ("BOOLEAN", {"default": True}),
@@ -1185,7 +1302,10 @@ Outputs:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "model": ("COMBO", {"options": GEMINI3_MODEL_OPTIONS, "default": "gemini-3-pro"}),
+                "model": (
+                    "COMBO",
+                    {"options": GEMINI3_MODEL_OPTIONS, "default": "gemini-3-pro"},
+                ),
                 "prompt": ("STRING", {"multiline": True}),
                 "role": ("COMBO", {"options": GEMINI3_ROLE_OPTIONS, "default": "user"}),
             },
@@ -1195,7 +1315,10 @@ Outputs:
                 "audio": ("AUDIO",),
                 "stream": ("BOOLEAN", {"default": True}),
                 "include_thoughts": ("BOOLEAN", {"default": True}),
-                "reasoning_effort": ("COMBO", {"options": GEMINI3_REASONING_EFFORT_OPTIONS, "default": "high"}),
+                "reasoning_effort": (
+                    "COMBO",
+                    {"options": GEMINI3_REASONING_EFFORT_OPTIONS, "default": "high"},
+                ),
                 "enable_google_search": ("BOOLEAN", {"default": False}),
                 "messages_json": ("STRING", {"multiline": True, "default": ""}),
                 "response_format_json": ("STRING", {"multiline": True, "default": ""}),
@@ -1282,7 +1405,10 @@ Outputs:
             },
             "optional": {
                 "negative_tags": ("STRING", {"default": ""}),
-                "vocal_gender": ("COMBO", {"options": ["male", "female"], "default": "male"}),
+                "vocal_gender": (
+                    "COMBO",
+                    {"options": ["male", "female"], "default": "male"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -1305,18 +1431,26 @@ Outputs:
         log: bool = True,
     ):
         gender_value = "m" if vocal_gender == "male" else "f"
-        audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2 = run_suno_generate(
-            prompt=prompt,
-            custom_mode=custom_mode,
-            instrumental=instrumental,
-            model=model,
-            style=style,
-            title=title,
-            negative_tags=negative_tags,
-            vocal_gender=gender_value,
-            log=log,
+        audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2 = (
+            run_suno_generate(
+                prompt=prompt,
+                custom_mode=custom_mode,
+                instrumental=instrumental,
+                model=model,
+                style=style,
+                title=title,
+                negative_tags=negative_tags,
+                vocal_gender=gender_value,
+                log=log,
+            )
         )
-        return (audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2)
+        return (
+            audio_output_1,
+            audio_output_2,
+            raw_json,
+            image_output_1,
+            image_output_2,
+        )
 
 
 class KIE_Suno_Music_Advanced:
@@ -1360,10 +1494,22 @@ Outputs:
             },
             "optional": {
                 "negative_tags": ("STRING", {"default": ""}),
-                "vocal_gender": ("COMBO", {"options": ["male", "female"], "default": "male"}),
-                "style_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "weirdness_constraint": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
-                "audio_weight": ("FLOAT", {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01}),
+                "vocal_gender": (
+                    "COMBO",
+                    {"options": ["male", "female"], "default": "male"},
+                ),
+                "style_weight": (
+                    "FLOAT",
+                    {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+                "weirdness_constraint": (
+                    "FLOAT",
+                    {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
+                "audio_weight": (
+                    "FLOAT",
+                    {"default": 0.65, "min": 0.0, "max": 1.0, "step": 0.01},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -1389,21 +1535,222 @@ Outputs:
         log: bool = True,
     ):
         gender_value = "m" if vocal_gender == "male" else "f"
-        audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2 = run_suno_generate(
-            prompt=prompt,
-            custom_mode=custom_mode,
-            instrumental=instrumental,
-            model=model,
-            style=style,
-            title=title,
-            negative_tags=negative_tags,
-            vocal_gender=gender_value,
-            style_weight=style_weight,
-            weirdness_constraint=weirdness_constraint,
-            audio_weight=audio_weight,
-            log=log,
+        audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2 = (
+            run_suno_generate(
+                prompt=prompt,
+                custom_mode=custom_mode,
+                instrumental=instrumental,
+                model=model,
+                style=style,
+                title=title,
+                negative_tags=negative_tags,
+                vocal_gender=gender_value,
+                style_weight=style_weight,
+                weirdness_constraint=weirdness_constraint,
+                audio_weight=audio_weight,
+                log=log,
+            )
         )
-        return (audio_output_1, audio_output_2, raw_json, image_output_1, image_output_2)
+        return (
+            audio_output_1,
+            audio_output_2,
+            raw_json,
+            image_output_1,
+            image_output_2,
+        )
+
+
+class KIE_GrokImagine_T2V:
+    HELP = """
+KIE Grok Imagine (Text-to-Video)
+
+Generate a video from a text prompt using Grok Imagine.
+
+Inputs:
+- prompt: Text prompt (required, up to 5000 chars)
+- aspect_ratio: Output aspect ratio (16:9, 9:16, 1:1, 2:3, 3:2)
+- mode: normal, fun, or spicy
+- duration: 6s, 10s, or 15s
+- resolution: 480p or 720p
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": GROK_T2V_ASPECT_RATIO_OPTIONS, "default": "16:9"},
+                ),
+                "mode": (
+                    "COMBO",
+                    {"options": GROK_T2V_MODE_OPTIONS, "default": "normal"},
+                ),
+                "duration": (
+                    "COMBO",
+                    {"options": GROK_T2V_DURATION_OPTIONS, "default": "6"},
+                ),
+                "resolution": (
+                    "COMBO",
+                    {"options": GROK_T2V_RESOLUTION_OPTIONS, "default": "480p"},
+                ),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "16:9",
+        mode: str = "normal",
+        duration: str = "6",
+        resolution: str = "480p",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_grok_imagine_t2v_video(
+                    prompt=prompt,
+                    aspect_ratio=aspect_ratio,
+                    mode=mode,
+                    duration=duration,
+                    resolution=resolution,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(
+                    log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s"
+                )
+                time.sleep(backoff)
+
+
+class KIE_GrokImagine_I2V:
+    HELP = """
+KIE Grok Imagine (Image-to-Video)
+
+Generate a video from an input image and a text prompt using Grok Imagine.
+
+Two image input methods (provide exactly one):
+- images: Upload a local image (JPEG/PNG/WebP, max 10 MB). Spicy mode is not supported
+  with this method and will be auto-switched to Normal by the API.
+- task_id + index: Reference a specific image previously generated by a Grok model on KIE.
+  Supports all modes including Spicy.
+
+Inputs:
+- prompt: Text prompt (up to 5000 chars)
+- images: Optional source image batch (first image used)
+- task_id: Optional Grok task ID to reference a previously generated image
+- index: Image index within the Grok task (0–5, default 0)
+- mode: normal, fun, or spicy
+- duration: 6s, 10s, or 15s
+- resolution: 480p or 720p
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- VIDEO: ComfyUI video output referencing a temporary .mp4 file
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "images": ("IMAGE",),
+                "task_id": ("STRING", {"default": ""}),
+                "index": ("INT", {"default": 0, "min": 0, "max": 5, "step": 1}),
+                "mode": (
+                    "COMBO",
+                    {"options": GROK_I2V_MODE_OPTIONS, "default": "normal"},
+                ),
+                "duration": (
+                    "COMBO",
+                    {"options": GROK_I2V_DURATION_OPTIONS, "default": "6"},
+                ),
+                "resolution": (
+                    "COMBO",
+                    {"options": GROK_I2V_RESOLUTION_OPTIONS, "default": "480p"},
+                ),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor | None = None,
+        task_id: str = "",
+        index: int = 0,
+        mode: str = "normal",
+        duration: str = "6",
+        resolution: str = "480p",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                video_output = run_grok_imagine_i2v_video(
+                    prompt=prompt,
+                    images=images,
+                    task_id_ref=task_id,
+                    index=index,
+                    mode=mode,
+                    duration=duration,
+                    resolution=resolution,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (video_output,)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(
+                    log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s"
+                )
+                time.sleep(backoff)
 
 
 class KIE_GridSlice:
@@ -1433,10 +1780,19 @@ Outputs:
             },
             "optional": {
                 "grid": ("COMBO", {"options": ["2x2", "2x3", "3x3"], "default": "2x2"}),
-                "outer_crop_px": ("INT", {"default": 0, "min": 0, "max": 8192, "step": 1}),
+                "outer_crop_px": (
+                    "INT",
+                    {"default": 0, "min": 0, "max": 8192, "step": 1},
+                ),
                 "gutter_px": ("INT", {"default": 0, "min": 0, "max": 8192, "step": 1}),
-                "order": ("COMBO", {"options": ["row-major", "column-major"], "default": "row-major"}),
-                "process_batch": ("COMBO", {"options": ["first", "all"], "default": "first"}),
+                "order": (
+                    "COMBO",
+                    {"options": ["row-major", "column-major"], "default": "row-major"},
+                ),
+                "process_batch": (
+                    "COMBO",
+                    {"options": ["first", "all"], "default": "first"},
+                ),
                 "log": ("BOOLEAN", {"default": True}),
             },
         }
@@ -1558,7 +1914,9 @@ Outputs:
             json_text = fallback
 
         try:
-            prompts = parse_prompts_json(json_text, max_items=max_items, strict=strict, debug=debug)
+            prompts = parse_prompts_json(
+                json_text, max_items=max_items, strict=strict, debug=debug
+            )
         except ValueError:
             if strict or not fallback:
                 raise
@@ -1569,7 +1927,9 @@ Outputs:
 
         if not prompts:
             if debug:
-                parse_prompts_json(json_text, max_items=max_items, strict=True, debug=True)
+                parse_prompts_json(
+                    json_text, max_items=max_items, strict=True, debug=True
+                )
             raise ValueError(
                 "No prompts found in json_text and no default_prompt provided. "
                 "Supported keys: prompts (array), prompt1/prompt_1/p1, numeric keys."
@@ -1658,6 +2018,8 @@ NODE_CLASS_MAPPINGS = {
     "KIE_Kling3_Video": KIE_Kling3_Video,
     "KIE_Kling3_Preflight": KIE_Kling3_Preflight,
     "KIE_Flux2_I2I": KIE_Flux2_I2I,
+    "KIE_GrokImagine_T2V": KIE_GrokImagine_T2V,
+    "KIE_GrokImagine_I2V": KIE_GrokImagine_I2V,
     "KIE_Gemini3Pro_LLM": KIE_Gemini3Pro_LLM,
     "KIE_Suno_Music_Basic": KIE_Suno_Music_Basic,
     "KIE_Suno_Music_Advanced": KIE_Suno_Music_Advanced,
@@ -1682,6 +2044,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_Kling3_Video": "KIE Kling 3.0 (Video)",
     "KIE_Kling3_Preflight": "KIE Kling 3.0 Preflight",
     "KIE_Flux2_I2I": "KIE Flux 2 (Image-to-Image)",
+    "KIE_GrokImagine_T2V": "KIE Grok Imagine (T2V)",
+    "KIE_GrokImagine_I2V": "KIE Grok Imagine (I2V)",
     "KIE_Gemini3Pro_LLM": "KIE Gemini (LLM) [Experimental]",
     "KIE_Suno_Music_Basic": "KIE Suno Music (Basic)",
     "KIE_Suno_Music_Advanced": "KIE Suno Music (Advanced)",
