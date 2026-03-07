@@ -2,6 +2,8 @@
 
 This folder contains node documentation for the ComfyUI KIE API pack.
 
+Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and documented in this folder.
+
 ## Kling 3.0 Docs
 - Elements: [`KIE_Kling_Elements.md`](KIE_Kling_Elements.md)
 - Elements Batch: [`KIE_Kling_Elements_Batch.md`](KIE_Kling_Elements_Batch.md)

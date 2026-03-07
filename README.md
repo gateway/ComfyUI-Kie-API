@@ -128,6 +128,12 @@ This node pack currently includes the following nodes:
 Use this section after reviewing Current Available Nodes.
 
 - Full docs index (all nodes): [`web/docs/README.md`](web/docs/README.md)
+- Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented in this repo.
+- Grok Imagine node docs:
+  - [`web/docs/KIE_GrokImagine_T2I.md`](web/docs/KIE_GrokImagine_T2I.md) - Grok Imagine text-to-image node reference.
+  - [`web/docs/KIE_GrokImagine_I2I.md`](web/docs/KIE_GrokImagine_I2I.md) - Grok Imagine image-to-image node reference.
+  - [`web/docs/KIE_GrokImagine_T2V.md`](web/docs/KIE_GrokImagine_T2V.md) - Grok Imagine text-to-video node reference.
+  - [`web/docs/KIE_GrokImagine_I2V.md`](web/docs/KIE_GrokImagine_I2V.md) - Grok Imagine image-to-video node reference.
 - API specs:
   - [`web/docs/KIE_GrokImagine_T2V_Spec.md`](web/docs/KIE_GrokImagine_T2V_Spec.md) - Grok Imagine text-to-video API reference.
   - [`web/docs/KIE_GrokImagine_I2V_Spec.md`](web/docs/KIE_GrokImagine_I2V_Spec.md) - Grok Imagine image-to-video API reference.
@@ -206,6 +212,7 @@ This workflow is focused on direct comparison between **Nano Banana Pro** and **
 This is useful for quickly evaluating model preference by prompt type, fidelity, and cost/performance tradeoffs.
 
 ## Changelog
+- 2026-03-07: Synced README/docs coverage for Grok Imagine T2I, I2I, T2V, and I2V, and bumped version to 0.1.10.
 - 2026-03-07: Added the Grok Imagine text-to-video node and synced docs/spec references.
 - 2026-03-07: Added the Grok Imagine image-to-video node and synced docs/spec references.
 - 2026-03-07: Added the Grok Imagine text-to-image node and synced docs/spec references.
