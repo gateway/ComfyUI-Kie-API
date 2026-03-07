@@ -40,3 +40,28 @@ def _download_image(url: str) -> bytes:
         raise RuntimeError(f"Failed to download result image (status code {response.status_code}).")
 
     return response.content
+
+
+def _stack_image_tensors(image_tensors: list[torch.Tensor]) -> torch.Tensor:
+    """Combine decoded image tensors into one ComfyUI IMAGE batch."""
+    if not image_tensors:
+        raise RuntimeError("No result images were returned.")
+
+    base_shape = tuple(image_tensors[0].shape[1:])
+    for idx, tensor in enumerate(image_tensors[1:], start=1):
+        if tuple(tensor.shape[1:]) != base_shape:
+            raise RuntimeError(
+                "Result images returned inconsistent sizes; cannot combine them into one IMAGE batch "
+                f"(mismatch at index {idx})."
+            )
+
+    return torch.cat(image_tensors, dim=0)
+
+
+def _download_images_as_batch(urls: list[str]) -> torch.Tensor:
+    """Download multiple image URLs and return a single IMAGE batch tensor."""
+    if not urls:
+        raise RuntimeError("No result image URLs were returned.")
+
+    image_tensors = [_image_bytes_to_tensor(_download_image(url)) for url in urls]
+    return _stack_image_tensors(image_tensors)

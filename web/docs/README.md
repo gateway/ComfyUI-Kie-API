@@ -28,6 +28,8 @@ This folder contains node documentation for the ComfyUI KIE API pack.
 - Nano Banana Pro: [`KIE_NanoBananaPro_Image.md`](KIE_NanoBananaPro_Image.md)
 - Nano Banana 2: [`KIE_NanoBanana2_Image.md`](KIE_NanoBanana2_Image.md)
 - Flux 2 I2I: [`KIE_Flux2_I2I.md`](KIE_Flux2_I2I.md)
+- Grok Imagine T2I: [`KIE_GrokImagine_T2I.md`](KIE_GrokImagine_T2I.md)
+- Grok Imagine I2I: [`KIE_GrokImagine_I2I.md`](KIE_GrokImagine_I2I.md)
 - Seedream 4.5 Text-to-Image: [`KIE_Seedream45_TextToImage.md`](KIE_Seedream45_TextToImage.md)
 - Seedream 4.5 Edit: [`KIE_Seedream45_Edit.md`](KIE_Seedream45_Edit.md)
 

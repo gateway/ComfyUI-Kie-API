@@ -72,6 +72,10 @@ from .kie_api.flux2_i2i import (
     RESOLUTION_OPTIONS as FLUX2_RESOLUTION_OPTIONS,
     run_flux2_i2i,
 )
+from .kie_api.grok_imagine_t2i import (
+    ASPECT_RATIO_OPTIONS as GROK_T2I_ASPECT_RATIO_OPTIONS,
+    run_grok_imagine_t2i,
+)
 from .kie_api.grok_imagine_t2v import (
     ASPECT_RATIO_OPTIONS as GROK_T2V_ASPECT_RATIO_OPTIONS,
     DURATION_OPTIONS as GROK_T2V_DURATION_OPTIONS,
@@ -79,6 +83,7 @@ from .kie_api.grok_imagine_t2v import (
     RESOLUTION_OPTIONS as GROK_T2V_RESOLUTION_OPTIONS,
     run_grok_imagine_t2v_video,
 )
+from .kie_api.grok_imagine_i2i import run_grok_imagine_i2i
 from .kie_api.grok_imagine_i2v import (
     DURATION_OPTIONS as GROK_I2V_DURATION_OPTIONS,
     MODE_OPTIONS as GROK_I2V_MODE_OPTIONS,
@@ -424,6 +429,138 @@ Outputs:
             log=log,
         )
         return (image_tensor,)
+
+
+class KIE_GrokImagine_T2I:
+    HELP = """
+KIE Grok Imagine (Text-to-Image)
+
+Generate one or more images from a text prompt using Grok Imagine.
+
+Inputs:
+- prompt: Text prompt (required, up to 5000 chars)
+- aspect_ratio: 2:3, 3:2, 1:1, 9:16, or 16:9
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- IMAGE: ComfyUI image batch (BHWC float32 0-1)
+- STRING: task_id for Grok image-reference chaining
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": GROK_T2I_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE", "STRING")
+    RETURN_NAMES = ("image", "task_id")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "1:1",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                image_output, task_id = run_grok_imagine_t2i(
+                    prompt=prompt,
+                    aspect_ratio=aspect_ratio,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (image_output, task_id)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
+
+
+class KIE_GrokImagine_I2I:
+    HELP = """
+KIE Grok Imagine (Image-to-Image)
+
+Generate one or more images from a source image using Grok Imagine.
+
+Inputs:
+- images: Source image batch (first image used)
+- prompt: Optional prompt (up to 390000 chars)
+- poll_interval_s / timeout_s / log
+- retry_on_fail / max_retries / retry_backoff_s
+
+Outputs:
+- IMAGE: ComfyUI image batch (BHWC float32 0-1)
+- STRING: task_id for Grok image-reference chaining
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "images": ("IMAGE",),
+            },
+            "optional": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE", "STRING")
+    RETURN_NAMES = ("image", "task_id")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        images: torch.Tensor,
+        prompt: str = "",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        attempts = max_retries + 1 if retry_on_fail else 1
+        attempts = max(attempts, 1)
+        backoff = retry_backoff_s if retry_backoff_s >= 0 else 0.0
+
+        for attempt in range(1, attempts + 1):
+            try:
+                image_output, task_id = run_grok_imagine_i2i(
+                    images=images,
+                    prompt=prompt,
+                    poll_interval_s=poll_interval_s,
+                    timeout_s=timeout_s,
+                    log=log,
+                )
+                return (image_output, task_id)
+            except TransientKieError:
+                if not retry_on_fail or attempt >= attempts:
+                    raise
+                _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
+                time.sleep(backoff)
 
 
 class KIE_Kling25_I2V_Pro:
@@ -1827,6 +1964,8 @@ NODE_CLASS_MAPPINGS = {
     "KIE_NanoBanana2_Image": KIE_NanoBanana2_Image,
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
+    "KIE_GrokImagine_T2I": KIE_GrokImagine_T2I,
+    "KIE_GrokImagine_I2I": KIE_GrokImagine_I2I,
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
     "KIE_Seedance15Pro_I2V": KIE_Seedance15Pro_I2V,
     "KIE_Kling25_I2V_Pro": KIE_Kling25_I2V_Pro,
@@ -1853,6 +1992,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_NanoBanana2_Image": "Nano Banana 2",
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
+    "KIE_GrokImagine_T2I": "KIE Grok Imagine (T2I)",
+    "KIE_GrokImagine_I2I": "KIE Grok Imagine (I2I)",
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
     "KIE_Seedance15Pro_I2V": "KIE Seedance 1.5 Pro (I2V/T2V)",
     "KIE_Kling25_I2V_Pro": "KIE Kling 2.5 I2V Pro",

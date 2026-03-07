@@ -51,6 +51,12 @@ This node pack currently includes the following nodes:
 - **Flux 2 Image-to-Image (Pro/Flex)**
   - Image-to-image node with a model dropdown for Pro or Flex.
   - Accepts 1–8 input images via ComfyUI batch.
+- **Grok Imagine Text-to-Image**
+  - Generates one or more images from a text prompt.
+  - Returns the image batch plus a `task_id` for downstream Grok I2V chaining.
+- **Grok Imagine Image-to-Image**
+  - Generates one or more edited images from a single uploaded source image.
+  - Returns the image batch plus a `task_id` for downstream Grok I2V chaining.
 
 ## Video Nodes
 - **Kling 2.6 Image-to-Video**
@@ -202,7 +208,9 @@ This is useful for quickly evaluating model preference by prompt type, fidelity,
 ## Changelog
 - 2026-03-07: Added the Grok Imagine text-to-video node and synced docs/spec references.
 - 2026-03-07: Added the Grok Imagine image-to-video node and synced docs/spec references.
-- 2026-03-07: Added Grok Imagine text-to-image and image-to-image API spec docs for future node implementation.
+- 2026-03-07: Added the Grok Imagine text-to-image node and synced docs/spec references.
+- 2026-03-07: Added the Grok Imagine image-to-image node and synced docs/spec references.
+- 2026-03-07: Added Grok Imagine text-to-image and image-to-image API spec docs.
 - 2026-02-28: Added new example workflow `KIE-AI-Banana-Pro-Banana-Pro.json` to repository docs.
 - 2026-02-28: Documentation clarified Nano Banana Pro (up to 8 images) and Nano Banana 2 (up to 14 images + optional Google web search). Bumped version to 0.1.8.
 - 2026-02-28: Updated Nano Banana Pro + Nano Banana 2 payload behavior to always send `image_input` (empty list when no images are connected).

@@ -1,7 +1,7 @@
 # KIE Grok Imagine (T2I) API Spec
 
 ## Status
-Reference spec for future ComfyUI node work. This repository does not expose a Grok Imagine text-to-image node yet.
+Reference spec for the implemented Grok Imagine text-to-image node. See [`KIE_GrokImagine_T2I.md`](KIE_GrokImagine_T2I.md) for the ComfyUI node surface.
 
 ## Endpoint
 - Method: `POST`
@@ -73,7 +73,7 @@ If `callBackUrl` is present, KIE posts task completion payloads to that URL for 
 - `msg`
 
 ## ComfyUI Mapping Notes
-Recommended node shape for this repo:
+Implemented node shape in this repo:
 - `prompt`: `STRING` multiline, required.
 - `aspect_ratio`: `COMBO`, optional.
 - `log`: `BOOLEAN`, optional.
@@ -81,7 +81,7 @@ Recommended node shape for this repo:
   - `IMAGE`
   - `task_id` (`STRING`)
 
-Recommended output behavior:
+Output behavior:
 - Download all `resultUrls` and return them as a ComfyUI `IMAGE` batch if the endpoint returns multiple images.
 - Also return the `task_id` from task creation so Grok I2V can reference one of the generated images via `task_id + index`.
 
