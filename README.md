@@ -242,6 +242,7 @@ Related docs:
 - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md)
 
 ## Changelog
+- 2026-03-12: Bumped package version to 0.1.12 and fixed stale media upload caching risk by forcing unique upload filenames per run.
 - 2026-03-12: Added README coverage for the Kling 3.0 Motion-Control workflow and bumped package version to 0.1.11.
 - 2026-03-12: Added the Kling 3.0 Motion-Control node and synced docs/spec coverage.
 - 2026-03-12: Added the Kling 3.0 Motion-Control API spec doc.
