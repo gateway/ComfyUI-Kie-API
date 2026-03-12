@@ -1,5 +1,6 @@
 """Kling 3.0 motion-control image-to-video helper."""
 
+import hashlib
 import time
 from typing import Any
 
@@ -76,6 +77,12 @@ def _validate_video_bytes(video_bytes: bytes) -> None:
         raise RuntimeError("Reference video exceeds the 100MB maximum size.")
 
 
+def _build_motion_upload_filename(video_bytes: bytes) -> tuple[str, str]:
+    fingerprint = hashlib.sha1(video_bytes).hexdigest()[:12]
+    filename = f"motion_{int(time.time() * 1000)}_{fingerprint}.mp4"
+    return filename, fingerprint
+
+
 def run_kling3motion_i2v_video(
     prompt: str,
     images: torch.Tensor,
@@ -106,10 +113,12 @@ def run_kling3motion_i2v_video(
 
     video_bytes, source_desc = _coerce_video_to_mp4_bytes(video)
     _validate_video_bytes(video_bytes)
+    upload_filename, video_fingerprint = _build_motion_upload_filename(video_bytes)
     _log(log, f"Motion video source: {source_desc}")
+    _log(log, f"Motion video fingerprint: {video_fingerprint}")
 
     _log(log, "Uploading motion reference video for Kling 3.0 Motion I2V...")
-    video_url = _upload_video(api_key, video_bytes, filename="motion.mp4")
+    video_url = _upload_video(api_key, video_bytes, filename=upload_filename)
     _log(log, f"Video upload success: {_truncate_url(video_url)}")
 
     input_payload = {
