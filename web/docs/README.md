@@ -9,6 +9,8 @@ Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and document
 - Elements Batch: [`KIE_Kling_Elements_Batch.md`](KIE_Kling_Elements_Batch.md)
 - Preflight: [`KIE_Kling3_Preflight.md`](KIE_Kling3_Preflight.md)
 - Video: [`KIE_Kling3_Video.md`](KIE_Kling3_Video.md)
+- Motion I2V: [`KIE_Kling3_Motion_I2V.md`](KIE_Kling3_Motion_I2V.md)
+- Motion I2V Spec: [`KIE_Kling3_Motion_I2V_Spec.md`](KIE_Kling3_Motion_I2V_Spec.md)
 
 ## Video Nodes
 - Kling 2.5 I2V Pro: [`KIE_Kling25_I2V_Pro.md`](KIE_Kling25_I2V_Pro.md)

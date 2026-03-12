@@ -132,18 +132,21 @@ This node pack currently includes the following nodes:
 Use this section after reviewing Current Available Nodes.
 
 - Full docs index (all nodes): [`web/docs/README.md`](web/docs/README.md)
+- Kling 3.0 motion status: implemented in this repo with both the node doc and API spec linked below.
 - Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented in this repo.
 - Grok Imagine node docs:
   - [`web/docs/KIE_GrokImagine_T2I.md`](web/docs/KIE_GrokImagine_T2I.md) - Grok Imagine text-to-image node reference.
   - [`web/docs/KIE_GrokImagine_I2I.md`](web/docs/KIE_GrokImagine_I2I.md) - Grok Imagine image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2V.md`](web/docs/KIE_GrokImagine_T2V.md) - Grok Imagine text-to-video node reference.
   - [`web/docs/KIE_GrokImagine_I2V.md`](web/docs/KIE_GrokImagine_I2V.md) - Grok Imagine image-to-video node reference.
+- Kling 3.0 motion docs:
+  - [`web/docs/KIE_Kling3_Motion_I2V.md`](web/docs/KIE_Kling3_Motion_I2V.md) - Kling 3.0 motion-control node reference.
+  - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md) - Kling 3.0 motion-control image-to-video API reference.
 - API specs:
   - [`web/docs/KIE_GrokImagine_T2V_Spec.md`](web/docs/KIE_GrokImagine_T2V_Spec.md) - Grok Imagine text-to-video API reference.
   - [`web/docs/KIE_GrokImagine_I2V_Spec.md`](web/docs/KIE_GrokImagine_I2V_Spec.md) - Grok Imagine image-to-video API reference.
   - [`web/docs/KIE_GrokImagine_T2I_Spec.md`](web/docs/KIE_GrokImagine_T2I_Spec.md) - Grok Imagine text-to-image API reference.
   - [`web/docs/KIE_GrokImagine_I2I_Spec.md`](web/docs/KIE_GrokImagine_I2I_Spec.md) - Grok Imagine image-to-image API reference.
-  - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md) - Kling 3.0 motion-control image-to-video API reference.
 - Recommended Kling 3 reading order:
   - [`web/docs/KIE_Kling_Elements.md`](web/docs/KIE_Kling_Elements.md)
   - [`web/docs/KIE_Kling_Elements_Batch.md`](web/docs/KIE_Kling_Elements_Batch.md)
@@ -155,10 +158,11 @@ Use this section after reviewing Current Available Nodes.
   - [`Kie-AI-Nodes.json`](Kie-AI-Nodes.json)
   - [`Kie-AI-Banana-Pro-Grid.json`](Kie-AI-Banana-Pro-Grid.json)
   - [`KIE-AI-Banana-Pro-Banana-Pro.json`](KIE-AI-Banana-Pro-Banana-Pro.json)
+  - [`example_workflows/Kie AI - Kling 3.0 Motion.json`](example_workflows/Kie%20AI%20-%20Kling%203.0%20Motion.json)
 
 ## Included Example Workflows
 
-This repository includes two example workflows intended as both a test bed and a reference for how these nodes can be used together.
+This repository includes several example workflows intended as both a test bed and a reference for how these nodes can be used together.
 
 ---
 
@@ -218,7 +222,27 @@ This workflow is focused on direct comparison between **Nano Banana Pro** and **
 
 This is useful for quickly evaluating model preference by prompt type, fidelity, and cost/performance tradeoffs.
 
+---
+
+### 4) Kling 3.0 Motion-Control Workflow
+**Kie AI - Kling 3.0 Motion.json**
+
+This workflow is focused on **Kling 3.0 Motion-Control** using:
+- one reference image
+- one motion-driver video
+- an optional prompt for extra control
+
+**Overview:**
+- Transfers motion from a driver video onto the subject from a still image
+- Exposes Kling 3.0 motion settings such as `character_orientation` and resolution mode
+- Useful for directed image-to-video tests where identity comes from the image and movement comes from the video
+
+Related docs:
+- [`web/docs/KIE_Kling3_Motion_I2V.md`](web/docs/KIE_Kling3_Motion_I2V.md)
+- [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md)
+
 ## Changelog
+- 2026-03-12: Added README coverage for the Kling 3.0 Motion-Control workflow and bumped package version to 0.1.11.
 - 2026-03-12: Added the Kling 3.0 Motion-Control node and synced docs/spec coverage.
 - 2026-03-12: Added the Kling 3.0 Motion-Control API spec doc.
 - 2026-03-07: Synced README/docs coverage for Grok Imagine T2I, I2I, T2V, and I2V, and bumped version to 0.1.10.

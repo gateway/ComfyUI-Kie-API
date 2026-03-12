@@ -1,0 +1,370 @@
+{
+  "id": "aa8e6b91-8207-435d-bd16-8ad59855e0b7",
+  "revision": 0,
+  "last_node_id": 12,
+  "last_link_id": 7,
+  "nodes": [
+    {
+      "id": 7,
+      "type": "LoadVideo",
+      "pos": [
+        1695,
+        1515
+      ],
+      "size": [
+        282.798828125,
+        576.7534722222222
+      ],
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            4
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.16.3",
+        "Node name for S&R": "LoadVideo"
+      },
+      "widgets_values": [
+        "YTDown.com_Shorts_break-dance-breaking-breakdance-breakdan_Media_G4xn9pgOzm0_001_720p.mp4",
+        "image"
+      ]
+    },
+    {
+      "id": 3,
+      "type": "LoadImage",
+      "pos": [
+        1710,
+        1095
+      ],
+      "size": [
+        282.798828125,
+        314.0000000000001
+      ],
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            2
+          ]
+        },
+        {
+          "name": "MASK",
+          "type": "MASK",
+          "links": null
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.16.3",
+        "Node name for S&R": "LoadImage"
+      },
+      "widgets_values": [
+        "z-image_00917_.png [output]",
+        "image"
+      ]
+    },
+    {
+      "id": 1,
+      "type": "KIE_Kling3Motion_I2V",
+      "pos": [
+        2400,
+        1335
+      ],
+      "size": [
+        390,
+        480
+      ],
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 2
+        },
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 5
+        }
+      ],
+      "outputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "links": [
+            6
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "aab6db2a6e5de4a0f8d0a5e07f7b4932bac4341f",
+        "Node name for S&R": "KIE_Kling3Motion_I2V"
+      },
+      "widgets_values": [
+        "",
+        "video",
+        "720p",
+        true
+      ]
+    },
+    {
+      "id": 12,
+      "type": "MarkdownNote",
+      "pos": [
+        990,
+        840
+      ],
+      "size": [
+        585,
+        1860
+      ],
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Model Links",
+      "properties": {},
+      "widgets_values": [
+        "# Kling 3.0 Motion-Control\n\nThis workflow is built for testing **Kling 3.0 Motion-Control** inside ComfyUI using the Kie.ai API.\n\nIt is designed for the image-plus-driver-video workflow:\n- one reference image provides the subject, styling, and scene anchor\n- one motion-driver video provides the movement\n- an optional prompt helps steer the final result\n\nUse this workflow when you want to transfer motion from a video onto a character or subject from a still image.\n\n**Help Support Development**\n\nUse this affiliate link when accessing Kie.ai:\n[https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42)\n\nProject repository:\n[https://github.com/gateway/ComfyUI-Kie-API](https://github.com/gateway/ComfyUI-Kie-API)\n\n---\n\n## Pricing Note\n\nKling pricing can change over time, especially across `720p` and `1080p` modes.\n\nPricing: only 12 credits/s ($0.06) for 720 p or 20 credits/s ($0.10) for 1080 p \n\nBefore running long batches or higher-resolution jobs, check current pricing here:\n[https://kie.ai/pricing](https://kie.ai/pricing)\n\n---\n\n## Included Node in This Workflow\n\n### Generation Node\n\n- **KIE Kling 3.0 Motion-Control (I2V)**\n  - Generates a video from one reference image and one motion-driver video.\n  - Accepts an optional prompt.\n  - Supports `character_orientation` control.\n  - Supports `720p` and `1080p` output modes.\n\n---\n\n## Core Inputs\n\n### Reference Image\n\nThe reference image defines the subject, styling, clothing, face, and overall visual identity.\n\nBest results usually come from:\n- a clear subject\n- strong lighting\n- a readable pose\n- minimal blur\n\n### Motion-Driver Video\n\nThe motion-driver video supplies the movement pattern for the final output.\n\nBest results usually come from:\n- one clear performer or subject\n- stable framing\n- clean motion without heavy cuts\n- movement that matches the pose logic of the reference image\n\n### Prompt\n\nThe prompt is optional in this node.\n\nUse it when you want to reinforce:\n- motion quality\n- style consistency\n- facial consistency\n- camera behavior\n- distortion prevention\n\n\n---\n\n## Character Orientation\n\n`character_orientation` controls which source has more influence over how the subject is facing and aligned during motion transfer.\n\n- `image`\n  - Tries to preserve the orientation from the reference image.\n  - Use this when the still image composition matters most.\n  - Kie docs say this mode supports driver videos up to `10s`.\n\n- `video`\n  - Tries to follow the orientation seen in the driver video.\n  - Use this when accurate transferred body motion matters most.\n  - Kie docs say this mode supports driver videos up to `30s`.\n\nSimple rule:\n- use `image` for stronger identity/composition lock\n- use `video` for stronger motion-following behavior\n\n---\n\n## Recommended Workflow Pattern\n\n1. Load a strong reference image.\n2. Load a clean driver video.\n3. Start with `character_orientation = video`.\n4. Start with `mode = 720p` for cheaper iteration.\n5. Add a short prompt only if you need extra control.\n6. Move to `1080p` only after the motion behavior looks correct.\n\n---\n\n## Tips for Better Results\n\n- Match the subject framing between the image and the motion video as closely as possible.\n- If the image is front-facing and the video is profile-heavy, expect more drift or awkward pose conversion.\n- Avoid overly complex backgrounds during early testing.\n- Start with short, clean driver clips before trying longer or more chaotic motion.\n- If identity drift appears, try `character_orientation = image`.\n- If motion feels stiff or under-transferred, try `character_orientation = video`.\n\n---\n\n## Notes on Usage & Debugging\n\n- All requests are sent to Kie.ai:\n  [https://kie.ai](https://kie.ai?ref=e7565cf24a7fad4586341a87eaf21e42)\n\n- If a node fails or times out in ComfyUI, check account logs:\n  [https://kie.ai/logs](https://kie.ai/logs)\n\n- Logs are usually the fastest way to verify whether a generation completed successfully.\n\n- The Kie docs for this endpoint have one known inconsistency:\n  - `mode` is described in one place as `std/pro`\n  - the options table and request example use `720p/1080p`\n  - this node currently uses `720p/1080p`\n\n---\n\n## Issues & Feedback\n\nTo report issues or request improvements:\n[https://github.com/gateway/ComfyUI-Kie-API/issues](https://github.com/gateway/ComfyUI-Kie-API/issues)\n\nPlease include:\n- node name\n- parameters used\n- error message or log excerpt\n\n---\n\n## Development & Sponsorship\n\nDevelopment is supported by **Dreaming Computers**:\n[https://dreamingcomputers.com](https://dreamingcomputers.com)\n"
+      ],
+      "color": "#222",
+      "bgcolor": "#000"
+    },
+    {
+      "id": 10,
+      "type": "KIE_GetRemainingCredits",
+      "pos": [
+        1650,
+        825
+      ],
+      "size": [
+        272.7056640625,
+        78
+      ],
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "data",
+          "type": "STRING",
+          "links": null
+        },
+        {
+          "name": "credits_remaining",
+          "type": "INT",
+          "links": [
+            7
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfyui-kie-api",
+        "ver": "aab6db2a6e5de4a0f8d0a5e07f7b4932bac4341f",
+        "Node name for S&R": "KIE_GetRemainingCredits"
+      },
+      "widgets_values": [
+        true
+      ]
+    },
+    {
+      "id": 11,
+      "type": "Display Any (rgthree)",
+      "pos": [
+        2010,
+        840
+      ],
+      "size": [
+        330,
+        88
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "dir": 3,
+          "name": "source",
+          "type": "*",
+          "link": 7
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "rgthree-comfy",
+        "ver": "1.0.2512112053",
+        "Node name for S&R": "Display Any (rgthree)"
+      },
+      "widgets_values": [
+        "610"
+      ]
+    },
+    {
+      "id": 8,
+      "type": "Video Slice",
+      "pos": [
+        2025,
+        1515
+      ],
+      "size": [
+        300,
+        120
+      ],
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 4
+        }
+      ],
+      "outputs": [
+        {
+          "name": "VIDEO",
+          "type": "VIDEO",
+          "links": [
+            5
+          ]
+        }
+      ],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.16.3",
+        "Node name for S&R": "Video Slice"
+      },
+      "widgets_values": [
+        0,
+        15,
+        false
+      ]
+    },
+    {
+      "id": 9,
+      "type": "SaveVideo",
+      "pos": [
+        2910,
+        1170
+      ],
+      "size": [
+        465,
+        914.3333333333333
+      ],
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "video",
+          "type": "VIDEO",
+          "link": 6
+        }
+      ],
+      "outputs": [],
+      "properties": {
+        "cnr_id": "comfy-core",
+        "ver": "0.16.3",
+        "Node name for S&R": "SaveVideo"
+      },
+      "widgets_values": [
+        "video/ComfyUI",
+        "auto",
+        "auto"
+      ]
+    }
+  ],
+  "links": [
+    [
+      2,
+      3,
+      0,
+      1,
+      0,
+      "IMAGE"
+    ],
+    [
+      4,
+      7,
+      0,
+      8,
+      0,
+      "VIDEO"
+    ],
+    [
+      5,
+      8,
+      0,
+      1,
+      1,
+      "VIDEO"
+    ],
+    [
+      6,
+      1,
+      0,
+      9,
+      0,
+      "VIDEO"
+    ],
+    [
+      7,
+      10,
+      1,
+      11,
+      0,
+      "INT"
+    ]
+  ],
+  "groups": [
+    {
+      "id": 1,
+      "title": "Kling 3.0 Motion",
+      "bounding": [
+        1620,
+        960,
+        2040,
+        1305
+      ],
+      "color": "#3f789e",
+      "font_size": 24,
+      "flags": {}
+    }
+  ],
+  "config": {},
+  "extra": {
+    "workflowRendererVersion": "LG",
+    "ds": {
+      "scale": 0.53390817568584,
+      "offset": [
+        -644.511688383656,
+        -592.2115184535793
+      ]
+    },
+    "frontendVersion": "1.39.19",
+    "VHS_latentpreview": true,
+    "VHS_latentpreviewrate": 0,
+    "VHS_MetadataImage": true,
+    "VHS_KeepIntermediate": true
+  },
+  "version": 0.4
+}
