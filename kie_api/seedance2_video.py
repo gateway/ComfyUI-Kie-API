@@ -17,7 +17,8 @@ from .validation import _validate_image_tensor_batch, _validate_prompt
 from .video import _coerce_video_to_mp4_bytes, _download_video, _video_bytes_to_comfy_video
 
 
-MODEL_NAME = "bytedance/seedance-2"
+MODEL_OPTIONS = ["bytedance/seedance-2-fast", "bytedance/seedance-2"]
+DEFAULT_MODEL = "bytedance/seedance-2-fast"
 PROMPT_MAX_LENGTH = 5000
 ASPECT_RATIO_OPTIONS = ["16:9", "9:16", "1:1"]
 RESOLUTION_OPTIONS = ["480p", "720p", "1080p"]
@@ -37,6 +38,7 @@ def _validate_frame_image(images: torch.Tensor | None, label: str) -> torch.Tens
 
 def _validate_options(
     *,
+    model: str,
     aspect_ratio: str,
     resolution: str,
     duration: str,
@@ -44,6 +46,8 @@ def _validate_options(
     return_last_frame: bool,
     web_search: bool,
 ) -> None:
+    if model not in MODEL_OPTIONS:
+        raise _validation_error("Invalid model. Use the pinned enum options.")
     if aspect_ratio not in ASPECT_RATIO_OPTIONS:
         raise _validation_error("Invalid aspect_ratio. Use the pinned enum options.")
     if resolution not in RESOLUTION_OPTIONS:
@@ -135,6 +139,7 @@ def _upload_reference_audio(api_key: str, reference_audio: Any | None, log: bool
 
 def _build_seedance2_payload(
     *,
+    model: str,
     prompt: str,
     aspect_ratio: str,
     resolution: str,
@@ -151,6 +156,7 @@ def _build_seedance2_payload(
 ) -> tuple[dict[str, Any], str]:
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(
+        model=model,
         aspect_ratio=aspect_ratio,
         resolution=resolution,
         duration=duration,
@@ -209,7 +215,7 @@ def _build_seedance2_payload(
         if reference_audio_urls:
             input_payload["reference_audio_urls"] = reference_audio_urls
 
-    return {"model": MODEL_NAME, "input": input_payload}, scenario
+    return {"model": model, "input": input_payload}, scenario
 
 
 def summarize_seedance2_payload(payload: dict[str, Any]) -> dict[str, Any]:
@@ -249,6 +255,7 @@ def summarize_seedance2_payload(payload: dict[str, Any]) -> dict[str, Any]:
 
     return {
         "scenario": scenario,
+        "model": normalized.get("model"),
         "fields_present": fields_present,
         "has_first_frame": bool(payload_input.get("first_frame_url")),
         "has_last_frame": bool(payload_input.get("last_frame_url")),
@@ -263,6 +270,7 @@ def summarize_seedance2_payload(payload: dict[str, Any]) -> dict[str, Any]:
 
 def preflight_seedance2_payload(
     *,
+    model: str,
     prompt: str,
     aspect_ratio: str,
     resolution: str,
@@ -278,6 +286,7 @@ def preflight_seedance2_payload(
     log: bool,
 ) -> dict[str, Any]:
     payload, _scenario = _build_seedance2_payload(
+        model=model,
         prompt=prompt,
         aspect_ratio=aspect_ratio,
         resolution=resolution,
@@ -297,6 +306,7 @@ def preflight_seedance2_payload(
 
 def run_seedance2_video_payload(
     *,
+    model: str,
     prompt: str,
     aspect_ratio: str,
     resolution: str,
@@ -312,6 +322,7 @@ def run_seedance2_video_payload(
     log: bool,
 ) -> tuple[dict[str, Any], str]:
     return _build_seedance2_payload(
+        model=model,
         prompt=prompt,
         aspect_ratio=aspect_ratio,
         resolution=resolution,
@@ -330,8 +341,8 @@ def run_seedance2_video_payload(
 
 def _normalize_request_payload(payload: dict[str, Any]) -> dict[str, Any]:
     normalized = dict(payload)
-    if normalized.get("model") != MODEL_NAME:
-        raise _validation_error(f"request payload model must be '{MODEL_NAME}'.")
+    if normalized.get("model") not in MODEL_OPTIONS:
+        raise _validation_error("request payload model must be one of the supported Seedance 2.0 models.")
 
     payload_input = normalized.get("input")
     if not isinstance(payload_input, dict):
@@ -355,6 +366,7 @@ def _select_video_url(result_urls: list[str]) -> str:
 
 def run_seedance2_video(
     *,
+    model: str,
     prompt: str,
     aspect_ratio: str,
     resolution: str,
@@ -372,6 +384,7 @@ def run_seedance2_video(
     log: bool,
 ) -> Any:
     payload, _scenario = run_seedance2_video_payload(
+        model=model,
         prompt=prompt,
         aspect_ratio=aspect_ratio,
         resolution=resolution,

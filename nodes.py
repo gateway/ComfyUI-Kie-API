@@ -30,6 +30,8 @@ from .kie_api.seedream45_edit import (
     run_seedream45_edit,
 )
 from .kie_api.seedance2_video import (
+    DEFAULT_MODEL as SEEDANCE2_DEFAULT_MODEL,
+    MODEL_OPTIONS as SEEDANCE2_MODEL_OPTIONS,
     ASPECT_RATIO_OPTIONS as SEEDANCE2_ASPECT_RATIO_OPTIONS,
     DURATION_OPTIONS as SEEDANCE2_DURATION_OPTIONS,
     RESOLUTION_OPTIONS as SEEDANCE2_RESOLUTION_OPTIONS,
@@ -588,6 +590,7 @@ Generate a video with Seedance 2.0 using one of four supported scenarios:
 - multimodal reference-to-video
 
 Inputs:
+- model: `bytedance/seedance-2-fast` or `bytedance/seedance-2`
 - prompt: Required prompt text
 - first_frame / last_frame: Optional frame controls (mutually exclusive with reference media)
 - reference_images: Optional reference image batch
@@ -602,13 +605,14 @@ Inputs:
 Rules:
 - last_frame requires first_frame
 - first_frame/last_frame can be combined with reference media
-- current implementation targets verified model `bytedance/seedance-2`
+- selected model is passed through directly to KIE
 """
 
     @classmethod
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "model": ("COMBO", {"options": SEEDANCE2_MODEL_OPTIONS, "default": SEEDANCE2_DEFAULT_MODEL}),
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
@@ -635,6 +639,7 @@ Rules:
 
     def generate(
         self,
+        model: str,
         prompt: str,
         first_frame: torch.Tensor | None = None,
         last_frame: torch.Tensor | None = None,
@@ -662,6 +667,7 @@ Rules:
             return (video_output,)
 
         video_output = run_seedance2_video(
+            model=model,
             prompt=prompt,
             first_frame=first_frame,
             last_frame=last_frame,
@@ -700,6 +706,7 @@ Outputs:
     def INPUT_TYPES(cls):
         return {
             "required": {
+                "model": ("COMBO", {"options": SEEDANCE2_MODEL_OPTIONS, "default": SEEDANCE2_DEFAULT_MODEL}),
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
@@ -725,6 +732,7 @@ Outputs:
 
     def preflight(
         self,
+        model: str,
         prompt: str,
         first_frame: torch.Tensor | None = None,
         last_frame: torch.Tensor | None = None,
@@ -740,6 +748,7 @@ Outputs:
         log: bool = True,
     ):
         payload = preflight_seedance2_payload(
+            model=model,
             prompt=prompt,
             first_frame=first_frame,
             last_frame=last_frame,
@@ -760,6 +769,7 @@ Outputs:
         notes_lines = [
             "VALID: Seedance 2.0 preflight checks passed.",
             "No createTask call was made.",
+            f"Model: {summary['model']}",
             f"Scenario: {summary['scenario']}",
             f"Aspect ratio: {payload_input.get('aspect_ratio')}",
             f"Resolution: {payload_input.get('resolution')}",
@@ -773,6 +783,7 @@ Outputs:
             f"Reference image count: {summary['reference_image_count']}",
             f"Reference video count: {summary['reference_video_count']}",
             f"Reference audio count: {summary['reference_audio_count']}",
+            "Temporal slot note: first_frame_url and last_frame_url are dedicated control slots, not part of @ImageN ordering.",
             "Prompt alias note: @ImageN / @VideoN / @AudioN mapping is inferred from upload order and is not API-verified.",
         ]
 

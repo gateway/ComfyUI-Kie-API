@@ -92,9 +92,9 @@ This node pack currently includes the following nodes:
 - **Seedance 1.5 Pro Image-to-Video, Text-to-Video**  
   Higher-quality image-to-video generation using the Seedance 1.5 Pro model.
 - **Seedance 2.0 Video**
-  - Supports text-to-video, first-frame I2V, first+last-frame I2V, and multimodal reference-to-video.
-  - Includes a preflight node for validating mutually exclusive media modes before spending credits.
-  - Current implementation intentionally targets verified `bytedance/seedance-2` only; `Seedance 2.0 Fast` remains pending due to upstream docs conflicts.
+  - Supports text-to-video, first-frame I2V, first+last-frame I2V, multimodal references, and mixed frame+reference payloads.
+  - Includes a model selector for `bytedance/seedance-2-fast` and `bytedance/seedance-2`.
+  - Includes a preflight node for validating payload structure and showing resolved media-field ordering before spending credits.
 
 ## LLM Nodes
 - **Gemini (LLM) [Experimental]**
