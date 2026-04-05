@@ -29,6 +29,15 @@ from .kie_api.seedream45_edit import (
     QUALITY_OPTIONS as SEEDREAM_EDIT_QUALITY_OPTIONS,
     run_seedream45_edit,
 )
+from .kie_api.seedance2_video import (
+    ASPECT_RATIO_OPTIONS as SEEDANCE2_ASPECT_RATIO_OPTIONS,
+    DURATION_OPTIONS as SEEDANCE2_DURATION_OPTIONS,
+    RESOLUTION_OPTIONS as SEEDANCE2_RESOLUTION_OPTIONS,
+    preflight_seedance2_payload,
+    summarize_seedance2_payload,
+    run_seedance2_video,
+    run_seedance2_video_from_request,
+)
 from .kie_api.seedancev1pro_fast_i2v import KIE_SeedanceV1Pro_Fast_I2V
 from .kie_api.seedance15pro_i2v import KIE_Seedance15Pro_I2V
 from .kie_api.kling26_i2v import (
@@ -566,6 +575,214 @@ Outputs:
                     raise
                 _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
                 time.sleep(backoff)
+
+
+class KIE_Seedance2_Video:
+    HELP = """
+KIE Seedance 2.0 (Video)
+
+Generate a video with Seedance 2.0 using one of four supported scenarios:
+- text-to-video
+- first-frame image-to-video
+- first+last-frame image-to-video
+- multimodal reference-to-video
+
+Inputs:
+- prompt: Required prompt text
+- first_frame / last_frame: Optional frame controls (mutually exclusive with reference media)
+- reference_images: Optional reference image batch
+- reference_video: Optional reference video
+- reference_audio: Optional reference audio
+- generate_audio: Ask the endpoint to create audio
+- return_last_frame: Ask the endpoint to include the last frame artifact
+- aspect_ratio / resolution / duration / web_search
+- seedance_data: Optional validated payload from Seedance 2.0 Preflight
+- log: Console logging on/off
+
+Rules:
+- last_frame requires first_frame
+- first_frame/last_frame can be combined with reference media
+- current implementation targets verified model `bytedance/seedance-2`
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "first_frame": ("IMAGE",),
+                "last_frame": ("IMAGE",),
+                "reference_images": ("IMAGE",),
+                "reference_video": ("VIDEO",),
+                "reference_audio": ("AUDIO",),
+                "generate_audio": ("BOOLEAN", {"default": False}),
+                "return_last_frame": ("BOOLEAN", {"default": False}),
+                "aspect_ratio": ("COMBO", {"options": SEEDANCE2_ASPECT_RATIO_OPTIONS, "default": "16:9"}),
+                "resolution": ("COMBO", {"options": SEEDANCE2_RESOLUTION_OPTIONS, "default": "720p"}),
+                "duration": ("COMBO", {"options": SEEDANCE2_DURATION_OPTIONS, "default": "15"}),
+                "web_search": ("BOOLEAN", {"default": False}),
+                "seedance_data": ("KIE_SEEDANCE2_REQUEST",),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("VIDEO",)
+    RETURN_NAMES = ("video",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        first_frame: torch.Tensor | None = None,
+        last_frame: torch.Tensor | None = None,
+        reference_images: torch.Tensor | None = None,
+        reference_video: object | None = None,
+        reference_audio: object | None = None,
+        generate_audio: bool = False,
+        return_last_frame: bool = False,
+        aspect_ratio: str = "16:9",
+        resolution: str = "720p",
+        duration: str = "15",
+        web_search: bool = False,
+        seedance_data: dict | None = None,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 2000,
+    ):
+        if seedance_data is not None:
+            video_output = run_seedance2_video_from_request(
+                payload=seedance_data,
+                poll_interval_s=poll_interval_s,
+                timeout_s=timeout_s,
+                log=log,
+            )
+            return (video_output,)
+
+        video_output = run_seedance2_video(
+            prompt=prompt,
+            first_frame=first_frame,
+            last_frame=last_frame,
+            reference_images=reference_images,
+            reference_video=reference_video,
+            reference_audio=reference_audio,
+            generate_audio=generate_audio,
+            return_last_frame=return_last_frame,
+            aspect_ratio=aspect_ratio,
+            resolution=resolution,
+            duration=duration,
+            web_search=web_search,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (video_output,)
+
+
+class KIE_Seedance2_Preflight:
+    HELP = """
+KIE Seedance 2.0 Preflight
+
+Validate Seedance 2.0 inputs, upload media, and build the exact createTask payload
+without submitting a generation task.
+
+Use this node before expensive Seedance 2.0 runs.
+
+Outputs:
+- KIE_SEEDANCE2_REQUEST: validated payload object for chaining into KIE Seedance 2.0 (Video)
+- STRING: payload_json
+- STRING: notes
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+            },
+            "optional": {
+                "first_frame": ("IMAGE",),
+                "last_frame": ("IMAGE",),
+                "reference_images": ("IMAGE",),
+                "reference_video": ("VIDEO",),
+                "reference_audio": ("AUDIO",),
+                "generate_audio": ("BOOLEAN", {"default": False}),
+                "return_last_frame": ("BOOLEAN", {"default": False}),
+                "aspect_ratio": ("COMBO", {"options": SEEDANCE2_ASPECT_RATIO_OPTIONS, "default": "16:9"}),
+                "resolution": ("COMBO", {"options": SEEDANCE2_RESOLUTION_OPTIONS, "default": "720p"}),
+                "duration": ("COMBO", {"options": SEEDANCE2_DURATION_OPTIONS, "default": "15"}),
+                "web_search": ("BOOLEAN", {"default": False}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("KIE_SEEDANCE2_REQUEST", "STRING", "STRING")
+    RETURN_NAMES = ("seedance_data", "payload_json", "notes")
+    FUNCTION = "preflight"
+    CATEGORY = "kie/helpers"
+
+    def preflight(
+        self,
+        prompt: str,
+        first_frame: torch.Tensor | None = None,
+        last_frame: torch.Tensor | None = None,
+        reference_images: torch.Tensor | None = None,
+        reference_video: object | None = None,
+        reference_audio: object | None = None,
+        generate_audio: bool = False,
+        return_last_frame: bool = False,
+        aspect_ratio: str = "16:9",
+        resolution: str = "720p",
+        duration: str = "15",
+        web_search: bool = False,
+        log: bool = True,
+    ):
+        payload = preflight_seedance2_payload(
+            prompt=prompt,
+            first_frame=first_frame,
+            last_frame=last_frame,
+            reference_images=reference_images,
+            reference_video=reference_video,
+            reference_audio=reference_audio,
+            generate_audio=generate_audio,
+            return_last_frame=return_last_frame,
+            aspect_ratio=aspect_ratio,
+            resolution=resolution,
+            duration=duration,
+            web_search=web_search,
+            log=log,
+        )
+        payload_input = payload.get("input", {})
+        summary = summarize_seedance2_payload(payload)
+
+        notes_lines = [
+            "VALID: Seedance 2.0 preflight checks passed.",
+            "No createTask call was made.",
+            f"Scenario: {summary['scenario']}",
+            f"Aspect ratio: {payload_input.get('aspect_ratio')}",
+            f"Resolution: {payload_input.get('resolution')}",
+            f"Duration sent: {payload_input.get('duration')}s",
+            f"Generate audio: {bool(payload_input.get('generate_audio', False))}",
+            f"Return last frame: {bool(payload_input.get('return_last_frame', False))}",
+            f"Web search: {bool(payload_input.get('web_search', False))}",
+            f"First frame present: {summary['has_first_frame']}",
+            f"Last frame present: {summary['has_last_frame']}",
+            "Payload fields: " + ", ".join(summary["fields_present"]),
+            f"Reference image count: {summary['reference_image_count']}",
+            f"Reference video count: {summary['reference_video_count']}",
+            f"Reference audio count: {summary['reference_audio_count']}",
+            "Prompt alias note: @ImageN / @VideoN / @AudioN mapping is inferred from upload order and is not API-verified.",
+        ]
+
+        if summary["reference_image_aliases"]:
+            notes_lines.append("Reference image aliases: " + ", ".join(summary["reference_image_aliases"]))
+        if summary["reference_video_aliases"]:
+            notes_lines.append("Reference video aliases: " + ", ".join(summary["reference_video_aliases"]))
+        if summary["reference_audio_aliases"]:
+            notes_lines.append("Reference audio aliases: " + ", ".join(summary["reference_audio_aliases"]))
+        return (payload, json.dumps(payload, indent=2, ensure_ascii=False), "\n".join(notes_lines))
 
 
 class KIE_Kling25_I2V_Pro:
@@ -1404,7 +1621,7 @@ Outputs:
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
             },
             "optional": {
-                "multi_shot_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
+                "shots_text": ("STRING", {"multiline": True, "default": cls.SHOTS_TEXT_PLACEHOLDER}),
                 "first_frame": ("IMAGE",),
                 "last_frame": ("IMAGE",),
                 "sound": ("BOOLEAN", {"default": True}),
@@ -2053,6 +2270,8 @@ NODE_CLASS_MAPPINGS = {
     "KIE_GrokImagine_I2I": KIE_GrokImagine_I2I,
     "KIE_SeedanceV1Pro_Fast_I2V": KIE_SeedanceV1Pro_Fast_I2V,
     "KIE_Seedance15Pro_I2V": KIE_Seedance15Pro_I2V,
+    "KIE_Seedance2_Video": KIE_Seedance2_Video,
+    "KIE_Seedance2_Preflight": KIE_Seedance2_Preflight,
     "KIE_Kling25_I2V_Pro": KIE_Kling25_I2V_Pro,
     "KIE_Kling26_I2V": KIE_Kling26_I2V,
     "KIE_Kling26_T2V": KIE_Kling26_T2V,
@@ -2082,6 +2301,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GrokImagine_I2I": "KIE Grok Imagine (I2I)",
     "KIE_SeedanceV1Pro_Fast_I2V": "KIE Seedance V1 Pro Fast (I2V)",
     "KIE_Seedance15Pro_I2V": "KIE Seedance 1.5 Pro (I2V/T2V)",
+    "KIE_Seedance2_Video": "KIE Seedance 2.0 (Video)",
+    "KIE_Seedance2_Preflight": "KIE Seedance 2.0 Preflight",
     "KIE_Kling25_I2V_Pro": "KIE Kling 2.5 I2V Pro",
     "KIE_Kling26_I2V": "KIE Kling 2.6 (I2V)",
     "KIE_Kling26_T2V": "KIE Kling 2.6 (T2V)",

@@ -22,6 +22,8 @@ Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and document
 - Grok Imagine I2V: [`KIE_GrokImagine_I2V.md`](KIE_GrokImagine_I2V.md)
 - Seedance V1 Pro Fast I2V: [`KIE_SeedanceV1Pro_Fast_I2V.md`](KIE_SeedanceV1Pro_Fast_I2V.md)
 - Seedance 1.5 Pro I2V/T2V: [`KIE_Seedance15Pro_I2V.md`](KIE_Seedance15Pro_I2V.md)
+- Seedance 2.0 Video: [`KIE_Seedance2_Video.md`](KIE_Seedance2_Video.md)
+- Seedance 2.0 Preflight: [`KIE_Seedance2_Preflight.md`](KIE_Seedance2_Preflight.md)
 
 ## API Specs
 - Grok Imagine T2V spec: [`KIE_GrokImagine_T2V_Spec.md`](KIE_GrokImagine_T2V_Spec.md)
