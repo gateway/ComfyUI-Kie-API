@@ -91,10 +91,11 @@ This node pack currently includes the following nodes:
   Fast image-to-video generation optimized for quick iteration.
 - **Seedance 1.5 Pro Image-to-Video, Text-to-Video**  
   Higher-quality image-to-video generation using the Seedance 1.5 Pro model.
-- **Seedance 2.0 Video**
+- **Seedance 2.0 Video [Experimental]**
   - Supports text-to-video, first-frame I2V, first+last-frame I2V, multimodal references, and mixed frame+reference payloads.
   - Includes a model selector for `bytedance/seedance-2-fast` and `bytedance/seedance-2`.
   - Includes a preflight node for validating payload structure and showing resolved media-field ordering before spending credits.
+  - Experimental / development status: payload transport is aligned, but prompt-side reference semantics such as `@Image1` remain model-behavior dependent and should be validated per workflow.
 
 ## LLM Nodes
 - **Gemini (LLM) [Experimental]**
@@ -246,6 +247,7 @@ Related docs:
 - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md)
 
 ## Changelog
+- 2026-04-17: Bumped package version to 0.1.13, added a Seedance 2.0 model selector (`seedance-2-fast` / `seedance-2`), and marked Seedance 2.0 as experimental in the README.
 - 2026-03-12: Bumped package version to 0.1.12 and fixed stale media upload caching risk by forcing unique upload filenames per run.
 - 2026-03-12: Added README coverage for the Kling 3.0 Motion-Control workflow and bumped package version to 0.1.11.
 - 2026-03-12: Added the Kling 3.0 Motion-Control node and synced docs/spec coverage.
