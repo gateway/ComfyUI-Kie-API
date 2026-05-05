@@ -45,6 +45,9 @@ This node pack currently includes the following nodes:
   - Image generation node using Nano Banana 2.
   - Supports up to 14 optional input/reference images.
   - Supports optional Google web-search grounding.
+- **GPT Image 2 Text-to-Image / Image-to-Image**
+  - Text-to-image and image-to-image nodes using GPT Image 2.
+  - Image-to-image accepts up to 16 input/reference images via ComfyUI batch.
 - **Seedream Text-to-Image / Edit**
   - Text-to-image and image-editing node for Seedream models.
   - Supports prompt-based generation and edits (edit node accepts up to 14 input images).
@@ -139,7 +142,9 @@ Use this section after reviewing Current Available Nodes.
 - Full docs index (all nodes): [`web/docs/README.md`](web/docs/README.md)
 - Kling 3.0 motion status: implemented in this repo with both the node doc and API spec linked below.
 - Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented in this repo.
-- Grok Imagine node docs:
+- Image generation node docs:
+  - [`web/docs/KIE_GPTImage2_TextToImage.md`](web/docs/KIE_GPTImage2_TextToImage.md) - GPT Image 2 text-to-image node reference.
+  - [`web/docs/KIE_GPTImage2_ImageToImage.md`](web/docs/KIE_GPTImage2_ImageToImage.md) - GPT Image 2 image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2I.md`](web/docs/KIE_GrokImagine_T2I.md) - Grok Imagine text-to-image node reference.
   - [`web/docs/KIE_GrokImagine_I2I.md`](web/docs/KIE_GrokImagine_I2I.md) - Grok Imagine image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2V.md`](web/docs/KIE_GrokImagine_T2V.md) - Grok Imagine text-to-video node reference.
@@ -247,6 +252,7 @@ Related docs:
 - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md)
 
 ## Changelog
+- 2026-05-04: Bumped package version to 0.1.14 and added GPT Image 2 text-to-image and image-to-image nodes, including 16-image I2I upload support and KIE resolution compatibility validation.
 - 2026-04-17: Bumped package version to 0.1.13, added a Seedance 2.0 model selector (`seedance-2-fast` / `seedance-2`), and marked Seedance 2.0 as experimental in the README.
 - 2026-03-12: Bumped package version to 0.1.12 and fixed stale media upload caching risk by forcing unique upload filenames per run.
 - 2026-03-12: Added README coverage for the Kling 3.0 Motion-Control workflow and bumped package version to 0.1.11.

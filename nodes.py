@@ -19,6 +19,12 @@ from .kie_api.nanobanana2 import (
     RESOLUTION_OPTIONS as NANOBANANA2_RESOLUTION_OPTIONS,
     run_nanobanana2_image_job,
 )
+from .kie_api.gpt_image2 import (
+    ASPECT_RATIO_OPTIONS as GPT_IMAGE2_ASPECT_RATIO_OPTIONS,
+    RESOLUTION_OPTIONS as GPT_IMAGE2_RESOLUTION_OPTIONS,
+    run_gpt_image2_image_to_image,
+    run_gpt_image2_text_to_image,
+)
 from .kie_api.seedream45_t2i import (
     ASPECT_RATIO_OPTIONS as SEEDREAM_ASPECT_RATIO_OPTIONS,
     QUALITY_OPTIONS as SEEDREAM_QUALITY_OPTIONS,
@@ -333,6 +339,142 @@ Outputs:
             max_retries=max_retries,
             retry_backoff_s=retry_backoff_s,
             images=images,
+        )
+        return (image_tensor,)
+
+
+class KIE_GPTImage2_TextToImage:
+    HELP = """
+KIE GPT Image 2 (Text-to-Image)
+
+Generate an image from a text prompt using GPT Image 2.
+
+Inputs:
+- prompt: Text prompt (required, up to 20,000 chars)
+- aspect_ratio: auto, 1:1, 9:16, 16:9, 4:3, or 3:4
+- resolution: 1K, 2K, or 4K
+- poll_interval_s: Status check interval
+- timeout_s: Max wait time
+- log: Console logging on/off
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+
+Notes:
+- KIE requires 1K resolution when aspect_ratio is auto.
+- KIE does not support 4K output with 1:1 aspect ratio.
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": GPT_IMAGE2_ASPECT_RATIO_OPTIONS, "default": "auto"}),
+                "resolution": ("COMBO", {"options": GPT_IMAGE2_RESOLUTION_OPTIONS, "default": "1K"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "auto",
+        resolution: str = "1K",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        image_tensor = run_gpt_image2_text_to_image(
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            resolution=resolution,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+            retry_on_fail=retry_on_fail,
+            max_retries=max_retries,
+            retry_backoff_s=retry_backoff_s,
+        )
+        return (image_tensor,)
+
+
+class KIE_GPTImage2_ImageToImage:
+    HELP = """
+KIE GPT Image 2 (Image-to-Image)
+
+Generate an edited or transformed image from a prompt and source images using GPT Image 2.
+
+Inputs:
+- prompt: Text prompt (required, up to 20,000 chars)
+- images: Source image batch (up to 16 images; all uploaded)
+- aspect_ratio: auto, 1:1, 9:16, 16:9, 4:3, or 3:4
+- resolution: 1K, 2K, or 4K
+- poll_interval_s: Status check interval
+- timeout_s: Max wait time
+- log: Console logging on/off
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+
+Notes:
+- KIE requires 1K resolution when aspect_ratio is auto.
+- KIE does not support 4K output with 1:1 aspect ratio.
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "images": ("IMAGE",),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": GPT_IMAGE2_ASPECT_RATIO_OPTIONS, "default": "auto"}),
+                "resolution": ("COMBO", {"options": GPT_IMAGE2_RESOLUTION_OPTIONS, "default": "1K"}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor,
+        aspect_ratio: str = "auto",
+        resolution: str = "1K",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+        retry_on_fail: bool = True,
+        max_retries: int = 2,
+        retry_backoff_s: float = 3.0,
+    ):
+        image_tensor = run_gpt_image2_image_to_image(
+            prompt=prompt,
+            images=images,
+            aspect_ratio=aspect_ratio,
+            resolution=resolution,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+            retry_on_fail=retry_on_fail,
+            max_retries=max_retries,
+            retry_backoff_s=retry_backoff_s,
         )
         return (image_tensor,)
 
@@ -2275,6 +2417,8 @@ NODE_CLASS_MAPPINGS = {
     "KIE_GetRemainingCredits": KIE_GetRemainingCredits,
     "KIE_NanoBananaPro_Image": KIE_NanoBananaPro_Image,
     "KIE_NanoBanana2_Image": KIE_NanoBanana2_Image,
+    "KIE_GPTImage2_TextToImage": KIE_GPTImage2_TextToImage,
+    "KIE_GPTImage2_ImageToImage": KIE_GPTImage2_ImageToImage,
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
     "KIE_GrokImagine_T2I": KIE_GrokImagine_T2I,
@@ -2306,6 +2450,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
     "KIE_NanoBananaPro_Image": "KIE Nano Banana Pro (Image)",
     "KIE_NanoBanana2_Image": "Nano Banana 2",
+    "KIE_GPTImage2_TextToImage": "KIE GPT Image 2 (Text-to-Image)",
+    "KIE_GPTImage2_ImageToImage": "KIE GPT Image 2 (Image-to-Image)",
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_GrokImagine_T2I": "KIE Grok Imagine (T2I)",
