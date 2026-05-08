@@ -140,6 +140,7 @@ This node pack currently includes the following nodes:
 Use this section after reviewing Current Available Nodes.
 
 - Full docs index (all nodes): [`web/docs/README.md`](web/docs/README.md)
+- GPT Image 2 status: `Text-to-Image` and `Image-to-Image` are implemented and documented in this repo.
 - Kling 3.0 motion status: implemented in this repo with both the node doc and API spec linked below.
 - Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented in this repo.
 - Image generation node docs:
@@ -252,6 +253,7 @@ Related docs:
 - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md)
 
 ## Changelog
+- 2026-05-08: Bumped package version to 0.1.15 to trigger the ComfyUI build after GPT Image 2 verification.
 - 2026-05-04: Bumped package version to 0.1.14 and added GPT Image 2 text-to-image and image-to-image nodes, including 16-image I2I upload support and KIE resolution compatibility validation.
 - 2026-04-17: Bumped package version to 0.1.13, added a Seedance 2.0 model selector (`seedance-2-fast` / `seedance-2`), and marked Seedance 2.0 as experimental in the README.
 - 2026-03-12: Bumped package version to 0.1.12 and fixed stale media upload caching risk by forcing unique upload filenames per run.

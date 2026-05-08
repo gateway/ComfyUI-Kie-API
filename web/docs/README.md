@@ -2,6 +2,8 @@
 
 This folder contains node documentation for the ComfyUI KIE API pack.
 
+GPT Image 2 status: `Text-to-Image` and `Image-to-Image` are implemented and documented in this folder.
+
 Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and documented in this folder.
 
 ## Kling 3.0 Docs
