@@ -1,3 +1,4 @@
+import asyncio
 import json
 import os
 import time
@@ -383,7 +384,7 @@ Notes:
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
-    def generate(
+    async def generate(
         self,
         prompt: str,
         aspect_ratio: str = "auto",
@@ -395,7 +396,8 @@ Notes:
         max_retries: int = 2,
         retry_backoff_s: float = 3.0,
     ):
-        image_tensor = run_gpt_image2_text_to_image(
+        image_tensor = await asyncio.to_thread(
+            run_gpt_image2_text_to_image,
             prompt=prompt,
             aspect_ratio=aspect_ratio,
             resolution=resolution,
@@ -451,7 +453,7 @@ Notes:
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
-    def generate(
+    async def generate(
         self,
         prompt: str,
         images: torch.Tensor,
@@ -464,7 +466,8 @@ Notes:
         max_retries: int = 2,
         retry_backoff_s: float = 3.0,
     ):
-        image_tensor = run_gpt_image2_image_to_image(
+        image_tensor = await asyncio.to_thread(
+            run_gpt_image2_image_to_image,
             prompt=prompt,
             images=images,
             aspect_ratio=aspect_ratio,
