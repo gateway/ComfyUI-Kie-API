@@ -36,17 +36,31 @@ def _fetch_remaining_credits(api_key: str) -> Tuple[str, int]:
     return formatted_json, credits_remaining
 
 
+_logged_balances: dict = {}
+
+
 def _log_remaining_credits(log: bool, record_data: dict[str, Any], api_key: str, log_fn) -> None:
+    """Log the remaining balance, once per task.
+
+    The shared poller in `jobs.py` and several model modules both report the
+    balance for the same task record, so the task id (and value) is remembered to
+    keep the log free of repeated lines.
+    """
     if not log:
         return
 
-    remaining = record_data.get("remainedCredits")
-    if remaining is not None:
-        log_fn(True, f"Remaining credits: {remaining}")
-        return
+    task_id = record_data.get("taskId")
 
     try:
-        _raw, credits_remaining = _fetch_remaining_credits(api_key)
-        log_fn(True, f"Remaining credits: {credits_remaining}")
+        remaining = record_data.get("remainedCredits")
+        if remaining is None:
+            _raw, remaining = _fetch_remaining_credits(api_key)
+
+        if task_id is not None and _logged_balances.get(task_id) == remaining:
+            return
+        if task_id is not None:
+            _logged_balances[task_id] = remaining
+
+        log_fn(True, f"Remaining credits: {remaining}")
     except Exception as exc:
         log_fn(True, f"Failed to fetch remaining credits: {exc}")
