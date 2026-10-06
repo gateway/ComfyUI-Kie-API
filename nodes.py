@@ -558,6 +558,15 @@ Notes:
         )
 
 
+# Seedream 5 Pro/Lite express resolution through the API's `quality` enum
+# (Pro: basic = 1K, high = 2K | Lite: basic = 2K, high = 3K, ultra = 4K).
+# The nodes expose it as an explicit `resolution` selector and translate it back.
+SEEDREAM5_PRO_RESOLUTION_OPTIONS = ["1K", "2K"]
+SEEDREAM5_PRO_RESOLUTION_TO_QUALITY = {"1K": "basic", "2K": "high"}
+SEEDREAM5_LITE_RESOLUTION_OPTIONS = ["2K", "3K", "4K"]
+SEEDREAM5_LITE_RESOLUTION_TO_QUALITY = {"2K": "basic", "3K": "high", "4K": "ultra"}
+
+
 class KIE_Seedream5Pro_TextToImage:
     HELP = """
 KIE Seedream 5.0 Pro Text-To-Image
@@ -567,7 +576,7 @@ Generate one image from a text prompt (no reference images required).
 Inputs:
 - prompt: Text prompt (required, 3-3000 characters)
 - aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
-- quality: basic (1K) or high (2K)
+- resolution: 1K (API `quality: basic`) or 2K (API `quality: high`)
 - output_format: png or jpeg
 - nsfw_checker: enable KIE content filtering (default true)
 - log: print helper logs
@@ -584,7 +593,7 @@ Outputs:
             },
             "optional": {
                 "aspect_ratio": ("COMBO", {"options": SEEDREAM5_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "quality": ("COMBO", {"options": SEEDREAM5_QUALITY_OPTIONS, "default": "basic"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_PRO_RESOLUTION_OPTIONS, "default": "1K"}),
                 "output_format": ("COMBO", {"options": SEEDREAM5_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
                 "nsfw_checker": ("BOOLEAN", {"default": True}),
                 "log": ("BOOLEAN", {"default": True}),
@@ -600,7 +609,7 @@ Outputs:
         self,
         prompt: str,
         aspect_ratio: str = "1:1",
-        quality: str = "basic",
+        resolution: str = "1K",
         output_format: str = "png",
         nsfw_checker: bool = True,
         log: bool = True,
@@ -610,7 +619,7 @@ Outputs:
         image_tensor = run_seedream5_pro_text_to_image(
             prompt=prompt,
             aspect_ratio=aspect_ratio,
-            quality=quality,
+            quality=SEEDREAM5_PRO_RESOLUTION_TO_QUALITY[resolution],
             output_format=output_format,
             nsfw_checker=nsfw_checker,
             poll_interval_s=poll_interval_s,
@@ -630,7 +639,7 @@ Inputs:
 - prompt: Edit instruction (required, 3-3000 characters)
 - images: Reference image batch (up to 10 images; the first is free, extras are billed)
 - aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
-- quality: basic (1K) or high (2K)
+- resolution: 1K (API `quality: basic`) or 2K (API `quality: high`)
 - output_format: png or jpeg
 - nsfw_checker: enable KIE content filtering (default true)
 - log: print helper logs
@@ -651,7 +660,7 @@ Outputs:
                     "COMBO",
                     {"options": SEEDREAM5_I2I_ASPECT_RATIO_OPTIONS, "default": "1:1"},
                 ),
-                "quality": ("COMBO", {"options": SEEDREAM5_I2I_QUALITY_OPTIONS, "default": "basic"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_PRO_RESOLUTION_OPTIONS, "default": "1K"}),
                 "output_format": (
                     "COMBO",
                     {"options": SEEDREAM5_I2I_OUTPUT_FORMAT_OPTIONS, "default": "png"},
@@ -671,7 +680,7 @@ Outputs:
         prompt: str,
         images: torch.Tensor,
         aspect_ratio: str = "1:1",
-        quality: str = "basic",
+        resolution: str = "1K",
         output_format: str = "png",
         nsfw_checker: bool = True,
         log: bool = True,
@@ -682,7 +691,7 @@ Outputs:
             prompt=prompt,
             images=images,
             aspect_ratio=aspect_ratio,
-            quality=quality,
+            quality=SEEDREAM5_PRO_RESOLUTION_TO_QUALITY[resolution],
             output_format=output_format,
             nsfw_checker=nsfw_checker,
             poll_interval_s=poll_interval_s,
@@ -701,7 +710,7 @@ Generate one image from a text prompt (cheaper Lite tier, higher resolutions).
 Inputs:
 - prompt: Text prompt (required, 3-3000 characters)
 - aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
-- quality: basic (2K), high (3K) or ultra (4K)
+- resolution: 2K (API `quality: basic`), 3K (`high`) or 4K (`ultra`)
 - output_format: png or jpeg
 - nsfw_checker: enable KIE content filtering (default true)
 - log: print helper logs
@@ -718,7 +727,7 @@ Outputs:
             },
             "optional": {
                 "aspect_ratio": ("COMBO", {"options": SEEDREAM5_LITE_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "quality": ("COMBO", {"options": SEEDREAM5_LITE_QUALITY_OPTIONS, "default": "basic"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_LITE_RESOLUTION_OPTIONS, "default": "2K"}),
                 "output_format": ("COMBO", {"options": SEEDREAM5_LITE_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
                 "nsfw_checker": ("BOOLEAN", {"default": True}),
                 "log": ("BOOLEAN", {"default": True}),
@@ -734,7 +743,7 @@ Outputs:
         self,
         prompt: str,
         aspect_ratio: str = "1:1",
-        quality: str = "basic",
+        resolution: str = "2K",
         output_format: str = "png",
         nsfw_checker: bool = True,
         log: bool = True,
@@ -744,7 +753,7 @@ Outputs:
         image_tensor = run_seedream5_lite_text_to_image(
             prompt=prompt,
             aspect_ratio=aspect_ratio,
-            quality=quality,
+            quality=SEEDREAM5_LITE_RESOLUTION_TO_QUALITY[resolution],
             output_format=output_format,
             nsfw_checker=nsfw_checker,
             poll_interval_s=poll_interval_s,
@@ -764,7 +773,7 @@ Inputs:
 - prompt: Edit instruction (required, 3-3000 characters)
 - images: Reference image batch (up to 14 images; extra references are billed)
 - aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
-- quality: basic (2K), high (3K) or ultra (4K)
+- resolution: 2K (API `quality: basic`), 3K (`high`) or 4K (`ultra`)
 - output_format: png or jpeg
 - nsfw_checker: enable KIE content filtering (default true)
 - log: print helper logs
@@ -785,7 +794,7 @@ Outputs:
                     "COMBO",
                     {"options": SEEDREAM5_LITE_I2I_ASPECT_RATIO_OPTIONS, "default": "1:1"},
                 ),
-                "quality": ("COMBO", {"options": SEEDREAM5_LITE_I2I_QUALITY_OPTIONS, "default": "basic"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_LITE_RESOLUTION_OPTIONS, "default": "2K"}),
                 "output_format": (
                     "COMBO",
                     {"options": SEEDREAM5_LITE_I2I_OUTPUT_FORMAT_OPTIONS, "default": "png"},
@@ -805,7 +814,7 @@ Outputs:
         prompt: str,
         images: torch.Tensor,
         aspect_ratio: str = "1:1",
-        quality: str = "basic",
+        resolution: str = "2K",
         output_format: str = "png",
         nsfw_checker: bool = True,
         log: bool = True,
@@ -816,7 +825,7 @@ Outputs:
             prompt=prompt,
             images=images,
             aspect_ratio=aspect_ratio,
-            quality=quality,
+            quality=SEEDREAM5_LITE_RESOLUTION_TO_QUALITY[resolution],
             output_format=output_format,
             nsfw_checker=nsfw_checker,
             poll_interval_s=poll_interval_s,
@@ -836,7 +845,7 @@ Fast, low-cost text-to-image generation.
 Inputs:
 - prompt: Text prompt (required, 3-3000 characters)
 - aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
-- size: 1K, 1.5K or 2K (Flash uses size tiers, not a quality enum)
+- resolution: 1K, 1.5K or 2K (API field `size`)
 - output_format: png or jpeg
 - nsfw_checker: enable KIE content filtering (default true)
 - log: print helper logs
@@ -853,7 +862,7 @@ Outputs:
             },
             "optional": {
                 "aspect_ratio": ("COMBO", {"options": SEEDREAM5_FLASH_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
-                "size": ("COMBO", {"options": SEEDREAM5_FLASH_SIZE_OPTIONS, "default": "1K"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_FLASH_SIZE_OPTIONS, "default": "1K"}),
                 "output_format": ("COMBO", {"options": SEEDREAM5_FLASH_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
                 "nsfw_checker": ("BOOLEAN", {"default": True}),
                 "log": ("BOOLEAN", {"default": True}),
@@ -869,7 +878,7 @@ Outputs:
         self,
         prompt: str,
         aspect_ratio: str = "1:1",
-        size: str = "1K",
+        resolution: str = "1K",
         output_format: str = "png",
         nsfw_checker: bool = True,
         log: bool = True,
@@ -879,7 +888,7 @@ Outputs:
         image_tensor = run_seedream5_flash_text_to_image(
             prompt=prompt,
             aspect_ratio=aspect_ratio,
-            size=size,
+            size=resolution,
             output_format=output_format,
             nsfw_checker=nsfw_checker,
             poll_interval_s=poll_interval_s,
@@ -899,7 +908,7 @@ Inputs:
 - prompt: Edit instruction (required, 3-3000 characters)
 - images: Reference image batch (up to 10 images)
 - aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
-- size: 1K, 1.5K or 2K (Flash uses size tiers, not a quality enum)
+- resolution: 1K, 1.5K or 2K (API field `size`)
 - output_format: png or jpeg
 - nsfw_checker: enable KIE content filtering (default true)
 - log: print helper logs
@@ -920,7 +929,7 @@ Outputs:
                     "COMBO",
                     {"options": SEEDREAM5_FLASH_I2I_ASPECT_RATIO_OPTIONS, "default": "1:1"},
                 ),
-                "size": ("COMBO", {"options": SEEDREAM5_FLASH_I2I_SIZE_OPTIONS, "default": "1K"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_FLASH_I2I_SIZE_OPTIONS, "default": "1K"}),
                 "output_format": ("COMBO", {"options": SEEDREAM5_FLASH_I2I_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
                 "nsfw_checker": ("BOOLEAN", {"default": True}),
                 "log": ("BOOLEAN", {"default": True}),
@@ -937,7 +946,7 @@ Outputs:
         prompt: str,
         images: torch.Tensor,
         aspect_ratio: str = "1:1",
-        size: str = "1K",
+        resolution: str = "1K",
         output_format: str = "png",
         nsfw_checker: bool = True,
         log: bool = True,
@@ -948,7 +957,7 @@ Outputs:
             prompt=prompt,
             images=images,
             aspect_ratio=aspect_ratio,
-            size=size,
+            size=resolution,
             output_format=output_format,
             nsfw_checker=nsfw_checker,
             poll_interval_s=poll_interval_s,
@@ -968,7 +977,7 @@ Inputs:
 - image: Source image (exactly one image is used)
 - prompt: Optional instruction; empty lets the model choose the main elements.
   Supports <bbox>x1 y1 x2 y2</bbox> with normalised 0-1000 coordinates.
-- size: auto, 1K, 1.5K or 2K
+- resolution: auto, 1K, 1.5K or 2K (API field `size`)
 - output_format: png or jpeg (base image only; layers are always PNG)
 - log: print helper logs
 
@@ -991,7 +1000,7 @@ need a recomposable, z-ordered layer stack.
             },
             "optional": {
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
-                "size": ("COMBO", {"options": SEEDREAM5_FLASH_LAYER_SIZE_OPTIONS, "default": "auto"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_FLASH_LAYER_SIZE_OPTIONS, "default": "auto"}),
                 "output_format": (
                     "COMBO",
                     {"options": SEEDREAM5_FLASH_LAYER_OUTPUT_FORMAT_OPTIONS, "default": "jpeg"},
@@ -1009,7 +1018,7 @@ need a recomposable, z-ordered layer stack.
         self,
         image: torch.Tensor,
         prompt: str = "",
-        size: str = "auto",
+        resolution: str = "auto",
         output_format: str = "jpeg",
         log: bool = True,
         poll_interval_s: float = 10.0,
@@ -1018,7 +1027,7 @@ need a recomposable, z-ordered layer stack.
         image_batch, mask_batch, layer_info = run_seedream5_flash_layer_decomposition(
             image=image,
             prompt=prompt,
-            size=size,
+            size=resolution,
             output_format=output_format,
             poll_interval_s=poll_interval_s,
             timeout_s=timeout_s,
@@ -1038,7 +1047,7 @@ Inputs:
 - image: Source image (exactly one image is used)
 - prompt: Optional instruction; empty lets the model choose the main elements.
   Supports <bbox>x1 y1 x2 y2</bbox> with normalised 0-1000 coordinates.
-- size: auto, 1K, 1.5K or 2K
+- resolution: auto, 1K, 1.5K or 2K (API field `size`)
 - output_format: png or jpeg (base image only; layers are always PNG)
 - log: print helper logs
 
@@ -1056,7 +1065,7 @@ Outputs:
             },
             "optional": {
                 "prompt": ("STRING", {"multiline": True, "default": ""}),
-                "size": ("COMBO", {"options": SEEDREAM5_PRO_LAYER_SIZE_OPTIONS, "default": "auto"}),
+                "resolution": ("COMBO", {"options": SEEDREAM5_PRO_LAYER_SIZE_OPTIONS, "default": "auto"}),
                 "output_format": (
                     "COMBO",
                     {"options": SEEDREAM5_PRO_LAYER_OUTPUT_FORMAT_OPTIONS, "default": "jpeg"},
@@ -1074,7 +1083,7 @@ Outputs:
         self,
         image: torch.Tensor,
         prompt: str = "",
-        size: str = "auto",
+        resolution: str = "auto",
         output_format: str = "jpeg",
         log: bool = True,
         poll_interval_s: float = 10.0,
@@ -1083,7 +1092,7 @@ Outputs:
         image_batch, mask_batch, layer_info = run_seedream5_pro_layer_decomposition(
             image=image,
             prompt=prompt,
-            size=size,
+            size=resolution,
             output_format=output_format,
             poll_interval_s=poll_interval_s,
             timeout_s=timeout_s,

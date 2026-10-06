@@ -8,7 +8,7 @@ Edit one or more reference images with a text instruction using Seedream 5.0 Pro
 - `images` (IMAGE, required): Reference image batch, up to 10 images. The first
   reference is included in the base price; KIE bills each additional input image.
 - `aspect_ratio` (COMBO, optional): `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9` (default: `1:1`).
-- `quality` (COMBO, optional): `basic` (1K) or `high` (2K) (default: `basic`).
+- `resolution` (COMBO, optional): `1K` (sent to the API as `quality: basic`) or `2K` (`quality: high`) (default: `1K`).
 - `output_format` (COMBO, optional): `png`, `jpeg` (default: `png`).
 - `nsfw_checker` (BOOLEAN, optional): enable KIE content filtering (default: `true`).
 - `log` (BOOLEAN, optional): enable helper logging (default: `true`).

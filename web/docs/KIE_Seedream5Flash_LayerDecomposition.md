@@ -10,7 +10,7 @@ Turn one flat image into a base image plus up to 16 transparent layers
   main elements itself. Supports `<bbox>x1 y1 x2 y2</bbox>` with normalised
   0-1000 coordinates, e.g.
   `Separate the title text <bbox>179 58 809 197</bbox> and the parrot <bbox>330 274 641 991</bbox>`.
-- `size` (COMBO, optional): `auto`, `1K`, `1.5K` or `2K` (default: `auto`).
+- `resolution` (COMBO, optional): `auto`, `1K`, `1.5K` or `2K` (sent to the API as `size`) (default: `auto`).
 - `output_format` (COMBO, optional): `png`, `jpeg` — base image only, layers are
   always PNG (default: `jpeg`).
 - `log` (BOOLEAN, optional): enable helper logging (default: `true`).

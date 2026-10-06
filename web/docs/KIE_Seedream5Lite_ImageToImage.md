@@ -10,7 +10,7 @@ Cheaper tier than Pro, and the one that takes the most references: up to 14.
 - `images` (IMAGE, required): Reference image batch, up to 14 images. Extra
   references beyond the first are billed separately by KIE.
 - `aspect_ratio` (COMBO, optional): `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9` (default: `1:1`).
-- `quality` (COMBO, optional): `basic` (2K), `high` (3K) or `ultra` (4K) (default: `basic`).
+- `resolution` (COMBO, optional): `2K` (sent as `quality: basic`), `3K` (`high`) or `4K` (`ultra`) (default: `2K`).
 - `output_format` (COMBO, optional): `png`, `jpeg` (default: `png`).
 - `nsfw_checker` (BOOLEAN, optional): enable KIE content filtering (default: `true`).
 - `log` (BOOLEAN, optional): enable helper logging (default: `true`).

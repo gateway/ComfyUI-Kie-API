@@ -9,7 +9,7 @@ way to get a 4K image out of this family.
 ## Inputs
 - `prompt` (STRING, required): Generation prompt, 3-3000 characters.
 - `aspect_ratio` (COMBO, optional): `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9` (default: `1:1`).
-- `quality` (COMBO, optional): `basic` (2K), `high` (3K) or `ultra` (4K) (default: `basic`).
+- `resolution` (COMBO, optional): `2K` (sent as `quality: basic`), `3K` (`high`) or `4K` (`ultra`) (default: `2K`).
 - `output_format` (COMBO, optional): `png`, `jpeg` (default: `png`).
 - `nsfw_checker` (BOOLEAN, optional): enable KIE content filtering (default: `true`).
 - `log` (BOOLEAN, optional): enable helper logging (default: `true`).
@@ -21,6 +21,6 @@ way to get a 4K image out of this family.
 ## Notes
 - The node logs both the credit cost of the task (`creditsConsumed`) and the
   remaining balance when `log` is on.
-- `quality: ultra` renders 4K; expect a longer polling time than `basic`.
-- Aspect ratios and quality values were verified against the live API, not only
+- `resolution: 4K` (API `quality: ultra`) renders 4K; expect a longer polling time than the 2K tier.
+- Aspect ratios and resolution values were verified against the live API, not only
   against the docs (21:9 and `ultra` are accepted, and `ultra` is Lite-only).

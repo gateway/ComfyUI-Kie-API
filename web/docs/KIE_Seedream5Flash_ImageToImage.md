@@ -7,8 +7,8 @@ Fast, low-cost image editing with Seedream 5.0 Flash
 - `prompt` (STRING, required): Edit instruction, 3-3000 characters.
 - `images` (IMAGE, required): Reference image batch, up to 10 images.
 - `aspect_ratio` (COMBO, optional): `1:1`, `4:3`, `3:4`, `16:9`, `9:16`, `2:3`, `3:2`, `21:9` (default: `1:1`).
-- `size` (COMBO, optional): `1K`, `1.5K` or `2K` (default: `1K`). Flash exposes
-  resolution as a size tier; there is no `quality` enum like Pro/Lite.
+- `resolution` (COMBO, optional): `1K`, `1.5K` or `2K` (sent to the API as `size`) (default: `1K`). Flash exposes
+  resolution through the API's own `size` field (exposed here as `resolution`, like every Seedream 5 node).
 - `output_format` (COMBO, optional): `png`, `jpeg` (default: `png`).
 - `nsfw_checker` (BOOLEAN, optional): enable KIE content filtering (default: `true`).
 - `log` (BOOLEAN, optional): enable helper logging (default: `true`).
