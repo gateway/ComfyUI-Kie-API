@@ -19,7 +19,8 @@ Edit one or more reference images with a text instruction using Seedream 5.0 Pro
 
 ## Notes
 - Each input image is uploaded to KIE (`/api/v1/jobs/upload` path helpers) before
-  the task is created; the module truncates to the first 10 images and logs it.
+  the task is created; a batch with more than 10 images is rejected before anything
+  is uploaded or billed.
 - KIE billing for this endpoint: 7 credits per 1K image, 14 per 2K image.
 - Keep the instruction focused on what must change and what must be preserved —
   multi-reference input lets you mix subjects, styles or materials.

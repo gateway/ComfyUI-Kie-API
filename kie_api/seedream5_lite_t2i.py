@@ -88,6 +88,7 @@ def run_seedream5_lite_text_to_image(
     timeout_s: int,
     log: bool,
 ) -> torch.Tensor:
+    prompt = (prompt or "").strip()
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(aspect_ratio, quality, output_format)
 

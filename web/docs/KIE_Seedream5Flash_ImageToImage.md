@@ -18,8 +18,8 @@ Fast, low-cost image editing with Seedream 5.0 Flash
 - `image` (IMAGE): ComfyUI image tensor (BHWC float32, 0..1).
 
 ## Notes
-- Each input image is uploaded to KIE before the task is created; the module
-  truncates to the first 10 images and logs it when it does.
+- Each input image is uploaded to KIE before the task is created; a batch with more
+  than 10 images is rejected before anything is uploaded or billed.
 - The node logs both the credit cost of the task (`creditsConsumed`) and the
   remaining balance when `log` is on.
 - Flash also understands positional markers (bounding boxes, arrows) inside the

@@ -20,8 +20,8 @@ Cheaper tier than Pro, and the one that takes the most references: up to 14.
 - `image` (IMAGE): ComfyUI image tensor (BHWC float32, 0..1).
 
 ## Notes
-- Each input image is uploaded to KIE before the task is created; the module
-  truncates to the first 14 images and logs it when it does.
+- Each input image is uploaded to KIE before the task is created; a batch with more
+  than 14 images is rejected before anything is uploaded or billed.
 - The node logs both the credit cost of the task (`creditsConsumed`) and the
   remaining balance when `log` is on.
 - Keep the instruction focused on what must change and what must be preserved —

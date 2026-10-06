@@ -69,17 +69,16 @@ def run_seedream5_lite_image_to_image(
     Returns:
         ComfyUI IMAGE tensor (1, H, W, 3) float32 in [0, 1].
     """
+    prompt = (prompt or "").strip()
     _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
     _validate_options(aspect_ratio, quality, output_format)
     images = _validate_image_tensor_batch(images)
 
+    upload_count = images.shape[0]
+    if upload_count > MAX_IMAGE_COUNT:
+        raise RuntimeError(f"Too many reference images: {upload_count} provided, {MAX_IMAGE_COUNT} allowed.")
+
     api_key = _load_api_key()
-
-    total_images = images.shape[0]
-    if total_images > MAX_IMAGE_COUNT:
-        _log(log, f"More than {MAX_IMAGE_COUNT} images provided ({total_images}); only first {MAX_IMAGE_COUNT} used.")
-
-    upload_count = min(total_images, MAX_IMAGE_COUNT)
     image_urls: list[str] = []
     if upload_count > 0:
         _log(log, f"Uploading {upload_count} reference image(s)...")
