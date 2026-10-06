@@ -5,6 +5,7 @@ This module centralizes common KIE job lifecycle operations that are model-agnos
 - Fetch `recordInfo` for a task id.
 - Decide whether a task failure is likely transient.
 - Poll a task until completion, failure, or timeout.
+- Report the settled cost and the remaining balance on success.
 
 Behavior (logging text, timing, error types) is intentionally kept identical to the
 original model-specific implementations.
@@ -14,6 +15,7 @@ import json
 import time
 from typing import Any
 
+from .credits import _log_remaining_credits
 from .http import TransientKieError, requests
 from .log import _log
 
@@ -133,6 +135,20 @@ def _should_retry_fail(fail_code: Any, fail_msg: Any, message: Any) -> bool:
     return False
 
 
+def _log_task_cost(record_data: dict[str, Any]) -> None:
+    """Log the settled credit cost and the remaining balance of a finished task.
+
+    `recordInfo` reports the settled cost in `creditsConsumed` and the balance in
+    `remainedCredits` for image and video tasks alike. Nothing here is estimated:
+    when the API omits a field the log says so instead of inventing a number.
+    """
+    cost = record_data.get("creditsConsumed")
+    if cost is None:
+        _log(True, "Credits consumed by this task: not reported by the API")
+    else:
+        _log(True, f"Credits consumed by this task: {cost}")
+
+
 def _poll_task_until_complete(
     api_key: str,
     task_id: str,
@@ -183,6 +199,8 @@ def _poll_task_until_complete(
         if state == "success":
             if log:
                 _log(log, f"Task {task_id} completed (elapsed={elapsed:.1f}s)")
+                _log_task_cost(data)
+                _log_remaining_credits(log, data, api_key, _log)
             return data
         if state == "fail":
             fail_code = data.get("failCode")

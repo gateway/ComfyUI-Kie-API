@@ -42,6 +42,14 @@ Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and document
 - Flux 2 I2I: [`KIE_Flux2_I2I.md`](KIE_Flux2_I2I.md)
 - Grok Imagine T2I: [`KIE_GrokImagine_T2I.md`](KIE_GrokImagine_T2I.md)
 - Grok Imagine I2I: [`KIE_GrokImagine_I2I.md`](KIE_GrokImagine_I2I.md)
+- Seedream 5.0 Pro Text-to-Image: [`KIE_Seedream5Pro_TextToImage.md`](KIE_Seedream5Pro_TextToImage.md) *(local addition, not upstream)*
+- Seedream 5.0 Pro Image-to-Image: [`KIE_Seedream5Pro_ImageToImage.md`](KIE_Seedream5Pro_ImageToImage.md) *(local addition, not upstream)*
+- Seedream 5.0 Lite Text-to-Image: [`KIE_Seedream5Lite_TextToImage.md`](KIE_Seedream5Lite_TextToImage.md) *(local addition, not upstream)*
+- Seedream 5.0 Lite Image-to-Image: [`KIE_Seedream5Lite_ImageToImage.md`](KIE_Seedream5Lite_ImageToImage.md) *(local addition, not upstream)*
+- Seedream 5.0 Flash Text-to-Image: [`KIE_Seedream5Flash_TextToImage.md`](KIE_Seedream5Flash_TextToImage.md) *(local addition, not upstream)*
+- Seedream 5.0 Flash Image-to-Image: [`KIE_Seedream5Flash_ImageToImage.md`](KIE_Seedream5Flash_ImageToImage.md) *(local addition, not upstream)*
+- Seedream 5.0 Flash Layer Decomposition: [`KIE_Seedream5Flash_LayerDecomposition.md`](KIE_Seedream5Flash_LayerDecomposition.md) *(local addition, not upstream)*
+- Seedream 5.0 Pro Layer Decomposition: [`KIE_Seedream5Pro_LayerDecomposition.md`](KIE_Seedream5Pro_LayerDecomposition.md) *(local addition, not upstream)*
 - Seedream 4.5 Text-to-Image: [`KIE_Seedream45_TextToImage.md`](KIE_Seedream45_TextToImage.md)
 - Seedream 4.5 Edit: [`KIE_Seedream45_Edit.md`](KIE_Seedream45_Edit.md)
 

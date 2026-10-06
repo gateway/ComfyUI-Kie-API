@@ -8,7 +8,9 @@ import torch
 from .auth import _load_api_key
 from .audio import _audio_bytes_to_comfy_audio
 from .images import _download_image, _image_bytes_to_tensor
+from .credits import _log_remaining_credits
 from .http import TransientKieError, requests
+from .jobs import _log_task_cost
 from .log import _log
 
 GENERATE_URL = "https://api.kie.ai/api/v1/generate"
@@ -184,6 +186,13 @@ def _poll_music_until_complete(
             last_state = state
 
         if state == SUCCESS_STATE or state == "complete":
+            if log:
+                # Same spend/saldo report as the shared jobs.py poller: the legacy
+                # Suno endpoints do not report creditsConsumed, so the helper says so
+                # instead of guessing, and the balance comes from remainedCredits or
+                # the free credit endpoint.
+                _log_task_cost(record)
+                _log_remaining_credits(log, record, api_key, _log)
             return record
         if state in FAIL_STATES or state == "error":
             raise RuntimeError(f"Suno task {task_id} failed with state: {state}")

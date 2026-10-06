@@ -1,4 +1,5 @@
 config/kie_key.txt
+config/*.txt
 __pycache__/
 *.pyc
 .DS_Store
