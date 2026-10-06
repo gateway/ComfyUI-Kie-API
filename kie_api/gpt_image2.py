@@ -1,4 +1,4 @@
-"""GPT Image 2 text-to-image and image-to-image helpers."""
+"""GPT Image 2 / 2.5 text-to-image and image-to-image helpers."""
 
 import time
 
@@ -7,31 +7,13 @@ import torch
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .http import TransientKieError
-from .images import _download_image, _image_bytes_to_tensor
+from .images import _download_image, _image_bytes_to_tensor_and_mask
+from .gpt_image_options import DEFAULT_MODEL, MAX_IMAGE_COUNT, build_gpt_image_payload
 from .jobs import _create_task, _poll_task_until_complete
 from .log import _log
 from .results import _extract_result_urls
 from .upload import _image_tensor_to_png_bytes, _truncate_url, _upload_image
-from .validation import _validate_image_tensor_batch, _validate_prompt
-
-
-TEXT_TO_IMAGE_MODEL_NAME = "gpt-image-2-text-to-image"
-IMAGE_TO_IMAGE_MODEL_NAME = "gpt-image-2-image-to-image"
-ASPECT_RATIO_OPTIONS = ["auto", "1:1", "9:16", "16:9", "4:3", "3:4"]
-RESOLUTION_OPTIONS = ["1K", "2K", "4K"]
-PROMPT_MAX_LENGTH = 20000
-MAX_IMAGE_COUNT = 16
-
-
-def _validate_options(aspect_ratio: str, resolution: str) -> None:
-    if aspect_ratio not in ASPECT_RATIO_OPTIONS:
-        raise RuntimeError("Invalid aspect_ratio. Use the pinned enum options.")
-    if resolution not in RESOLUTION_OPTIONS:
-        raise RuntimeError("Invalid resolution. Use the pinned enum options.")
-    if aspect_ratio == "auto" and resolution != "1K":
-        raise RuntimeError('GPT Image 2 requires resolution "1K" when aspect_ratio is "auto".')
-    if aspect_ratio == "1:1" and resolution == "4K":
-        raise RuntimeError('GPT Image 2 does not support resolution "4K" with aspect_ratio "1:1".')
+from .validation import _validate_image_tensor_batch
 
 
 def _run_gpt_image2_payload(
@@ -41,7 +23,7 @@ def _run_gpt_image2_payload(
     timeout_s: int,
     log: bool,
     create_label: str,
-) -> torch.Tensor:
+) -> tuple[torch.Tensor, torch.Tensor]:
     api_key = _load_api_key()
     _log(log, f"Creating {create_label} task...")
     start_time = time.time()
@@ -62,10 +44,10 @@ def _run_gpt_image2_payload(
     _log(log, f"Result URLs: {result_urls}")
     _log(log, f"Downloading result image from {result_urls[0]}...")
     image_bytes = _download_image(result_urls[0])
-    image_tensor = _image_bytes_to_tensor(image_bytes)
+    image_tensor, mask_tensor = _image_bytes_to_tensor_and_mask(image_bytes)
     _log(log, "Image downloaded and decoded.")
     _log_remaining_credits(log, record_data, api_key, _log)
-    return image_tensor
+    return image_tensor, mask_tensor
 
 
 def run_gpt_image2_text_to_image(
@@ -79,19 +61,14 @@ def run_gpt_image2_text_to_image(
     retry_on_fail: bool = True,
     max_retries: int = 2,
     retry_backoff_s: float = 3.0,
-) -> torch.Tensor:
-    """Run a GPT Image 2 text-to-image job end-to-end."""
-    _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
-    _validate_options(aspect_ratio, resolution)
-
-    payload = {
-        "model": TEXT_TO_IMAGE_MODEL_NAME,
-        "input": {
-            "prompt": prompt,
-            "aspect_ratio": aspect_ratio,
-            "resolution": resolution,
-        },
-    }
+    model: str = DEFAULT_MODEL,
+    background: str = "opaque",
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Run the selected GPT Image text-to-image model; return RGB and mask."""
+    payload = build_gpt_image_payload(
+        model=model, mode="text-to-image", prompt=prompt,
+        aspect_ratio=aspect_ratio, resolution=resolution, background=background,
+    )
 
     attempts = max_retries + 1 if retry_on_fail else 1
     attempts = max(attempts, 1)
@@ -104,7 +81,7 @@ def run_gpt_image2_text_to_image(
                 poll_interval_s=poll_interval_s,
                 timeout_s=timeout_s,
                 log=log,
-                create_label="GPT Image 2 text-to-image",
+                create_label=f"{model} text-to-image",
             )
         except TransientKieError:
             if not retry_on_fail or attempt >= attempts:
@@ -112,7 +89,7 @@ def run_gpt_image2_text_to_image(
             _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
             time.sleep(backoff)
 
-    raise RuntimeError("GPT Image 2 text-to-image job failed after retry attempts.")
+    raise RuntimeError(f"{model} text-to-image job failed after retry attempts.")
 
 
 def run_gpt_image2_image_to_image(
@@ -127,11 +104,18 @@ def run_gpt_image2_image_to_image(
     retry_on_fail: bool = True,
     max_retries: int = 2,
     retry_backoff_s: float = 3.0,
-) -> torch.Tensor:
-    """Run a GPT Image 2 image-to-image job end-to-end."""
-    _validate_prompt(prompt, max_length=PROMPT_MAX_LENGTH)
-    _validate_options(aspect_ratio, resolution)
+    model: str = DEFAULT_MODEL,
+    background: str = "opaque",
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Run the selected GPT Image editing model; return RGB and mask."""
+    payload = build_gpt_image_payload(
+        model=model, mode="image-to-image", prompt=prompt,
+        aspect_ratio=aspect_ratio, resolution=resolution, background=background,
+    )
     images = _validate_image_tensor_batch(images)
+    total_images = images.shape[0]
+    if total_images > MAX_IMAGE_COUNT and model != DEFAULT_MODEL:
+        raise RuntimeError(f"{model} accepts at most {MAX_IMAGE_COUNT} source images; received {total_images}.")
 
     attempts = max_retries + 1 if retry_on_fail else 1
     attempts = max(attempts, 1)
@@ -140,7 +124,6 @@ def run_gpt_image2_image_to_image(
     for attempt in range(1, attempts + 1):
         try:
             api_key = _load_api_key()
-            total_images = images.shape[0]
             if total_images > MAX_IMAGE_COUNT:
                 _log(
                     log,
@@ -150,29 +133,21 @@ def run_gpt_image2_image_to_image(
 
             upload_count = min(total_images, MAX_IMAGE_COUNT)
             image_urls: list[str] = []
-            _log(log, f"Uploading {upload_count} image(s) for GPT Image 2 I2I...")
+            _log(log, f"Uploading {upload_count} image(s) for {model} I2I...")
             for idx in range(upload_count):
                 png_bytes = _image_tensor_to_png_bytes(images[idx])
                 image_url = _upload_image(api_key, png_bytes)
                 image_urls.append(image_url)
                 _log(log, f"Image {idx + 1} upload success: {_truncate_url(image_url)}")
 
-            payload = {
-                "model": IMAGE_TO_IMAGE_MODEL_NAME,
-                "input": {
-                    "prompt": prompt,
-                    "input_urls": image_urls,
-                    "aspect_ratio": aspect_ratio,
-                    "resolution": resolution,
-                },
-            }
+            payload["input"]["input_urls"] = image_urls
 
             return _run_gpt_image2_payload(
                 payload=payload,
                 poll_interval_s=poll_interval_s,
                 timeout_s=timeout_s,
                 log=log,
-                create_label="GPT Image 2 image-to-image",
+                create_label=f"{model} image-to-image",
             )
         except TransientKieError:
             if not retry_on_fail or attempt >= attempts:
@@ -180,4 +155,4 @@ def run_gpt_image2_image_to_image(
             _log(log, f"Retrying (attempt {attempt + 1}/{attempts}) after {backoff}s")
             time.sleep(backoff)
 
-    raise RuntimeError("GPT Image 2 image-to-image job failed after retry attempts.")
+    raise RuntimeError(f"{model} image-to-image job failed after retry attempts.")

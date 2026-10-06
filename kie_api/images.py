@@ -29,6 +29,18 @@ def _image_bytes_to_tensor(image_bytes: bytes) -> torch.Tensor:
         raise RuntimeError("Failed to decode result image.") from exc
 
 
+def _image_bytes_to_tensor_and_mask(image_bytes: bytes) -> tuple[torch.Tensor, torch.Tensor]:
+    """Decode RGB plus ComfyUI's inverse-alpha mask; opaque images yield zeros."""
+    try:
+        with Image.open(BytesIO(image_bytes)) as img:
+            rgba = np.array(img.convert("RGBA"), dtype=np.float32) / 255.0
+            image = torch.from_numpy(rgba[:, :, :3].copy()).unsqueeze(0)
+            mask = torch.from_numpy(1.0 - rgba[:, :, 3]).unsqueeze(0)
+            return image, mask
+    except Exception as exc:
+        raise RuntimeError("Failed to decode result image.") from exc
+
+
 def _download_image(url: str) -> bytes:
     """Download a result image and return its raw bytes."""
     try:

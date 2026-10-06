@@ -19,9 +19,15 @@ from .kie_api.nanobanana2 import (
     RESOLUTION_OPTIONS as NANOBANANA2_RESOLUTION_OPTIONS,
     run_nanobanana2_image_job,
 )
-from .kie_api.gpt_image2 import (
+from .kie_api.gpt_image_options import (
     ASPECT_RATIO_OPTIONS as GPT_IMAGE2_ASPECT_RATIO_OPTIONS,
     RESOLUTION_OPTIONS as GPT_IMAGE2_RESOLUTION_OPTIONS,
+    BACKGROUND_OPTIONS as GPT_IMAGE_BACKGROUND_OPTIONS,
+    DEFAULT_MODEL as GPT_IMAGE_DEFAULT_MODEL,
+    MODEL_OPTIONS as GPT_IMAGE_MODEL_OPTIONS,
+    model_widget_options as gpt_image_widget_options,
+)
+from .kie_api.gpt_image2 import (
     run_gpt_image2_image_to_image,
     run_gpt_image2_text_to_image,
 )
@@ -345,24 +351,26 @@ Outputs:
 
 class KIE_GPTImage2_TextToImage:
     HELP = """
-KIE GPT Image 2 (Text-to-Image)
+KIE GPT Image (Text-to-Image)
 
-Generate an image from a text prompt using GPT Image 2.
+Generate an image from a text prompt using GPT Image 2, GPT Image 2.5 Flare, or GPT Image 2.5 Sunburst.
 
 Inputs:
 - prompt: Text prompt (required, up to 20,000 chars)
-- aspect_ratio: auto, 1:1, 9:16, 16:9, 4:3, or 3:4
+- model: GPT Image 2 / GPT Image 2.5 Flare / GPT Image 2.5 Sunburst
+- background: opaque, transparent, auto (2.5 only)
+- aspect_ratio: Choices depend on the model
 - resolution: 1K, 2K, or 4K
-- poll_interval_s: Status check interval
-- timeout_s: Max wait time
 - log: Console logging on/off
 
 Outputs:
-- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+- IMAGE: RGB image tensor (BHWC float32 0-1)
+- MASK: Transparency mask (BHW, 1 = transparent, 0 = opaque)
 
 Notes:
-- KIE requires 1K resolution when aspect_ratio is auto.
-- KIE does not support 4K output with 1:1 aspect ratio.
+- GPT Image 2: auto requires 1K; 1:1 does not support 4K.
+- GPT Image 2.5: 27:16, 16:27, 9:8 and 8:9 require 1K.
+- Use Join Image with Alpha with IMAGE and MASK to preserve transparency.
 """
 
     @classmethod
@@ -372,14 +380,22 @@ Notes:
                 "prompt": ("STRING", {"multiline": True}),
             },
             "optional": {
-                "aspect_ratio": ("COMBO", {"options": GPT_IMAGE2_ASPECT_RATIO_OPTIONS, "default": "auto"}),
-                "resolution": ("COMBO", {"options": GPT_IMAGE2_RESOLUTION_OPTIONS, "default": "1K"}),
+                "aspect_ratio": (GPT_IMAGE2_ASPECT_RATIO_OPTIONS, {"default": "auto"}),
+                "resolution": (GPT_IMAGE2_RESOLUTION_OPTIONS, {"default": "1K"}),
                 "log": ("BOOLEAN", {"default": True}),
+                # Append widgets: old workflows serialize values in this order.
+                "model": (GPT_IMAGE_MODEL_OPTIONS, {
+                    "default": GPT_IMAGE_DEFAULT_MODEL,
+                    "kie_model_options": gpt_image_widget_options(),
+                }),
+                "background": (GPT_IMAGE_BACKGROUND_OPTIONS, {
+                    "default": "opaque", "tooltip": "GPT Image 2.5 only. Use MASK to preserve transparency.",
+                }),
             },
         }
 
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
+    RETURN_TYPES = ("IMAGE", "MASK")
+    RETURN_NAMES = ("image", "mask")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -394,9 +410,13 @@ Notes:
         retry_on_fail: bool = True,
         max_retries: int = 2,
         retry_backoff_s: float = 3.0,
+        model: str = GPT_IMAGE_DEFAULT_MODEL,
+        background: str = "opaque",
     ):
-        image_tensor = run_gpt_image2_text_to_image(
+        return run_gpt_image2_text_to_image(
             prompt=prompt,
+            model=model,
+            background=background,
             aspect_ratio=aspect_ratio,
             resolution=resolution,
             poll_interval_s=poll_interval_s,
@@ -406,30 +426,31 @@ Notes:
             max_retries=max_retries,
             retry_backoff_s=retry_backoff_s,
         )
-        return (image_tensor,)
 
 
 class KIE_GPTImage2_ImageToImage:
     HELP = """
-KIE GPT Image 2 (Image-to-Image)
+KIE GPT Image (Image-to-Image)
 
-Generate an edited or transformed image from a prompt and source images using GPT Image 2.
+Generate an edited or transformed image from a prompt and source images using GPT Image 2, GPT Image 2.5 Flare, or GPT Image 2.5 Sunburst.
 
 Inputs:
 - prompt: Text prompt (required, up to 20,000 chars)
-- images: Source image batch (up to 16 images; all uploaded)
-- aspect_ratio: auto, 1:1, 9:16, 16:9, 4:3, or 3:4
+- images: Source image batch (up to 16 images)
+- model: GPT Image 2 / GPT Image 2.5 Flare / GPT Image 2.5 Sunburst
+- background: opaque, transparent, auto (2.5 only)
+- aspect_ratio: Choices depend on the model
 - resolution: 1K, 2K, or 4K
-- poll_interval_s: Status check interval
-- timeout_s: Max wait time
 - log: Console logging on/off
 
 Outputs:
-- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+- IMAGE: RGB image tensor (BHWC float32 0-1)
+- MASK: Transparency mask (BHW, 1 = transparent, 0 = opaque)
 
 Notes:
-- KIE requires 1K resolution when aspect_ratio is auto.
-- KIE does not support 4K output with 1:1 aspect ratio.
+- GPT Image 2: auto requires 1K; 1:1 does not support 4K.
+- GPT Image 2.5: 27:16, 16:27, 9:8 and 8:9 require 1K.
+- Use Join Image with Alpha with IMAGE and MASK to preserve transparency.
 """
 
     @classmethod
@@ -440,14 +461,22 @@ Notes:
                 "images": ("IMAGE",),
             },
             "optional": {
-                "aspect_ratio": ("COMBO", {"options": GPT_IMAGE2_ASPECT_RATIO_OPTIONS, "default": "auto"}),
-                "resolution": ("COMBO", {"options": GPT_IMAGE2_RESOLUTION_OPTIONS, "default": "1K"}),
+                "aspect_ratio": (GPT_IMAGE2_ASPECT_RATIO_OPTIONS, {"default": "auto"}),
+                "resolution": (GPT_IMAGE2_RESOLUTION_OPTIONS, {"default": "1K"}),
                 "log": ("BOOLEAN", {"default": True}),
+                # Append widgets: old workflows serialize values in this order.
+                "model": (GPT_IMAGE_MODEL_OPTIONS, {
+                    "default": GPT_IMAGE_DEFAULT_MODEL,
+                    "kie_model_options": gpt_image_widget_options(),
+                }),
+                "background": (GPT_IMAGE_BACKGROUND_OPTIONS, {
+                    "default": "opaque", "tooltip": "GPT Image 2.5 only. Use MASK to preserve transparency.",
+                }),
             },
         }
 
-    RETURN_TYPES = ("IMAGE",)
-    RETURN_NAMES = ("image",)
+    RETURN_TYPES = ("IMAGE", "MASK")
+    RETURN_NAMES = ("image", "mask")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -463,9 +492,13 @@ Notes:
         retry_on_fail: bool = True,
         max_retries: int = 2,
         retry_backoff_s: float = 3.0,
+        model: str = GPT_IMAGE_DEFAULT_MODEL,
+        background: str = "opaque",
     ):
-        image_tensor = run_gpt_image2_image_to_image(
+        return run_gpt_image2_image_to_image(
             prompt=prompt,
+            model=model,
+            background=background,
             images=images,
             aspect_ratio=aspect_ratio,
             resolution=resolution,
@@ -476,7 +509,6 @@ Notes:
             max_retries=max_retries,
             retry_backoff_s=retry_backoff_s,
         )
-        return (image_tensor,)
 
 
 class KIE_Seedream45_TextToImage:
@@ -2450,8 +2482,8 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_GetRemainingCredits": "KIE Get Remaining Credits",
     "KIE_NanoBananaPro_Image": "KIE Nano Banana Pro (Image)",
     "KIE_NanoBanana2_Image": "Nano Banana 2",
-    "KIE_GPTImage2_TextToImage": "KIE GPT Image 2 (Text-to-Image)",
-    "KIE_GPTImage2_ImageToImage": "KIE GPT Image 2 (Image-to-Image)",
+    "KIE_GPTImage2_TextToImage": "KIE GPT Image (Text-to-Image)",
+    "KIE_GPTImage2_ImageToImage": "KIE GPT Image (Image-to-Image)",
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_GrokImagine_T2I": "KIE Grok Imagine (T2I)",

@@ -45,8 +45,10 @@ This node pack currently includes the following nodes:
   - Image generation node using Nano Banana 2.
   - Supports up to 14 optional input/reference images.
   - Supports optional Google web-search grounding.
-- **GPT Image 2 Text-to-Image / Image-to-Image**
-  - Text-to-image and image-to-image nodes using GPT Image 2.
+- **GPT Image Text-to-Image / Image-to-Image**
+  - Two nodes with a model selector: GPT Image 2, GPT Image 2.5 Flare, and GPT Image 2.5 Sunburst.
+  - Model-aware aspect ratio/resolution dropdowns and GPT Image 2.5 background controls.
+  - RGB IMAGE plus transparency MASK outputs; existing GPT Image 2 workflow IDs are preserved.
   - Image-to-image accepts up to 16 input/reference images via ComfyUI batch.
 - **Seedream Text-to-Image / Edit**
   - Text-to-image and image-editing node for Seedream models.
@@ -140,12 +142,12 @@ This node pack currently includes the following nodes:
 Use this section after reviewing Current Available Nodes.
 
 - Full docs index (all nodes): [`web/docs/README.md`](web/docs/README.md)
-- GPT Image 2 status: `Text-to-Image` and `Image-to-Image` are implemented and documented in this repo.
+- GPT Image 2 / 2.5 status: both modes are implemented and documented. Windows ComfyUI/live verification of 2.5 is pending.
 - Kling 3.0 motion status: implemented in this repo with both the node doc and API spec linked below.
 - Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented in this repo.
 - Image generation node docs:
-  - [`web/docs/KIE_GPTImage2_TextToImage.md`](web/docs/KIE_GPTImage2_TextToImage.md) - GPT Image 2 text-to-image node reference.
-  - [`web/docs/KIE_GPTImage2_ImageToImage.md`](web/docs/KIE_GPTImage2_ImageToImage.md) - GPT Image 2 image-to-image node reference.
+  - [`web/docs/KIE_GPTImage2_TextToImage.md`](web/docs/KIE_GPTImage2_TextToImage.md) - GPT Image 2 / 2.5 text-to-image node reference.
+  - [`web/docs/KIE_GPTImage2_ImageToImage.md`](web/docs/KIE_GPTImage2_ImageToImage.md) - GPT Image 2 / 2.5 image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2I.md`](web/docs/KIE_GrokImagine_T2I.md) - Grok Imagine text-to-image node reference.
   - [`web/docs/KIE_GrokImagine_I2I.md`](web/docs/KIE_GrokImagine_I2I.md) - Grok Imagine image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2V.md`](web/docs/KIE_GrokImagine_T2V.md) - Grok Imagine text-to-video node reference.
@@ -253,6 +255,7 @@ Related docs:
 - [`web/docs/KIE_Kling3_Motion_I2V_Spec.md`](web/docs/KIE_Kling3_Motion_I2V_Spec.md)
 
 ## Changelog
+- 2026-10-06 (0.1.17): Added GPT Image 2.5 Flare/Sunburst selection to both GPT Image nodes, model-aware dropdowns/validation, and transparency MASK output. Existing GPT Image 2 workflow IDs are preserved. Windows ComfyUI/live verification remains pending.
 - 2026-05-08: Bumped package version to 0.1.15 to trigger the ComfyUI build after GPT Image 2 verification.
 - 2026-05-04: Bumped package version to 0.1.14 and added GPT Image 2 text-to-image and image-to-image nodes, including 16-image I2I upload support and KIE resolution compatibility validation.
 - 2026-04-17: Bumped package version to 0.1.13, added a Seedance 2.0 model selector (`seedance-2-fast` / `seedance-2`), and marked Seedance 2.0 as experimental in the README.

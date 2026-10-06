@@ -2,7 +2,7 @@
 
 This folder contains node documentation for the ComfyUI KIE API pack.
 
-GPT Image 2 status: `Text-to-Image` and `Image-to-Image` are implemented and documented in this folder.
+GPT Image 2 / 2.5 status: both modes support GPT Image 2, Flare, and Sunburst. Windows ComfyUI/live verification of 2.5 is pending.
 
 Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and documented in this folder.
 
@@ -37,8 +37,8 @@ Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented and document
 ## Image Nodes
 - Nano Banana Pro: [`KIE_NanoBananaPro_Image.md`](KIE_NanoBananaPro_Image.md)
 - Nano Banana 2: [`KIE_NanoBanana2_Image.md`](KIE_NanoBanana2_Image.md)
-- GPT Image 2 Text-to-Image: [`KIE_GPTImage2_TextToImage.md`](KIE_GPTImage2_TextToImage.md)
-- GPT Image 2 Image-to-Image: [`KIE_GPTImage2_ImageToImage.md`](KIE_GPTImage2_ImageToImage.md)
+- GPT Image 2 / 2.5 Text-to-Image: [`KIE_GPTImage2_TextToImage.md`](KIE_GPTImage2_TextToImage.md)
+- GPT Image 2 / 2.5 Image-to-Image: [`KIE_GPTImage2_ImageToImage.md`](KIE_GPTImage2_ImageToImage.md)
 - Flux 2 I2I: [`KIE_Flux2_I2I.md`](KIE_Flux2_I2I.md)
 - Grok Imagine T2I: [`KIE_GrokImagine_T2I.md`](KIE_GrokImagine_T2I.md)
 - Grok Imagine I2I: [`KIE_GrokImagine_I2I.md`](KIE_GrokImagine_I2I.md)
