@@ -36,6 +36,53 @@ from .kie_api.seedream45_t2i import (
     QUALITY_OPTIONS as SEEDREAM_QUALITY_OPTIONS,
     run_seedream45_text_to_image,
 )
+from .kie_api.seedream5_t2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM5_ASPECT_RATIO_OPTIONS,
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_OUTPUT_FORMAT_OPTIONS,
+    QUALITY_OPTIONS as SEEDREAM5_QUALITY_OPTIONS,
+    run_seedream5_pro_text_to_image,
+)
+from .kie_api.seedream5_i2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM5_I2I_ASPECT_RATIO_OPTIONS,
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_I2I_OUTPUT_FORMAT_OPTIONS,
+    QUALITY_OPTIONS as SEEDREAM5_I2I_QUALITY_OPTIONS,
+    run_seedream5_pro_image_to_image,
+)
+from .kie_api.seedream5_lite_t2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM5_LITE_ASPECT_RATIO_OPTIONS,
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_LITE_OUTPUT_FORMAT_OPTIONS,
+    QUALITY_OPTIONS as SEEDREAM5_LITE_QUALITY_OPTIONS,
+    run_seedream5_lite_text_to_image,
+)
+from .kie_api.seedream5_lite_i2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM5_LITE_I2I_ASPECT_RATIO_OPTIONS,
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_LITE_I2I_OUTPUT_FORMAT_OPTIONS,
+    QUALITY_OPTIONS as SEEDREAM5_LITE_I2I_QUALITY_OPTIONS,
+    run_seedream5_lite_image_to_image,
+)
+
+from .kie_api.seedream5_flash_t2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM5_FLASH_ASPECT_RATIO_OPTIONS,
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_FLASH_OUTPUT_FORMAT_OPTIONS,
+    SIZE_OPTIONS as SEEDREAM5_FLASH_SIZE_OPTIONS,
+    run_seedream5_flash_text_to_image,
+)
+from .kie_api.seedream5_flash_i2i import (
+    ASPECT_RATIO_OPTIONS as SEEDREAM5_FLASH_I2I_ASPECT_RATIO_OPTIONS,
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_FLASH_I2I_OUTPUT_FORMAT_OPTIONS,
+    SIZE_OPTIONS as SEEDREAM5_FLASH_I2I_SIZE_OPTIONS,
+    run_seedream5_flash_image_to_image,
+)
+from .kie_api.seedream5_flash_layer import (
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_FLASH_LAYER_OUTPUT_FORMAT_OPTIONS,
+    SIZE_OPTIONS as SEEDREAM5_FLASH_LAYER_SIZE_OPTIONS,
+    run_seedream5_flash_layer_decomposition,
+)
+from .kie_api.seedream5_pro_layer import (
+    OUTPUT_FORMAT_OPTIONS as SEEDREAM5_PRO_LAYER_OUTPUT_FORMAT_OPTIONS,
+    SIZE_OPTIONS as SEEDREAM5_PRO_LAYER_SIZE_OPTIONS,
+    run_seedream5_pro_layer_decomposition,
+)
 from .kie_api.seedream45_edit import (
     ASPECT_RATIO_OPTIONS as SEEDREAM_EDIT_ASPECT_RATIO_OPTIONS,
     QUALITY_OPTIONS as SEEDREAM_EDIT_QUALITY_OPTIONS,
@@ -509,6 +556,540 @@ Notes:
             max_retries=max_retries,
             retry_backoff_s=retry_backoff_s,
         )
+
+
+class KIE_Seedream5Pro_TextToImage:
+    HELP = """
+KIE Seedream 5.0 Pro Text-To-Image
+
+Generate one image from a text prompt (no reference images required).
+
+Inputs:
+- prompt: Text prompt (required, 3-3000 characters)
+- aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
+- quality: basic (1K) or high (2K)
+- output_format: png or jpeg
+- nsfw_checker: enable KIE content filtering (default true)
+- log: print helper logs
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": SEEDREAM5_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "quality": ("COMBO", {"options": SEEDREAM5_QUALITY_OPTIONS, "default": "basic"}),
+                "output_format": ("COMBO", {"options": SEEDREAM5_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
+                "nsfw_checker": ("BOOLEAN", {"default": True}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "1:1",
+        quality: str = "basic",
+        output_format: str = "png",
+        nsfw_checker: bool = True,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream5_pro_text_to_image(
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            quality=quality,
+            output_format=output_format,
+            nsfw_checker=nsfw_checker,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
+class KIE_Seedream5Pro_ImageToImage:
+    HELP = """
+KIE Seedream 5.0 Pro Image-To-Image
+
+Edit one or more reference images with a text instruction.
+
+Inputs:
+- prompt: Edit instruction (required, 3-3000 characters)
+- images: Reference image batch (up to 10 images; the first is free, extras are billed)
+- aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
+- quality: basic (1K) or high (2K)
+- output_format: png or jpeg
+- nsfw_checker: enable KIE content filtering (default true)
+- log: print helper logs
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "images": ("IMAGE",),
+            },
+            "optional": {
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": SEEDREAM5_I2I_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "quality": ("COMBO", {"options": SEEDREAM5_I2I_QUALITY_OPTIONS, "default": "basic"}),
+                "output_format": (
+                    "COMBO",
+                    {"options": SEEDREAM5_I2I_OUTPUT_FORMAT_OPTIONS, "default": "png"},
+                ),
+                "nsfw_checker": ("BOOLEAN", {"default": True}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor,
+        aspect_ratio: str = "1:1",
+        quality: str = "basic",
+        output_format: str = "png",
+        nsfw_checker: bool = True,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream5_pro_image_to_image(
+            prompt=prompt,
+            images=images,
+            aspect_ratio=aspect_ratio,
+            quality=quality,
+            output_format=output_format,
+            nsfw_checker=nsfw_checker,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
+class KIE_Seedream5Lite_TextToImage:
+    HELP = """
+KIE Seedream 5.0 Lite Text-To-Image
+
+Generate one image from a text prompt (cheaper Lite tier, higher resolutions).
+
+Inputs:
+- prompt: Text prompt (required, 3-3000 characters)
+- aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
+- quality: basic (2K), high (3K) or ultra (4K)
+- output_format: png or jpeg
+- nsfw_checker: enable KIE content filtering (default true)
+- log: print helper logs
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": SEEDREAM5_LITE_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "quality": ("COMBO", {"options": SEEDREAM5_LITE_QUALITY_OPTIONS, "default": "basic"}),
+                "output_format": ("COMBO", {"options": SEEDREAM5_LITE_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
+                "nsfw_checker": ("BOOLEAN", {"default": True}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "1:1",
+        quality: str = "basic",
+        output_format: str = "png",
+        nsfw_checker: bool = True,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream5_lite_text_to_image(
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            quality=quality,
+            output_format=output_format,
+            nsfw_checker=nsfw_checker,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
+class KIE_Seedream5Lite_ImageToImage:
+    HELP = """
+KIE Seedream 5.0 Lite Image-To-Image
+
+Edit one or more reference images with a text instruction (cheaper Lite tier).
+
+Inputs:
+- prompt: Edit instruction (required, 3-3000 characters)
+- images: Reference image batch (up to 14 images; extra references are billed)
+- aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
+- quality: basic (2K), high (3K) or ultra (4K)
+- output_format: png or jpeg
+- nsfw_checker: enable KIE content filtering (default true)
+- log: print helper logs
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "images": ("IMAGE",),
+            },
+            "optional": {
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": SEEDREAM5_LITE_I2I_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "quality": ("COMBO", {"options": SEEDREAM5_LITE_I2I_QUALITY_OPTIONS, "default": "basic"}),
+                "output_format": (
+                    "COMBO",
+                    {"options": SEEDREAM5_LITE_I2I_OUTPUT_FORMAT_OPTIONS, "default": "png"},
+                ),
+                "nsfw_checker": ("BOOLEAN", {"default": True}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor,
+        aspect_ratio: str = "1:1",
+        quality: str = "basic",
+        output_format: str = "png",
+        nsfw_checker: bool = True,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream5_lite_image_to_image(
+            prompt=prompt,
+            images=images,
+            aspect_ratio=aspect_ratio,
+            quality=quality,
+            output_format=output_format,
+            nsfw_checker=nsfw_checker,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
+
+class KIE_Seedream5Flash_TextToImage:
+    HELP = """
+KIE Seedream 5.0 Flash Text-To-Image
+
+Fast, low-cost text-to-image generation.
+
+Inputs:
+- prompt: Text prompt (required, 3-3000 characters)
+- aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
+- size: 1K, 1.5K or 2K (Flash uses size tiers, not a quality enum)
+- output_format: png or jpeg
+- nsfw_checker: enable KIE content filtering (default true)
+- log: print helper logs
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+            },
+            "optional": {
+                "aspect_ratio": ("COMBO", {"options": SEEDREAM5_FLASH_ASPECT_RATIO_OPTIONS, "default": "1:1"}),
+                "size": ("COMBO", {"options": SEEDREAM5_FLASH_SIZE_OPTIONS, "default": "1K"}),
+                "output_format": ("COMBO", {"options": SEEDREAM5_FLASH_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
+                "nsfw_checker": ("BOOLEAN", {"default": True}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        aspect_ratio: str = "1:1",
+        size: str = "1K",
+        output_format: str = "png",
+        nsfw_checker: bool = True,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream5_flash_text_to_image(
+            prompt=prompt,
+            aspect_ratio=aspect_ratio,
+            size=size,
+            output_format=output_format,
+            nsfw_checker=nsfw_checker,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
+class KIE_Seedream5Flash_ImageToImage:
+    HELP = """
+KIE Seedream 5.0 Flash Image-To-Image
+
+Fast, low-cost image editing from one or more reference images.
+
+Inputs:
+- prompt: Edit instruction (required, 3-3000 characters)
+- images: Reference image batch (up to 10 images)
+- aspect_ratio: 1:1, 4:3, 3:4, 16:9, 9:16, 2:3, 3:2, 21:9
+- size: 1K, 1.5K or 2K (Flash uses size tiers, not a quality enum)
+- output_format: png or jpeg
+- nsfw_checker: enable KIE content filtering (default true)
+- log: print helper logs
+
+Outputs:
+- IMAGE: ComfyUI image tensor (BHWC float32 0-1)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "prompt": ("STRING", {"multiline": True}),
+                "images": ("IMAGE",),
+            },
+            "optional": {
+                "aspect_ratio": (
+                    "COMBO",
+                    {"options": SEEDREAM5_FLASH_I2I_ASPECT_RATIO_OPTIONS, "default": "1:1"},
+                ),
+                "size": ("COMBO", {"options": SEEDREAM5_FLASH_I2I_SIZE_OPTIONS, "default": "1K"}),
+                "output_format": ("COMBO", {"options": SEEDREAM5_FLASH_I2I_OUTPUT_FORMAT_OPTIONS, "default": "png"}),
+                "nsfw_checker": ("BOOLEAN", {"default": True}),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE",)
+    RETURN_NAMES = ("image",)
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        prompt: str,
+        images: torch.Tensor,
+        aspect_ratio: str = "1:1",
+        size: str = "1K",
+        output_format: str = "png",
+        nsfw_checker: bool = True,
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 300,
+    ):
+        image_tensor = run_seedream5_flash_image_to_image(
+            prompt=prompt,
+            images=images,
+            aspect_ratio=aspect_ratio,
+            size=size,
+            output_format=output_format,
+            nsfw_checker=nsfw_checker,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_tensor,)
+
+
+class KIE_Seedream5Flash_LayerDecomposition:
+    HELP = """
+KIE Seedream 5.0 Flash Layer Decomposition
+
+Split ONE source image into a base image plus up to 16 transparent layers.
+
+Inputs:
+- image: Source image (exactly one image is used)
+- prompt: Optional instruction; empty lets the model choose the main elements.
+  Supports <bbox>x1 y1 x2 y2</bbox> with normalised 0-1000 coordinates.
+- size: auto, 1K, 1.5K or 2K
+- output_format: png or jpeg (base image only; layers are always PNG)
+- log: print helper logs
+
+Outputs:
+- images: IMAGE batch in API order (entry 0 = full base, then one full-canvas plate per element)
+- masks: MASK batch (inverse alpha, 1.0 = transparent) aligned with images
+- layer_info: STRING JSON report (index, z_index, name, description, size, origin, url)
+
+Note: measured against the live API, this endpoint returns no layer metadata (no
+bounding boxes, no names) and its element plates are not on the base image's scale,
+so the batch cannot be recomposed by simply stacking it. Use the Pro variant when you
+need a recomposable, z-ordered layer stack.
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+            },
+            "optional": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+                "size": ("COMBO", {"options": SEEDREAM5_FLASH_LAYER_SIZE_OPTIONS, "default": "auto"}),
+                "output_format": (
+                    "COMBO",
+                    {"options": SEEDREAM5_FLASH_LAYER_OUTPUT_FORMAT_OPTIONS, "default": "jpeg"},
+                ),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE", "MASK", "STRING")
+    RETURN_NAMES = ("images", "masks", "layer_info")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        image: torch.Tensor,
+        prompt: str = "",
+        size: str = "auto",
+        output_format: str = "jpeg",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 420,
+    ):
+        image_batch, mask_batch, layer_info = run_seedream5_flash_layer_decomposition(
+            image=image,
+            prompt=prompt,
+            size=size,
+            output_format=output_format,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_batch, mask_batch, layer_info)
+
+
+class KIE_Seedream5Pro_LayerDecomposition:
+    HELP = """
+KIE Seedream 5.0 Pro Layer Decomposition
+
+Split ONE source image into a base image plus up to 16 transparent layers, using
+the higher-quality Pro model.
+
+Inputs:
+- image: Source image (exactly one image is used)
+- prompt: Optional instruction; empty lets the model choose the main elements.
+  Supports <bbox>x1 y1 x2 y2</bbox> with normalised 0-1000 coordinates.
+- size: auto, 1K, 1.5K or 2K
+- output_format: png or jpeg (base image only; layers are always PNG)
+- log: print helper logs
+
+Outputs:
+- images: IMAGE batch, base first then layers by z_index, all on a base-sized canvas
+- masks: MASK batch (inverse alpha, 1.0 = transparent) aligned with images
+- layer_info: STRING JSON report (z_index, name, description, size, origin, url)
+"""
+
+    @classmethod
+    def INPUT_TYPES(cls):
+        return {
+            "required": {
+                "image": ("IMAGE",),
+            },
+            "optional": {
+                "prompt": ("STRING", {"multiline": True, "default": ""}),
+                "size": ("COMBO", {"options": SEEDREAM5_PRO_LAYER_SIZE_OPTIONS, "default": "auto"}),
+                "output_format": (
+                    "COMBO",
+                    {"options": SEEDREAM5_PRO_LAYER_OUTPUT_FORMAT_OPTIONS, "default": "jpeg"},
+                ),
+                "log": ("BOOLEAN", {"default": True}),
+            },
+        }
+
+    RETURN_TYPES = ("IMAGE", "MASK", "STRING")
+    RETURN_NAMES = ("images", "masks", "layer_info")
+    FUNCTION = "generate"
+    CATEGORY = "kie/api"
+
+    def generate(
+        self,
+        image: torch.Tensor,
+        prompt: str = "",
+        size: str = "auto",
+        output_format: str = "jpeg",
+        log: bool = True,
+        poll_interval_s: float = 10.0,
+        timeout_s: int = 420,
+    ):
+        image_batch, mask_batch, layer_info = run_seedream5_pro_layer_decomposition(
+            image=image,
+            prompt=prompt,
+            size=size,
+            output_format=output_format,
+            poll_interval_s=poll_interval_s,
+            timeout_s=timeout_s,
+            log=log,
+        )
+        return (image_batch, mask_batch, layer_info)
 
 
 class KIE_Seedream45_TextToImage:
@@ -2451,6 +3032,14 @@ NODE_CLASS_MAPPINGS = {
     "KIE_NanoBanana2_Image": KIE_NanoBanana2_Image,
     "KIE_GPTImage2_TextToImage": KIE_GPTImage2_TextToImage,
     "KIE_GPTImage2_ImageToImage": KIE_GPTImage2_ImageToImage,
+    "KIE_Seedream5Pro_TextToImage": KIE_Seedream5Pro_TextToImage,
+    "KIE_Seedream5Pro_ImageToImage": KIE_Seedream5Pro_ImageToImage,
+    "KIE_Seedream5Lite_TextToImage": KIE_Seedream5Lite_TextToImage,
+    "KIE_Seedream5Lite_ImageToImage": KIE_Seedream5Lite_ImageToImage,
+    "KIE_Seedream5Flash_TextToImage": KIE_Seedream5Flash_TextToImage,
+    "KIE_Seedream5Flash_ImageToImage": KIE_Seedream5Flash_ImageToImage,
+    "KIE_Seedream5Flash_LayerDecomposition": KIE_Seedream5Flash_LayerDecomposition,
+    "KIE_Seedream5Pro_LayerDecomposition": KIE_Seedream5Pro_LayerDecomposition,
     "KIE_Seedream45_TextToImage": KIE_Seedream45_TextToImage,
     "KIE_Seedream45_Edit": KIE_Seedream45_Edit,
     "KIE_GrokImagine_T2I": KIE_GrokImagine_T2I,
@@ -2484,6 +3073,14 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIE_NanoBanana2_Image": "Nano Banana 2",
     "KIE_GPTImage2_TextToImage": "KIE GPT Image (Text-to-Image)",
     "KIE_GPTImage2_ImageToImage": "KIE GPT Image (Image-to-Image)",
+    "KIE_Seedream5Pro_TextToImage": "KIE Seedream 5.0 Pro Text-To-Image",
+    "KIE_Seedream5Pro_ImageToImage": "KIE Seedream 5.0 Pro Image-To-Image",
+    "KIE_Seedream5Lite_TextToImage": "KIE Seedream 5.0 Lite Text-To-Image",
+    "KIE_Seedream5Lite_ImageToImage": "KIE Seedream 5.0 Lite Image-To-Image",
+    "KIE_Seedream5Flash_TextToImage": "KIE Seedream 5.0 Flash Text-To-Image",
+    "KIE_Seedream5Flash_ImageToImage": "KIE Seedream 5.0 Flash Image-To-Image",
+    "KIE_Seedream5Flash_LayerDecomposition": "KIE Seedream 5.0 Flash Layer Decomposition",
+    "KIE_Seedream5Pro_LayerDecomposition": "KIE Seedream 5.0 Pro Layer Decomposition",
     "KIE_Seedream45_TextToImage": "KIE Seedream 4.5 Text-To-Image",
     "KIE_Seedream45_Edit": "KIE Seedream 4.5 Edit",
     "KIE_GrokImagine_T2I": "KIE Grok Imagine (T2I)",
