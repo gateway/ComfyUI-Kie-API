@@ -26,6 +26,7 @@ from .kie_api.gpt_image_options import (
     DEFAULT_MODEL as GPT_IMAGE_DEFAULT_MODEL,
     MODEL_OPTIONS as GPT_IMAGE_MODEL_OPTIONS,
     model_widget_options as gpt_image_widget_options,
+    generation_widgets as gpt_image_generation_widgets,
 )
 from .kie_api.gpt_image2 import (
     run_gpt_image2_image_to_image,
@@ -353,12 +354,12 @@ class KIE_GPTImage2_TextToImage:
     HELP = """
 KIE GPT Image (Text-to-Image)
 
-Generate an image from a text prompt using GPT Image 2, GPT Image 2.5 Flare, or GPT Image 2.5 Sunburst.
+Generate an image from a text prompt using GPT Image 2, 2.5 Flare/Sunburst, or 2.6 Flare/Sunburst/Economy.
 
 Inputs:
-- prompt: Text prompt (required, up to 20,000 chars)
-- model: GPT Image 2 / GPT Image 2.5 Flare / GPT Image 2.5 Sunburst
-- background: opaque, transparent, auto (2.5 only)
+- prompt: Text prompt (required, 32,000 chars for 2.6 Flare/Sunburst; otherwise 20,000)
+- model: GPT Image 2 / 2.5 Flare / 2.5 Sunburst / 2.6 Flare / 2.6 Sunburst / 2.6 Economy
+- background: opaque, transparent, auto (2.5/2.6)
 - aspect_ratio: Choices depend on the model
 - resolution: 1K, 2K, or 4K
 - log: Console logging on/off
@@ -366,6 +367,10 @@ Inputs:
 Outputs:
 - IMAGE: RGB image tensor (BHWC float32 0-1)
 - MASK: Transparency mask (BHW, 1 = transparent, 0 = opaque)
+- file_paths: JSON array of original files saved under output/kie_gpt_image
+- svg: SVG text (empty for raster outputs)
+- metadata: JSON with task ID, formats, dimensions and GIF frame durations
+- GIF returns all frames in IMAGE/MASK; SVG returns no IMAGE/MASK. Use its text/file outputs.
 
 Notes:
 - GPT Image 2: auto requires 1K; 1:1 does not support 4K.
@@ -389,13 +394,14 @@ Notes:
                     "kie_model_options": gpt_image_widget_options(),
                 }),
                 "background": (GPT_IMAGE_BACKGROUND_OPTIONS, {
-                    "default": "opaque", "tooltip": "GPT Image 2.5 only. Use MASK to preserve transparency.",
+                    "default": "opaque", "tooltip": "GPT Image 2.5/2.6. Use MASK to preserve transparency.",
                 }),
+                **gpt_image_generation_widgets(),
             },
         }
 
-    RETURN_TYPES = ("IMAGE", "MASK")
-    RETURN_NAMES = ("image", "mask")
+    RETURN_TYPES = ("IMAGE", "MASK", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("image", "mask", "file_paths", "svg", "metadata")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -412,11 +418,13 @@ Notes:
         retry_backoff_s: float = 3.0,
         model: str = GPT_IMAGE_DEFAULT_MODEL,
         background: str = "opaque",
+        **options,
     ):
         return run_gpt_image2_text_to_image(
             prompt=prompt,
             model=model,
             background=background,
+            **options,
             aspect_ratio=aspect_ratio,
             resolution=resolution,
             poll_interval_s=poll_interval_s,
@@ -432,20 +440,27 @@ class KIE_GPTImage2_ImageToImage:
     HELP = """
 KIE GPT Image (Image-to-Image)
 
-Generate an edited or transformed image from a prompt and source images using GPT Image 2, GPT Image 2.5 Flare, or GPT Image 2.5 Sunburst.
+Generate an edited or transformed image from a prompt and source images using GPT Image 2, 2.5 Flare/Sunburst, or 2.6 Flare/Sunburst/Economy.
 
 Inputs:
-- prompt: Text prompt (required, up to 20,000 chars)
+- prompt: Text prompt (required, 32,000 chars for 2.6 Flare/Sunburst; otherwise 20,000)
 - images: Source image batch (up to 16 images)
-- model: GPT Image 2 / GPT Image 2.5 Flare / GPT Image 2.5 Sunburst
-- background: opaque, transparent, auto (2.5 only)
+- model: GPT Image 2 / 2.5 Flare / 2.5 Sunburst / 2.6 Flare / 2.6 Sunburst / 2.6 Economy
+- background: opaque, transparent, auto (2.5/2.6)
 - aspect_ratio: Choices depend on the model
 - resolution: 1K, 2K, or 4K
 - log: Console logging on/off
+- mask: Optional MASK, 1 = edit area on first source (2.6 Flare/Sunburst only)
+- markup + markup_mask: Separate annotation IMAGE and transparency MASK, same size as first source
+- Mask and markup are mutually exclusive. Mask is unavailable with GIF/SVG.
 
 Outputs:
 - IMAGE: RGB image tensor (BHWC float32 0-1)
 - MASK: Transparency mask (BHW, 1 = transparent, 0 = opaque)
+- file_paths: JSON array of original files saved under output/kie_gpt_image
+- svg: SVG text (empty for raster outputs)
+- metadata: JSON with task ID, formats, dimensions and GIF frame durations
+- GIF returns all frames in IMAGE/MASK; SVG returns no IMAGE/MASK. Use its text/file outputs.
 
 Notes:
 - GPT Image 2: auto requires 1K; 1:1 does not support 4K.
@@ -467,16 +482,20 @@ Notes:
                 # Append widgets: old workflows serialize values in this order.
                 "model": (GPT_IMAGE_MODEL_OPTIONS, {
                     "default": GPT_IMAGE_DEFAULT_MODEL,
-                    "kie_model_options": gpt_image_widget_options(),
+                    "kie_model_options": gpt_image_widget_options("image-to-image"),
                 }),
                 "background": (GPT_IMAGE_BACKGROUND_OPTIONS, {
-                    "default": "opaque", "tooltip": "GPT Image 2.5 only. Use MASK to preserve transparency.",
+                    "default": "opaque", "tooltip": "GPT Image 2.5/2.6. Use MASK to preserve transparency.",
                 }),
+                **gpt_image_generation_widgets(),
+                "mask": ("MASK", {"tooltip": "Edit first source image where mask is 1. Cannot combine with markup."}),
+                "markup": ("IMAGE", {"tooltip": "Separate annotation layer, same dimensions as first source. RGB requires markup_mask."}),
+                "markup_mask": ("MASK", {"tooltip": "Annotation transparency: 1 = transparent. Connect Load Image MASK for the annotation PNG."}),
             },
         }
 
-    RETURN_TYPES = ("IMAGE", "MASK")
-    RETURN_NAMES = ("image", "mask")
+    RETURN_TYPES = ("IMAGE", "MASK", "STRING", "STRING", "STRING")
+    RETURN_NAMES = ("image", "mask", "file_paths", "svg", "metadata")
     FUNCTION = "generate"
     CATEGORY = "kie/api"
 
@@ -494,11 +513,13 @@ Notes:
         retry_backoff_s: float = 3.0,
         model: str = GPT_IMAGE_DEFAULT_MODEL,
         background: str = "opaque",
+        **options,
     ):
         return run_gpt_image2_image_to_image(
             prompt=prompt,
             model=model,
             background=background,
+            **options,
             images=images,
             aspect_ratio=aspect_ratio,
             resolution=resolution,

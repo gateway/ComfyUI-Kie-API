@@ -24,12 +24,22 @@ function fixture() {
             backgrounds: ["opaque", "transparent", "auto"],
         },
     };
+    rules["GPT Image 2.6 Flare"] = {
+        aspect_ratios: ["auto", "5:4"], resolutions: {auto: ["1K", "2K", "4K"], "5:4": ["1K", "2K", "4K"]},
+        backgrounds: ["opaque", "transparent", "auto"], formats: ["png", "jpeg", "webp", "gif", "svg"],
+        advanced: true, frame_counts: ["2", "9", "16"],
+    };
+    rules["GPT Image 2.6 Economy"] = {
+        aspect_ratios: ["auto", "1:1"], resolutions: {auto: ["1K"], "1:1": ["1K"]},
+        backgrounds: ["opaque", "transparent", "auto"], formats: ["png", "gif"],
+        advanced: false, economy: true, frame_counts: ["auto", "4", "9", "16", "64"],
+    };
     const name = "KIE_GPTImage2_TextToImage";
     extension.beforeRegisterNodeDef(null, {
         name, input: { optional: { model: [Object.keys(rules), { kie_model_options: rules }] } },
     });
-    const widgets = Object.entries({ aspect_ratio: "auto", resolution: "1K", model: "GPT Image 2", background: "opaque" })
-        .map(([name, value]) => ({ name, value, options: {} }));
+    const widgets = Object.entries({ aspect_ratio: "auto", resolution: "1K", model: "GPT Image 2", background: "opaque", output_format: "png", quality: "medium", complexity: "high", moderation: "low", output_compression: 100, frame_count: "9", frame_duration_ms: 200, gif_size: "auto", svg_model: "gpt-5.6-luna" })
+        .map(([name, value]) => ({ name, value, options: {}, type: "combo" }));
     let configured = false;
     const node = { comfyClass: name, widgets, inputs: [], onConfigure() { configured = true; } };
     extension.nodeCreated(node);
@@ -80,4 +90,38 @@ test("explicit model changes normalize incompatible selections", () => {
     get("model").callback("GPT Image 2");
     assert.equal(get("aspect_ratio").value, "auto");
     assert.equal(get("background").value, "opaque");
+});
+
+
+test("2.6 format controls follow model and output choices", () => {
+    const { node, get } = fixture();
+    get("model").value = "GPT Image 2.6 Flare";
+    get("model").callback();
+    assert.equal(get("quality").type, "combo");
+    assert.equal(get("frame_count").type, "hidden");
+    get("output_format").value = "gif";
+    get("output_format").callback();
+    assert.equal(get("frame_count").type, "combo");
+    assert.equal(get("gif_size").type, "combo");
+    assert.equal(get("svg_model").type, "hidden");
+    get("model").value = "GPT Image 2.6 Economy";
+    get("model").callback();
+    assert.equal(get("quality").type, "hidden");
+    assert.equal(get("gif_size").type, "hidden");
+    assert.ok(get("frame_count").options.values.includes("64"));
+    get("model").value = "GPT Image 2";
+    get("model").callback();
+    assert.equal(get("output_format").value, "png");
+});
+
+test("connected output format exposes all applicable controls", async () => {
+    const { node, get } = fixture();
+    get("model").value = "GPT Image 2.6 Flare";
+    get("model").callback();
+    node.inputs.push({name: "output_format", link: 1});
+    node.onConnectionsChange();
+    await new Promise(queueMicrotask);
+    assert.equal(get("frame_count").type, "combo");
+    assert.equal(get("svg_model").type, "combo");
+    assert.equal(get("output_compression").type, "combo");
 });

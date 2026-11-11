@@ -46,9 +46,9 @@ This node pack currently includes the following nodes:
   - Supports up to 14 optional input/reference images.
   - Supports optional Google web-search grounding.
 - **GPT Image Text-to-Image / Image-to-Image**
-  - Two nodes with a model selector: GPT Image 2, GPT Image 2.5 Flare, and GPT Image 2.5 Sunburst.
-  - Model-aware aspect ratio/resolution dropdowns and GPT Image 2.5 background controls.
-  - RGB IMAGE plus transparency MASK outputs; existing GPT Image 2 workflow IDs are preserved.
+  - Two nodes with a model selector: GPT Image 2, 2.5 Flare/Sunburst, and 2.6 Flare/Sunburst/Economy.
+  - Model-aware formats, aspect ratios, resolution and background controls; 2.6 Flare/Sunburst mask or transparent-markup editing.
+  - RGB IMAGE plus transparency MASK outputs, original file paths, SVG text and metadata. GIF preserves all frames and timing; SVG uses file/text outputs. Existing workflow IDs and first two output slots are preserved.
   - Image-to-image accepts up to 16 input/reference images via ComfyUI batch.
 - **Seedream Text-to-Image / Edit**
   - Text-to-image and image-editing node for Seedream models.
@@ -142,12 +142,12 @@ This node pack currently includes the following nodes:
 Use this section after reviewing Current Available Nodes.
 
 - Full docs index (all nodes): [`web/docs/README.md`](web/docs/README.md)
-- GPT Image 2 / 2.5 status: both modes are implemented and documented. Windows ComfyUI/live verification of 2.5 is pending.
+- GPT Image 2 / 2.5 / 2.6 status: both modes are implemented and documented. Mac payload/widget/schema checks pass; Windows ComfyUI and paid-provider verification remain pending.
 - Kling 3.0 motion status: implemented in this repo with both the node doc and API spec linked below.
 - Grok Imagine status: `T2I`, `I2I`, `T2V`, and `I2V` are implemented in this repo.
 - Image generation node docs:
-  - [`web/docs/KIE_GPTImage2_TextToImage.md`](web/docs/KIE_GPTImage2_TextToImage.md) - GPT Image 2 / 2.5 text-to-image node reference.
-  - [`web/docs/KIE_GPTImage2_ImageToImage.md`](web/docs/KIE_GPTImage2_ImageToImage.md) - GPT Image 2 / 2.5 image-to-image node reference.
+  - [`web/docs/KIE_GPTImage2_TextToImage.md`](web/docs/KIE_GPTImage2_TextToImage.md) - GPT Image 2 / 2.5 / 2.6 text-to-image node reference.
+  - [`web/docs/KIE_GPTImage2_ImageToImage.md`](web/docs/KIE_GPTImage2_ImageToImage.md) - GPT Image 2 / 2.5 / 2.6 image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2I.md`](web/docs/KIE_GrokImagine_T2I.md) - Grok Imagine text-to-image node reference.
   - [`web/docs/KIE_GrokImagine_I2I.md`](web/docs/KIE_GrokImagine_I2I.md) - Grok Imagine image-to-image node reference.
   - [`web/docs/KIE_GrokImagine_T2V.md`](web/docs/KIE_GrokImagine_T2V.md) - Grok Imagine text-to-video node reference.

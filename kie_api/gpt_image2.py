@@ -1,4 +1,4 @@
-"""GPT Image 2 / 2.5 text-to-image and image-to-image helpers."""
+"""GPT Image 2 / 2.5 / 2.6 text-to-image and image-to-image helpers."""
 
 import time
 
@@ -7,7 +7,8 @@ import torch
 from .auth import _load_api_key
 from .credits import _log_remaining_credits
 from .http import TransientKieError
-from .images import _download_image, _image_bytes_to_tensor_and_mask
+from .images import _download_image
+from .gpt_image_media import collect_results, prepare_edit_guide
 from .gpt_image_options import DEFAULT_MODEL, MAX_IMAGE_COUNT, build_gpt_image_payload
 from .jobs import _create_task, _poll_task_until_complete
 from .log import _log
@@ -23,7 +24,7 @@ def _run_gpt_image2_payload(
     timeout_s: int,
     log: bool,
     create_label: str,
-) -> tuple[torch.Tensor, torch.Tensor]:
+) -> tuple:
     api_key = _load_api_key()
     _log(log, f"Creating {create_label} task...")
     start_time = time.time()
@@ -42,12 +43,16 @@ def _run_gpt_image2_payload(
 
     result_urls = _extract_result_urls(record_data)
     _log(log, f"Result URLs: {result_urls}")
-    _log(log, f"Downloading result image from {result_urls[0]}...")
-    image_bytes = _download_image(result_urls[0])
-    image_tensor, mask_tensor = _image_bytes_to_tensor_and_mask(image_bytes)
-    _log(log, "Image downloaded and decoded.")
+    import folder_paths
+
+    result = collect_results(
+        ((url, _download_image(url)) for url in result_urls),
+        task_id=task_id, output_format=payload["input"].get("output_format"),
+        output_dir=folder_paths.get_output_directory(),
+    )
+    _log(log, "Original output files saved and decoded.")
     _log_remaining_credits(log, record_data, api_key, _log)
-    return image_tensor, mask_tensor
+    return result
 
 
 def run_gpt_image2_text_to_image(
@@ -63,11 +68,12 @@ def run_gpt_image2_text_to_image(
     retry_backoff_s: float = 3.0,
     model: str = DEFAULT_MODEL,
     background: str = "opaque",
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """Run the selected GPT Image text-to-image model; return RGB and mask."""
+    **options,
+) -> tuple:
+    """Run the selected GPT Image text-to-image model; return image frames, masks, original paths, SVG text, and metadata."""
     payload = build_gpt_image_payload(
         model=model, mode="text-to-image", prompt=prompt,
-        aspect_ratio=aspect_ratio, resolution=resolution, background=background,
+        aspect_ratio=aspect_ratio, resolution=resolution, background=background, **options,
     )
 
     attempts = max_retries + 1 if retry_on_fail else 1
@@ -106,13 +112,23 @@ def run_gpt_image2_image_to_image(
     retry_backoff_s: float = 3.0,
     model: str = DEFAULT_MODEL,
     background: str = "opaque",
-) -> tuple[torch.Tensor, torch.Tensor]:
-    """Run the selected GPT Image editing model; return RGB and mask."""
+    mask=None,
+    markup=None,
+    markup_mask=None,
+    **options,
+) -> tuple:
+    """Run the selected GPT Image editing model; return image frames, masks, original paths, SVG text, and metadata."""
     payload = build_gpt_image_payload(
         model=model, mode="image-to-image", prompt=prompt,
-        aspect_ratio=aspect_ratio, resolution=resolution, background=background,
+        aspect_ratio=aspect_ratio, resolution=resolution, background=background, **options,
     )
     images = _validate_image_tensor_batch(images)
+    if min(images.shape[1:3]) <= 0 or not torch.isfinite(images).all() or (images < 0).any() or (images > 1).any():
+        raise RuntimeError("Source images must have nonzero dimensions and finite values between 0 and 1.")
+    guide = prepare_edit_guide(
+        images=images, model=model, output_format=payload["input"].get("output_format", "png"),
+        mask=mask, markup=markup, markup_mask=markup_mask,
+    )
     total_images = images.shape[0]
     if total_images > MAX_IMAGE_COUNT and model != DEFAULT_MODEL:
         raise RuntimeError(f"{model} accepts at most {MAX_IMAGE_COUNT} source images; received {total_images}.")
@@ -141,6 +157,9 @@ def run_gpt_image2_image_to_image(
                 _log(log, f"Image {idx + 1} upload success: {_truncate_url(image_url)}")
 
             payload["input"]["input_urls"] = image_urls
+            if guide is not None:
+                field, png_bytes = guide
+                payload["input"][field] = _upload_image(api_key, png_bytes)
 
             return _run_gpt_image2_payload(
                 payload=payload,
