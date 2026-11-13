@@ -46,6 +46,8 @@ This node pack currently includes the following nodes:
   - Supports up to 14 optional input/reference images.
   - Supports optional Google web-search grounding.
 - **GPT Image Text-to-Image / Image-to-Image**
+  - Native ComfyUI DynamicCombo controls show only relevant Image, SVG, or GIF settings. Requires a recent ComfyUI backend and frontend; [native controls and compatibility](web/docs/KIE_GPTImage_Native.md).
+  - Existing saved workflows retain their original nodes, labeled `[Legacy]`; new nodes use the native controls. No automatic workflow rewrite.
   - Two nodes with a model selector: GPT Image 2, 2.5 Flare/Sunburst, and 2.6 Flare/Sunburst/Economy.
   - Model-aware formats, aspect ratios, resolution and background controls; 2.6 Flare/Sunburst mask or transparent-markup editing.
   - RGB IMAGE plus transparency MASK outputs, original file paths, SVG text and metadata. GIF preserves all frames and timing; SVG uses file/text outputs. Existing workflow IDs and first two output slots are preserved.

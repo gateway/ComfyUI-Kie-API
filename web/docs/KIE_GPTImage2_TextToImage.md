@@ -1,5 +1,7 @@
 # KIE GPT Image (Text-to-Image)
 
+For new workflows, use the [native DynamicCombo node](KIE_GPTImage_Native.md), which groups Image/SVG/GIF settings automatically. The flat widgets described below belong to the retained **[Legacy]** node (`KIE_GPTImage2_TextToImage`). Existing workflows remain unchanged; the native node uses a new ID.
+
 Use GPT Image 2, 2.5 Flare/Sunburst, or 2.6 Flare/Sunburst/Economy in the existing node. The baseline inputs below describe 2/2.5; the 2.6 additions are documented afterward.
 
 ## Inputs

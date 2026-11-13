@@ -1,5 +1,6 @@
 import { app } from "../../scripts/app.js";
 
+// Compatibility UI for V1 nodes only; native V3 nodes use DynamicCombo.
 const nodeNames = new Set(["KIE_GPTImage2_TextToImage", "KIE_GPTImage2_ImageToImage"]);
 const definitions = new Map();
 

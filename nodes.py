@@ -2532,3 +2532,24 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "KIEParsePromptGridJSON": "KIE Parse Prompt Grid JSON (1..9)",
     "KIE_SystemPrompt_Selector": "KIE System Prompt Selector",
 }
+
+# Mixed registries are supported: ComfyUI detects V3 classes when exposing schemas
+# and executing nodes. Keep V1 classes/IDs intact for old UI and API workflows.
+try:
+    from comfy_api.latest import io as _native_io
+except ImportError:
+    _native_io = None
+
+if _native_io is not None and hasattr(_native_io, "DynamicCombo"):
+    from .gpt_image_nodes import KIE_GPTImage_TextToImage, KIE_GPTImage_ImageToImage
+
+    NODE_CLASS_MAPPINGS.update({
+        "KIE_GPTImage_TextToImage": KIE_GPTImage_TextToImage,
+        "KIE_GPTImage_ImageToImage": KIE_GPTImage_ImageToImage,
+    })
+    NODE_DISPLAY_NAME_MAPPINGS.update({
+        "KIE_GPTImage_TextToImage": "KIE GPT Image (Text-to-Image)",
+        "KIE_GPTImage_ImageToImage": "KIE GPT Image (Image-to-Image)",
+        "KIE_GPTImage2_TextToImage": "KIE GPT Image (Text-to-Image) [Legacy]",
+        "KIE_GPTImage2_ImageToImage": "KIE GPT Image (Image-to-Image) [Legacy]",
+    })

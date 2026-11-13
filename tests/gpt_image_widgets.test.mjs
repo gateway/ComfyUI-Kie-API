@@ -4,6 +4,22 @@ import { readFileSync } from "node:fs";
 import test from "node:test";
 import vm from "node:vm";
 
+test("legacy extension never intercepts native DynamicCombo nodes", () => {
+    let extension;
+    vm.runInNewContext(source, {
+        app: { registerExtension(value) { extension = value; } }, queueMicrotask,
+    });
+    for (const name of ["KIE_GPTImage_TextToImage", "KIE_GPTImage_ImageToImage"]) {
+        extension.beforeRegisterNodeDef(null, {name, input: {required: {}}});
+        const callback = () => {};
+        const node = {comfyClass: name, widgets: [{name: "model", value: "test", callback}]};
+        extension.nodeCreated(node);
+        extension.loadedGraphNode(node);
+        assert.equal(node.widgets[0].callback, callback);
+        assert.equal(node.onConfigure, undefined);
+    }
+});
+
 const source = readFileSync(new URL("../js/gpt_image.js", import.meta.url), "utf8")
     .replace('import { app } from "../../scripts/app.js";', "");
 
